@@ -257,10 +257,12 @@
 .bar::after { top: 6px; width: 12px; }
 .hamburger:hover .bar::after { width: 18px; }
 
+
 .theme { display: inline-flex; margin-right: 6px; }
 
 @media (max-width: 900px) {
-  .menu, .ctaButton, .theme { display: none; }
+  .menu, .ctaButton { display: none; }
+  .theme { margin-right: 2px; transform: scale(0.88); transform-origin: right center; }
 }
 
 @keyframes goldShine { to { background-position: 220% center; } }

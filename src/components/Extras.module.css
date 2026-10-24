@@ -34,6 +34,34 @@
   transition: all 0.3s ease;
 }
 .widget:hover { transform: scale(1.05); }
+
+/* the cart in place of WhatsApp: real gold, the counter in a black pill */
+.cartWidget .iconWrapper {
+  position: relative;
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  color: #15130f;
+  animation: cartIn 0.5s var(--ease);
+}
+.cartCount {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 980px;
+  display: grid;
+  place-items: center;
+  background: #15130f;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 2px solid var(--background);
+  animation: countPop 0.4s var(--ease);
+}
+@keyframes cartIn { from { transform: scale(0.4) rotate(-20deg); opacity: 0; } }
+@keyframes countPop { from { transform: scale(0.3); } 60% { transform: scale(1.25); } }
 .widget:hover .label { transform: none; opacity: 1; visibility: visible; }
 
 .goTop {
@@ -56,6 +84,10 @@
 }
 .goTop.visible { opacity: 1; visibility: visible; transform: none; }
 .goTop:hover { background: var(--ink); color: var(--ink-contrast); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cartWidget .iconWrapper, .cartCount { animation: none; }
+}
 
 @media (max-width: 768px) {
   .widget { left: 16px; bottom: 16px; }

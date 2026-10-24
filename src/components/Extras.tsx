@@ -1,8 +1,11 @@
 "use client"
 
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { SITE, whatsappLink } from "@/lib/site"
+import { useCart } from "./CartProvider"
+import { BagIcon } from "./icons"
 import styles from "./Extras.module.css"
 
 /** Fades in every `.reveal` block when it scrolls into view (re-run on each page) */
@@ -26,7 +29,22 @@ export function RevealOnScroll() {
   return null
 }
 
+/** Floating button: WhatsApp for a piece of advice; as soon as the cart holds something, the cart takes its
+ *  place (with its counter), except on the cart page itself */
 export function WhatsAppWidget() {
+  const { count, ready } = useCart()
+  const pathname = usePathname()
+  if (ready && count > 0 && pathname !== "/panier") {
+    return (
+      <Link href="/panier" className={`${styles.widget} ${styles.cartWidget}`} aria-label={`Voir le panier : ${count} article${count > 1 ? "s" : ""}`}>
+        <span className={styles.iconWrapper}>
+          <BagIcon size={24} />
+          <span key={count} className={styles.cartCount}>{count > 99 ? "99+" : count}</span>
+        </span>
+        <span className={styles.label}>Voir mon panier</span>
+      </Link>
+    )
+  }
   if (!SITE.whatsapp) return null
   return (
     <a

@@ -104,7 +104,7 @@
 /* each line rises from behind a mask */
 .line { display: block; overflow: hidden; padding-bottom: 0.08em; }
 .line > span { display: inline-block; transform: translateY(110%); transition: transform 1.1s var(--ease); }
-.muted { color: var(--text-muted); font-size: 0.42em; letter-spacing: -0.02em; line-height: 1.2; margin-top: 10px; max-width: 26ch; }
+.muted { color: var(--text-muted); font-size: 0.42em; letter-spacing: -0.02em; line-height: 1.2; margin-top: -0.42em; max-width: 26ch; }
 
 .text {
   max-width: 480px;
@@ -122,7 +122,7 @@
   align-items: center;
   gap: 8px;
   padding: 13px 24px;
-  border-radius: 980px;
+  border-radius: 0;
   font-size: 0.98rem;
   font-weight: 600;
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
@@ -319,7 +319,7 @@
   align-items: center;
   gap: 8px;
   padding: 13px 24px;
-  border-radius: 980px;
+  border-radius: 0;
   background: var(--gold-metal);
   background-size: 220% auto;
   color: var(--on-gold);
@@ -350,14 +350,9 @@
   .posters { aspect-ratio: 4 / 5; max-height: none; }
   .desktopOnly { display: none; }
   .mobileOnly { display: block; }
-  .posters .nav { top: auto; bottom: 16px; right: 50%; transform: translateX(50%); flex-direction: row; padding: 8px 14px; }
-  .posters .counter { flex-direction: row; gap: 6px; }
-  .posters .counter small { margin: 0; padding: 0 0 0 6px; border-top: none; border-left: 1px solid rgba(245, 245, 247, 0.3); }
-  .posters .dots { flex-direction: row; }
-  .posters .dot { width: 22px; height: 4px; }
-  .posters .dotActive { width: 52px; height: 4px; }
-  .posters .fill { transform-origin: left; animation-name: progressX; }
-  .posterCta { left: 20px; bottom: 64px; padding: 11px 20px; font-size: 0.92rem; }
+  /* the slide buttons stay vertical, on the right, as on a computer */
+  .posters .nav { top: 50%; transform: translateY(-50%); }
+  .posterCta { left: 20px; bottom: 64px; padding: 9px 15px; font-size: 0.86rem; }
 }
 
 /* ---------- brand texts over a poster: an ivory veil on the left, the texts in light colours whatever the
@@ -394,18 +389,18 @@
 }
 @media (max-width: 768px) {
   .posterShade { background: linear-gradient(0deg, rgba(244, 241, 236, 0.94) 0%, rgba(244, 241, 236, 0.7) 40%, rgba(244, 241, 236, 0) 64%); }
-  .posterText { top: auto; bottom: 74px; translate: none; right: 20px; }
+  .posterText { top: auto; bottom: 40px; translate: none; right: 68px; }
   /* phone: bigger texts */
   .posterText .eyebrowScript > span { font-size: 2.3rem; }
   .posterText .title { font-size: 2.9rem; }
   .posterText .muted { font-size: 0.48em; }
   .posterText .actions { margin-top: 18px; }
-  .posterText .cta { padding: 14px 26px; font-size: 1.05rem; }
+  .posterText .cta { padding: 10px 16px; font-size: 0.88rem; }
   .eyebrowScript > span { font-size: 2.6rem; }
   .title { font-size: 3.3rem; }
   .muted { font-size: 0.46em; }
   .text { font-size: 1.08rem; }
-  .cta { padding: 14px 26px; font-size: 1.05rem; }
+  .cta { padding: 10px 16px; font-size: 0.88rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
