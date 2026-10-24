@@ -1,0 +1,74 @@
+.wrap {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* ---------- the shops: choose the one on the map ---------- */
+.list { display: flex; flex-direction: column; gap: 12px; }
+.list li {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 0;
+  border: 1px solid var(--card-border);
+  background: var(--surface);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.list li.on { border-color: var(--gold-real); box-shadow: 0 0 0 4px var(--gold-wash); }
+
+.shop { display: flex; align-items: center; gap: 14px; text-align: left; }
+.num {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold-wash);
+  color: var(--gold-ink);
+  font-family: var(--font-primary);
+  font-weight: 800;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.on .num { background: var(--gold-metal); color: #15130f; }
+.info { display: flex; flex-direction: column; gap: 2px; }
+.info strong { font-family: var(--font-primary); font-size: 1.08rem; font-weight: 700; color: var(--text-main); }
+.info span { font-size: 0.88rem; color: var(--text-muted); }
+
+.route {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 58px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--gold-ink);
+}
+.route:hover { text-decoration: underline; }
+
+/* ---------- the map ---------- */
+.map {
+  position: relative;
+  min-height: 420px;
+  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: var(--surface-2);
+}
+.map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; animation: mapIn 0.6s var(--ease); }
+@keyframes mapIn { from { opacity: 0; } }
+
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: 1fr; }
+  .list { flex-direction: row; overflow-x: auto; scrollbar-width: none; }
+  .list li { flex: 0 0 min(78vw, 300px); }
+  .map { min-height: 340px; order: -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map iframe { animation: none; }
+}

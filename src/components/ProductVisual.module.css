@@ -1,0 +1,21 @@
+.img { object-fit: contain; }
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: radial-gradient(circle at 50% 45%, var(--studio) 0%, var(--photo-bg) 70%);
+}
+.empty img { width: 64px; height: auto; opacity: 0.35; filter: grayscale(0.3); }
+.empty span {
+  max-width: 80%;
+  text-align: center;
+  font-family: var(--font-primary);
+  font-size: 1.15rem; font-weight: 800; letter-spacing: -0.03em;
+  color: var(--gold-ink);
+  opacity: 0.8;
+}

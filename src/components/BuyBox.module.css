@@ -1,0 +1,29 @@
+.box { display: flex; flex-direction: column; gap: 10px; margin: 28px 0 8px; }
+.row { display: flex; gap: 10px; }
+
+.qty {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.qty button { width: 44px; height: 100%; display: grid; place-items: center; border-radius: 999px; }
+.qty button:hover { background: var(--surface-2); }
+.qty span { min-width: 24px; text-align: center; font-weight: 700; }
+
+.add { flex: 1; height: 52px; }
+.direct { height: 52px; }
+
+.out {
+  padding: 14px 18px;
+  border-radius: 0;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+@media (max-width: 420px) {
+  .add { font-size: 0.86rem; padding: 0 16px; }
+}

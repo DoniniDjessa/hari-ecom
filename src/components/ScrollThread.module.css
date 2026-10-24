@@ -1,0 +1,183 @@
+.thread {
+  position: fixed;
+  z-index: 880;
+  left: 6px;
+  top: calc(var(--header-height) + 48px);
+  bottom: 110px; /* above the WhatsApp button */
+  width: 24px;
+  opacity: 0;
+  transform: translateX(-16px);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.6s var(--ease);
+}
+
+.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* dotted gold line, filled with real gold as you scroll */
+.track {
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(180deg, var(--gold-soft) 0 6px, transparent 6px 12px);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--gold-soft), var(--gold-real));
+  transform-origin: top;
+  will-change: transform;
+}
+
+/* stations */
+.station {
+  position: absolute;
+  left: -6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(-50%);
+}
+
+.stationDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--background);
+  border: 2px solid var(--gold-soft);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.passed .stationDot { background: var(--gold-real); border-color: var(--gold-real); }
+.current .stationDot { box-shadow: 0 0 0 4px var(--gold-wash); }
+
+.stationLabel {
+  padding: 3px 14px 5px;
+  border-radius: 980px;
+  background: var(--gold-metal);
+  color: #15130f;
+  font-family: var(--font-script);
+  font-size: 1.15rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(143, 116, 68, 0.22);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.station:hover .stationDot { transform: scale(1.3); }
+.station:hover .stationLabel,
+.station:focus-visible .stationLabel { opacity: 1; transform: none; }
+
+/* the drop of serum, point up, falling down the thread */
+.drop {
+  position: absolute;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  transition: top 0.12s linear;
+  pointer-events: none;
+}
+
+.dropBody {
+  width: 18px;
+  height: 18px;
+  border-radius: 0 50% 50% 50%;
+  background: radial-gradient(circle at 60% 60%, #fff6dc 0%, #e8c977 38%, #b8892f 100%);
+  box-shadow: 0 0 14px rgba(232, 201, 119, 0.75), 0 4px 10px rgba(143, 116, 68, 0.3);
+  transform: rotate(45deg);
+  animation: wobble 2.4s ease-in-out infinite;
+}
+
+/* a soft breath, as if the drop were liquid */
+@keyframes wobble {
+  0%, 100% { transform: rotate(45deg) scale(1); }
+  50% { transform: rotate(45deg) scale(0.92, 1.08); }
+}
+
+/* ---------- small screens: a horizontal thread under the menu ---------- */
+.mobileBar {
+  display: none;
+  position: fixed;
+  z-index: 880;
+  left: 0;
+  right: 0;
+  top: var(--header-height);
+  height: 30px;
+  padding: 0 16px;
+  align-items: center;
+  gap: 12px;
+  background: var(--glass-strong);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid var(--card-border);
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.4s ease, transform 0.5s var(--ease);
+  pointer-events: none;
+}
+
+.mobileBar.visible { opacity: 1; transform: none; }
+
+.mobileLabel {
+  min-width: 0;
+  max-width: 42%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-script);
+  font-size: 1.1rem;
+  line-height: 1.3;
+  color: var(--gold-ink);
+  animation: labelIn 0.45s var(--ease);
+}
+
+@keyframes labelIn { from { opacity: 0; transform: translateY(6px); } }
+
+.mobileTrack {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--gold-soft) 0 6px, transparent 6px 11px);
+}
+
+.mobileFill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold-real));
+  transform-origin: left;
+}
+
+/* lying on its side, the point behind: it runs to the right */
+.mobileDrop {
+  position: absolute;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 0 50% 50% 50%;
+  background: radial-gradient(circle at 60% 60%, #fff6dc 0%, #e8c977 38%, #b8892f 100%);
+  box-shadow: 0 0 10px rgba(232, 201, 119, 0.7);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@media (max-width: 1180px) {
+  .thread { display: none; }
+  .mobileBar { display: flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thread, .drop { transition: none; }
+  .dropBody { animation: none; }
+}

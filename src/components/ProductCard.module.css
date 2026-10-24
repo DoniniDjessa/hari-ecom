@@ -1,0 +1,215 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  animation: cardIn 0.7s calc(var(--n) * 0.06s) var(--ease) both;
+}
+@keyframes cardIn { from { opacity: 0; transform: translateY(24px); } }
+
+/* ---------- photo ---------- */
+.media {
+  position: relative;
+  aspect-ratio: 1; /* the website photos are square */
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 42%, var(--studio) 0%, rgba(253, 252, 249, 0) 62%),
+    var(--photo-bg);
+  isolation: isolate;
+}
+
+/* gold line drawn on top of the photo on hover */
+.media::before {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.card:hover .media::before { transform: scaleX(1); }
+
+
+.photo { position: absolute; inset: 0; z-index: 1; display: block; }
+.photo img { transition: transform 1s var(--ease); }
+.card:hover .photo img { transform: translateY(-3%) scale(1.04); }
+
+/* badges stacked on the top left */
+.badges {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  pointer-events: none;
+}
+.badges span {
+  padding: 4px 10px;
+  border-radius: 980px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.badges .badgeGold { background: var(--gold-metal); color: var(--on-gold); box-shadow: 0 6px 16px rgba(193, 154, 63, 0.3); }
+
+.soldOut {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  padding: 7px 14px;
+  border-radius: 980px;
+  background: var(--glass-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* "Ajouter au panier" bar that slides up from the bottom of the photo */
+.addBar {
+  position: absolute;
+  z-index: 2;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--ink-contrast);
+  font-size: 0.86rem;
+  font-weight: 700;
+  transform: translateY(calc(100% + 14px));
+  transition: transform 0.5s var(--ease), background 0.3s ease, color 0.3s ease;
+}
+.addBar svg { transition: transform 0.4s ease; }
+.card:hover .addBar, .addBar:focus-visible { transform: none; }
+.addBar:hover svg { transform: rotate(90deg); }
+.addBar:hover { opacity: 0.88; }
+.addBar.done { background: var(--gold); color: var(--ink); transform: none; }
+.addBar.done svg { transform: none; animation: pop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.4); }
+@keyframes pop { from { transform: scale(0.3); } }
+
+/* phones: round "+" always there instead of the bar */
+.addRound {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--ink-contrast);
+  box-shadow: var(--shadow);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.addRound:active { transform: scale(0.92); }
+.addRound.done { background: var(--gold); color: var(--ink); }
+.addRound.done svg { animation: pop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.4); }
+
+/* ---------- text ---------- */
+.body { display: flex; flex-direction: column; gap: 6px; padding: 16px 2px 0; flex: 1; }
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.meta strong { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-ink); }
+.meta span::before { content: '·'; margin-right: 8px; opacity: 0.6; }
+
+.name {
+  font-family: var(--font-primary);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.name a { background: linear-gradient(var(--gold), var(--gold)) 0 100% / 0 1.5px no-repeat; transition: background-size 0.5s var(--ease); }
+.card:hover .name a { background-size: 100% 1.5px; }
+
+.priceRow {
+  margin-top: auto;
+  padding-top: 8px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+.priceRow > div { display: flex; flex-direction: column; min-width: 0; }
+.price { font-family: var(--font-primary); font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; white-space: nowrap; }
+.lot {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 980px;
+  background: var(--gold-soft);
+  color: var(--gold-ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* small round link that slides in on hover */
+.view {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.35s ease, transform 0.45s var(--ease), background 0.3s ease, color 0.3s ease;
+}
+.card:hover .view { opacity: 1; transform: none; }
+.view:hover { background: var(--ink); color: var(--on-ink-accent); border-color: var(--ink); }
+
+/* out of stock: the photo fades */
+.out .photo { filter: grayscale(1); opacity: 0.55; }
+.out:hover .photo img { transform: none; }
+
+/* touch screens: no hover */
+@media (hover: none) {
+  .addBar { display: none; }
+  .addRound { display: flex; }
+  .view { display: none; }
+}
+@media (max-width: 560px) {
+  .body { padding-top: 12px; gap: 4px; }
+  .name { font-size: 0.93rem; }
+  .price { font-size: 1.02rem; }
+  .meta span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+}

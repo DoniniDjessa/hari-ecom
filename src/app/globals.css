@@ -1,0 +1,315 @@
+/* ==========================================
+   HARI STORE — design tokens
+   Same language as sngcompany ("Apple" look: white, Apple gray, black, Outfit + Plus Jakarta Sans,
+   square cards, pill buttons, scroll reveals). Its orange accent becomes a pale gold that fades to
+   white (the gold of the logo, softened).
+   Product photos are shot on #F4F1EC (haritest/scripts/ecom-image-prompt.txt): --photo-bg is the
+   same color, so a photo melts into its card.
+   ========================================== */
+:root {
+  --ink: #1d1d1f;
+  --ink-contrast: #ffffff;
+  --surface-2: #f5f5f7;
+  --focus-ring: rgba(29, 29, 31, 0.08);
+
+  --background: #ffffff;
+  --foreground: #1d1d1f;
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.1);
+  --text-main: #1d1d1f;
+  --text-secondary: #424245;
+  --text-muted: #6e6e73;
+
+  /* pale gold */
+  --gold: #d8c39a;        /* lines, progress, stars */
+  --gold-soft: #f3ecdd;   /* tints */
+  --gold-wash: #fbf8f2;   /* sections */
+  --gold-ink: #8f7444;    /* small gold text on white */
+  --photo-bg: #f4f1ec;
+
+  /* surfaces that change with the theme */
+  --surface: #ffffff;                       /* cards, panels, fields */
+  --glass: rgba(255, 255, 255, 0.72);       /* translucent bars */
+  --glass-strong: rgba(255, 255, 255, 0.92);/* chips over photos */
+  --studio: #fdfcf9;                        /* light behind a product photo */
+  --panel-dark: #000000;                    /* black blocks (why, advice, first universe) */
+  --panel-dark-2: #1d1d1f;
+  --on-panel: #f5f5f7;
+  --on-gold: #1d1d1f;                       /* text on real gold */
+  --on-ink-accent: #d8c39a;                 /* accent text on an --ink background */
+
+  /* real gold: metallic gradient (text, buttons, badges) and its solid tone */
+  --gold-real: #c19a3f;
+  --gold-metal: linear-gradient(110deg, #8c6a26 0%, #c79c43 18%, #f4dc98 36%, #b8892f 52%, #e9c977 70%, #a37a2c 86%, #d8b45e 100%);
+
+  --max-width: 1200px;
+  --header-height: 52px;
+
+  --font-primary: var(--font-outfit), sans-serif;
+  --font-secondary: var(--font-jakarta), sans-serif;
+  --font-script: var(--font-vibes), cursive;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition: all 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- dark mode: night black, light gold for the main actions, more gold ----------
+   [data-theme] is set before paint (app/layout.tsx), from the choice saved or the system's. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: #ead5a4;            /* main buttons and active chips: light gold */
+  --ink-contrast: #15130f;
+  --surface-2: #1a1916;
+  --focus-ring: rgba(234, 213, 164, 0.2);
+  --background: #0d0c0a;
+  --foreground: #f4efe5;
+  --card-bg: #151411;
+  --card-border: rgba(234, 213, 164, 0.14);
+  --text-main: #f4efe5;
+  --text-secondary: #d6cdbd;
+  --text-muted: #a0978a;
+
+  --gold: #ead5a4;
+  --gold-soft: rgba(234, 213, 164, 0.13);
+  --gold-wash: #131210;
+  --gold-ink: #e3c27a;
+  --gold-real: #d9b25c;
+  /* product photos keep their studio background, a little softer at night */
+  --photo-bg: #e8e2d6;
+  --studio: #f1ece3;
+
+  --surface: #151411;
+  --glass: rgba(13, 12, 10, 0.72);
+  --glass-strong: rgba(21, 20, 17, 0.9);
+  --panel-dark: #1a1813;
+  --panel-dark-2: #262219;
+  --on-panel: #f4efe5;
+  --on-gold: #15130f;
+  --on-ink-accent: #15130f;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* smooth switch between the themes */
+html.theme-switch, html.theme-switch * { transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease !important; }
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  /* clip, not hidden: "hidden" on both html and body turns body into a scroll container
+     and breaks position: sticky everywhere */
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+h1, h2 {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+h3, h4, h5, h6 {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+a { color: inherit; text-decoration: none; transition: var(--transition); }
+ul, ol { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+input, textarea, select { font-family: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ---------- shared ---------- */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* small line above a title, as on sngcompany */
+.eyebrow {
+  display: block;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text-main);
+}
+
+.section { padding: 120px 0; }
+.section-gray { padding: 120px 0; background: var(--surface-2); }
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+.section-head p { color: var(--text-muted); font-size: 1.05rem; margin-top: 12px; max-width: 520px; }
+
+/* buttons: pill, black; outline; gold */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 980px;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.btn svg { transition: transform 0.3s ease; }
+.btn:hover svg { transform: translateX(4px); }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-dark { background: var(--ink); color: var(--ink-contrast); }
+.btn-dark:hover:not(:disabled) { opacity: 0.85; }
+.btn-light { border: 1px solid var(--ink); color: var(--ink); padding: 11px 23px; }
+.btn-light:hover:not(:disabled) { background: var(--ink); color: var(--ink-contrast); }
+.btn-gold { background: var(--gold-soft); color: var(--ink); }
+.btn-gold:hover:not(:disabled) { background: var(--gold); }
+
+/* handwriting accent (Great Vibes), usually above a title */
+.script {
+  display: block;
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: 0;
+  margin-bottom: 2px;
+}
+/* handwriting always starts with a capital */
+.script::first-letter { text-transform: uppercase; }
+
+/* real gold on text: the metallic gradient, slowly shining */
+.text-gold {
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: goldShine 7s linear infinite;
+}
+@keyframes goldShine { to { background-position: 220% center; } }
+
+/* real gold button */
+.btn-real-gold {
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  color: var(--on-gold);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 8px 24px rgba(193, 154, 63, 0.28);
+  transition: background-position 0.8s var(--ease), transform 0.2s ease, box-shadow 0.3s ease;
+}
+.btn-real-gold:hover:not(:disabled) { background-position: 100% center; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 12px 30px rgba(193, 154, 63, 0.4); }
+
+/* thin real-gold rule */
+.gold-rule { display: block; width: 64px; height: 2px; background: var(--gold-metal); }
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gold { animation: none; }
+}
+
+/* "Tout voir ›" text link */
+.link-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.link-more:hover { text-decoration: underline; }
+
+/* ---------- scroll animations (RevealOnScroll adds .active) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s var(--ease), transform 1s var(--ease);
+}
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+/* children of a .stagger grid come in one after the other when the section is revealed */
+.reveal .stagger > * { opacity: 0; transform: translateY(30px); }
+/* "backwards": the entrance does not freeze transform afterwards, so hover effects keep working */
+.reveal.active .stagger > * {
+  opacity: 1;
+  transform: none;
+  animation: staggerIn 0.9s var(--ease) backwards;
+}
+.reveal.active .stagger > :nth-child(1) { animation-delay: 0.05s; }
+.reveal.active .stagger > :nth-child(2) { animation-delay: 0.15s; }
+.reveal.active .stagger > :nth-child(3) { animation-delay: 0.25s; }
+.reveal.active .stagger > :nth-child(4) { animation-delay: 0.35s; }
+.reveal.active .stagger > :nth-child(5) { animation-delay: 0.45s; }
+.reveal.active .stagger > :nth-child(6) { animation-delay: 0.55s; }
+.reveal.active .stagger > :nth-child(7) { animation-delay: 0.65s; }
+.reveal.active .stagger > :nth-child(8) { animation-delay: 0.75s; }
+@keyframes staggerIn { from { opacity: 0; transform: translateY(30px); } }
+
+/* images grow into place when their section is revealed */
+.reveal .img-reveal { transform: scale(0.94); opacity: 0.4; transition: transform 1.4s var(--ease) 0.1s, opacity 1.4s ease 0.1s; }
+.reveal.active .img-reveal { transform: none; opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal .stagger > *, .reveal .img-reveal { opacity: 1; transform: none; transition: none; animation: none; }
+}
+
+::-webkit-scrollbar { width: 10px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--background); }
+:root[data-theme='dark'] ::-webkit-scrollbar-thumb { background: #3a362d; }
+::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 0; border: 2px solid var(--background); }
+::-webkit-scrollbar-thumb:hover { background: #a1a1a6; }
+
+:where(a, button, [role="radio"], summary, input, select, textarea):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .section, .section-gray { padding: 72px 0; }
+}

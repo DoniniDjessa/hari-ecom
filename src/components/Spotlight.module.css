@@ -1,0 +1,211 @@
+/* black and gold showcase, the same in both themes */
+.section {
+  position: relative;
+  overflow: hidden;
+  padding: 90px 22px 100px;
+  background: linear-gradient(180deg, #0b0a08 0%, #16130d 100%);
+  color: #f4efe5;
+  isolation: isolate;
+}
+.glow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: -40%;
+  width: 120%;
+  height: 90%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(232, 201, 119, 0.22) 0%, rgba(232, 201, 119, 0) 60%);
+  pointer-events: none;
+}
+
+.head { max-width: 1200px; margin: 0 auto 44px; text-align: center; }
+.head :global(.script) { font-size: clamp(2.2rem, 4vw, 3.2rem); }
+.head h2 { font-size: clamp(2rem, 4.4vw, 3.4rem); letter-spacing: -0.045em; color: #f4efe5; }
+
+.row { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+/* ---------- card ---------- */
+.card {
+  --x: 50%;
+  --y: 30%;
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border: 1px solid rgba(232, 201, 119, 0.18);
+  perspective: 900px;
+  transition: border-color 0.4s ease, transform 0.6s var(--ease);
+}
+.card:hover { border-color: rgba(232, 201, 119, 0.5); transform: translateY(-6px); }
+
+/* halo of light that follows the pointer */
+.light {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(circle at var(--x) var(--y), rgba(255, 236, 190, 0.2) 0%, rgba(255, 236, 190, 0) 45%);
+  opacity: 0.55;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card:hover .light { opacity: 1; }
+
+/* real-gold rim drawn on top on hover */
+.card::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold-metal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.card:hover::before { transform: scaleX(1); }
+
+.num {
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  left: 20px;
+  font-family: var(--font-primary);
+  font-size: 4.2rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232, 201, 119, 0.45);
+}
+
+.badge {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  right: 18px;
+  padding: 5px 11px;
+  border-radius: 980px;
+  background: var(--gold-metal);
+  color: #15130f;
+  font-size: 0.7rem;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(193, 154, 63, 0.35);
+}
+
+/* the product floats over a pedestal of light, tilts toward the pointer */
+.stage {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 330px;
+  margin: 26px 26px 0;
+}
+.pedestal {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 6px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(232, 201, 119, 0.5) 0%, rgba(232, 201, 119, 0) 70%);
+  filter: blur(4px);
+  transition: transform 0.8s var(--ease), opacity 0.8s ease;
+}
+.card:hover .pedestal { transform: scaleX(0.8); opacity: 0.7; }
+.product {
+  position: absolute;
+  /* square, centred: its height is the stage's, its width follows */
+  left: 0;
+  right: 0;
+  top: 4%;
+  height: calc(96% - 22px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--photo-bg);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(232, 201, 119, 0.25);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease), top 0.8s var(--ease);
+  animation: float 6s ease-in-out infinite;
+}
+.card:nth-child(2) .product { animation-delay: -2s; }
+.card:nth-child(3) .product { animation-delay: -4s; }
+.card:hover .product { top: 0; }
+@keyframes float { 50% { translate: 0 -8px; } }
+
+.body { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; padding: 18px 26px 24px; }
+.brand { font-size: 1.8rem; margin-bottom: 0; }
+.body h3 { font-family: var(--font-primary); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.12; }
+.body h3 a { background: linear-gradient(var(--gold-real), var(--gold-real)) 0 100% / 0 1.5px no-repeat; transition: background-size 0.5s var(--ease); }
+.card:hover .body h3 a { background-size: 100% 1.5px; }
+.pitch {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(244, 239, 229, 0.7);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.foot { margin-top: auto; padding-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.price {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.actions { display: flex; align-items: center; gap: 14px; }
+.more { display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; font-weight: 700; color: #f4efe5; }
+.more svg { transition: transform 0.3s ease; }
+.more:hover svg { transform: translateX(4px); }
+.add {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  color: #15130f;
+  box-shadow: 0 8px 22px rgba(193, 154, 63, 0.35);
+  transition: transform 0.3s ease, background-position 0.6s ease;
+}
+.add:hover { transform: rotate(90deg); background-position: 100% center; }
+.added { transform: none !important; animation: pop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.4); }
+@keyframes pop { from { transform: scale(0.6); } }
+
+@media (max-width: 960px) {
+  .row {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(80vw, 360px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .row::-webkit-scrollbar { display: none; }
+  .card { scroll-snap-align: center; }
+  .stage { height: 280px; }
+}
+@media (max-width: 560px) {
+  .section { padding: 64px 16px 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product { animation: none; }
+}
