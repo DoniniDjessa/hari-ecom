@@ -47,6 +47,8 @@ export interface SiteContent {
   footer: { description: string; signature: string }
   /** by universe slug: tagline + round image shown on its tile */
   universes: Record<string, { tagline: string; image: string }>
+  /** order of the universes on the site (slugs); empty: the web app's order */
+  universeOrder: string[]
   /** "Ce que disent nos clients" (home, above the footer); empty: the section is hidden */
   testimonials: Testimonial[]
   /** our shops; empty: the "Nos boutiques" section is hidden */
@@ -84,6 +86,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     signature: "Avec soin, Hari Store",
   },
   universes: {},
+  universeOrder: [],
   testimonials: [],
   // first positions, to replace in the backoffice with the exact ones
   shops: [
@@ -104,7 +107,7 @@ const str = (v: unknown) => (typeof v === "string" ? v : "")
 /** Saved content over the defaults, field by field (an empty saved field keeps the default) */
 export function mergeContent(saved: unknown): SiteContent {
   const s = (saved && typeof saved === "object" ? saved : {}) as Obj
-  const section = <K extends Exclude<keyof SiteContent, "universes" | "posters" | "testimonials" | "shops">>(k: K): SiteContent[K] => {
+  const section = <K extends Exclude<keyof SiteContent, "universes" | "universeOrder" | "posters" | "testimonials" | "shops">>(k: K): SiteContent[K] => {
     const d = DEFAULT_CONTENT[k] as Record<string, string>
     const v = (s[k] && typeof s[k] === "object" ? s[k] : {}) as Obj
     return Object.fromEntries(Object.keys(d).map((f) => [f, str(v[f]).trim() || d[f]])) as SiteContent[K]
@@ -134,6 +137,7 @@ export function mergeContent(saved: unknown): SiteContent {
       .filter((t) => t.name && t.text)
       .slice(0, MAX_TESTIMONIALS),
     universes: Object.fromEntries(Object.entries(u).map(([slug, v]) => [slug, { tagline: str(v?.tagline).trim(), image: str(v?.image).trim() }])),
+    universeOrder: (Array.isArray(s.universeOrder) ? s.universeOrder : []).map(str).filter((x) => /^[\w-]{1,40}$/.test(x)).slice(0, 30),
     // never saved: the first shops; saved (even empty): what the backoffice holds
     shops: !Array.isArray(s.shops) ? DEFAULT_CONTENT.shops : (s.shops as Obj[])
       .map((p) => ({ name: str(p?.name).trim().slice(0, 60), city: str(p?.city).trim().slice(0, 60), lat: Number(p?.lat), lng: Number(p?.lng) }))
@@ -144,3 +148,9 @@ export function mergeContent(saved: unknown): SiteContent {
 
 /** Only images uploaded through the backoffice (haritest/ecom/…, served by /api/img) are accepted */
 export const isSiteImage = (src: string) => /^\/api\/img\/haritest\/ecom\/[\w\-./]+$/.test(src) && !src.includes("..")
+
+/** The universes in the order chosen in the backoffice; those not placed yet keep their place after them */
+export function inUniverseOrder<T extends { slug: string }>(list: T[], order: string[]): T[] {
+  const rank = (slug: string) => { const i = order.indexOf(slug); return i < 0 ? order.length + list.findIndex((u) => u.slug === slug) : i }
+  return [...list].sort((a, b) => rank(a.slug) - rank(b.slug))
+}

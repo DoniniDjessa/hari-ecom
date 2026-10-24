@@ -5,7 +5,7 @@ import { db } from "./db"
 import type { SiteProduct, UniverseCard } from "./types"
 import { UNIVERSES } from "./site"
 import { getSiteContent } from "./backoffice"
-import { isSiteImage } from "./content"
+import { inUniverseOrder, isSiteImage } from "./content"
 
 // SITE_PREVIEW_ALL=true: every active product, before "Afficher sur le site" is ticked in the web app
 const PREVIEW_ALL = process.env.SITE_PREVIEW_ALL === "true"
@@ -94,7 +94,7 @@ export function related(all: SiteProduct[], p: SiteProduct, n = 8) {
  *  tagline / round image set in the backoffice */
 export async function getUniverseCards(): Promise<UniverseCard[]> {
   const [all, content] = await Promise.all([getProducts(), getSiteContent()])
-  return UNIVERSES.map((u) => {
+  return inUniverseOrder(UNIVERSES, content.universeOrder).map((u) => {
     const custom = content.universes[u.slug]
     const ps = all.filter((p) => p.universe === u.name)
     const pick = ps.find((p) => p.image && p.featured) ?? ps.find((p) => p.image) ?? null

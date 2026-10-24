@@ -170,6 +170,8 @@ export function Catalogue({ products, universes = [], initial }: {
   }
 
   const heroImage = universes.find((u) => u.name === universe)?.image ?? null
+  // the universes in the order of the backoffice (the page sends them in that order)
+  const ordered = universes.length ? universes.map((x) => UNIVERSES.find((u) => u.name === x.name)!).filter(Boolean) : UNIVERSES
   const counts = useMemo(() => Object.fromEntries(UNIVERSES.map((u) => [u.name, products.filter((p) => p.universe === u.name).length])), [products])
   const priceLabel = filters.min != null || filters.max != null
     ? filters.min != null && filters.max != null ? `${formatPrice(filters.min)} à ${formatPrice(filters.max)}`
@@ -231,7 +233,7 @@ export function Catalogue({ products, universes = [], initial }: {
               <button type="button" role="tab" aria-selected={!universe} className={!universe ? styles.on : ""} onClick={() => setUniverse("")}>
                 Tout <span>{products.length}</span>
               </button>
-              {UNIVERSES.filter((u) => counts[u.name]).map((u) => (
+              {ordered.filter((u) => counts[u.name]).map((u) => (
                 <button key={u.slug} type="button" role="tab" aria-selected={universe === u.name} className={universe === u.name ? styles.on : ""}
                   onClick={() => { setUniverse(u.name); clearAll() }}>
                   {u.name} <span>{counts[u.name]}</span>

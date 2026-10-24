@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { listImages, logout, saveContent } from "@/app/backoffice/actions"
-import { DEFAULT_CONTENT, MAX_POSTERS, MAX_SHOPS, mergeContent, MAX_TESTIMONIALS, type Poster, type Shop, type SiteContent, type Testimonial } from "@/lib/content"
+import { DEFAULT_CONTENT, inUniverseOrder, MAX_POSTERS, MAX_SHOPS, mergeContent, MAX_TESTIMONIALS, type Poster, type Shop, type SiteContent, type Testimonial } from "@/lib/content"
 import { ThemeToggle } from "../ThemeToggle"
 import styles from "./Backoffice.module.css"
 
@@ -30,7 +30,7 @@ const loadGallery = (fresh = false) => {
   return gallery
 }
 
-type Section = Exclude<keyof SiteContent, "universes" | "posters" | "testimonials" | "shops">
+type Section = Exclude<keyof SiteContent, "universes" | "universeOrder" | "posters" | "testimonials" | "shops">
 type Field = { key: string; label: string; long?: boolean; image?: boolean; half?: boolean }
 type View = "overview" | "posters" | "universes" | "testimonials" | "shops" | Section
 
@@ -252,6 +252,14 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
   const setUniverse = (slug: string, key: "tagline" | "image", value: string) =>
     setContent((c) => ({ ...c, universes: { ...c.universes, [slug]: { ...(c.universes[slug] ?? { tagline: "", image: "" }), [key]: value } } }))
 
+  // universes in their order on the site; a move saves the whole order
+  const orderedUniverses = inUniverseOrder(universes, content.universeOrder)
+  const moveUniverse = (i: number, d: -1 | 1) => {
+    const next = orderedUniverses.map((u) => u.slug)
+    ;[next[i], next[i + d]] = [next[i + d], next[i]]
+    setContent((c) => ({ ...c, universeOrder: next }))
+  }
+
   const posters = content.posters
   const setPosters = (next: Poster[]) => setContent((c) => ({ ...c, posters: next }))
   const setPoster = (i: number, key: keyof Poster, value: string | boolean) => setPosters(posters.map((p, k) => (k === i ? { ...p, [key]: value } : p)))
@@ -315,7 +323,7 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
     : view === "posters"
       ? "Les affiches défilent en haut de l'accueil, dans cet ordre. Une affiche sans image n'est pas enregistrée."
       : view === "universes"
-        ? "L'image ronde s'affiche au centre de la tuile de l'univers. Une image carrée rend le mieux."
+        ? "L'image ronde s'affiche au centre de la tuile de l'univers (une image carrée rend le mieux). Les flèches changent l'ordre des univers sur tout le site."
         : view === "shops"
           ? "« Nos boutiques » sur l'accueil (carte Google), le pied de page et le menu. Sans boutique, la section n'apparaît pas."
         : view === "testimonials"
@@ -598,15 +606,22 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
               <div className={styles.cardHead}><h2>Univers <span className={styles.muted}>{universesWithImage} / {universes.length} avec image</span></h2></div>
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
-                  <thead><tr><th>Image ronde</th><th>Univers</th><th>Phrase d&apos;accroche</th></tr></thead>
+                  <thead><tr><th>#</th><th>Image ronde</th><th>Univers</th><th>Phrase d&apos;accroche</th><th className={styles.right}>Ordre</th></tr></thead>
                   <tbody>
-                    {universes.map((u) => {
+                    {orderedUniverses.map((u, i) => {
                       const v = content.universes[u.slug] ?? { tagline: "", image: "" }
                       return (
                         <tr key={u.slug}>
+                          <td className={styles.num}>{i + 1}</td>
                           <td><ImageField value={v.image} onChange={(x) => setUniverse(u.slug, "image", x)} round width={56} /></td>
                           <td><b>{u.name}</b></td>
                           <td className={styles.wideCell}><input className={styles.input} value={v.tagline} placeholder={u.tagline} onChange={(e) => setUniverse(u.slug, "tagline", e.target.value)} /></td>
+                          <td className={styles.right}>
+                            <div className={styles.rowActions}>
+                              <button type="button" className={styles.iconBtn} onClick={() => moveUniverse(i, -1)} disabled={i === 0} aria-label="Monter">↑</button>
+                              <button type="button" className={styles.iconBtn} onClick={() => moveUniverse(i, 1)} disabled={i === orderedUniverses.length - 1} aria-label="Descendre">↓</button>
+                            </div>
+                          </td>
                         </tr>
                       )
                     })}
