@@ -155,7 +155,7 @@ export default async function Home() {
             </div>
             <div className={styles.aboutBadge}>
               <strong className="text-gold">{SITE.fullName}</strong>
-              <span>Yopougon · Adjamé · Abidjan</span>
+              <span>Abidjan ( Faya · Yopougon )</span>
             </div>
           </div>
           <div className={styles.aboutBody}>

@@ -266,8 +266,8 @@
   .grid::-webkit-scrollbar { display: none; }
   .row, .row + .row { display: contents; }
   .tile {
-    flex: 0 0 min(82vw, 380px);
-    height: 470px;
+    flex: 0 0 min(72vw, 340px);
+    height: 430px;
     scroll-snap-align: start;
     cursor: pointer;
     animation: none;
@@ -275,7 +275,7 @@
     transform: none;
   }
   .tile:hover { flex-grow: 0; }
-  .stage, .row + .row .stage { width: 78%; left: 50%; top: 42%; }
+  .stage, .row + .row .stage { width: 70%; left: 50%; top: 38%; }
   .tile .photo { transform: translate(calc(-50% + var(--k) * 58%), -50%) rotate(calc(var(--k) * 4deg)); }
   .title, .row:first-child .tile:first-child .title { font-size: 2.2rem; }
   .more { grid-template-rows: 1fr; }
