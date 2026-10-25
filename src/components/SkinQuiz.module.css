@@ -1,0 +1,97 @@
+.quiz { max-width: 720px; }
+.progress { height: 3px; background: var(--card-border); margin-bottom: 18px; }
+.progress span { display: block; height: 100%; background: var(--gold-metal); transition: width 0.5s var(--ease); }
+.count { font-size: 0.85rem; font-weight: 700; color: var(--gold-ink); }
+.question {
+  margin-top: 8px;
+  font-family: var(--font-primary);
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  animation: rise 0.5s var(--ease);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+.hint { margin-top: 10px; color: var(--text-secondary); }
+
+.options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 28px; }
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border: 1px solid var(--card-border);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color 0.2s ease, transform 0.2s var(--ease), box-shadow 0.2s ease;
+}
+.option:hover { border-color: var(--gold-real); transform: translateY(-2px); box-shadow: 0 12px 26px rgba(143, 116, 68, 0.12); }
+.option strong { font-size: 1.02rem; font-weight: 700; color: var(--text-main); }
+.option span { font-size: 0.85rem; color: var(--text-muted); }
+.on { border-color: var(--gold-real); background: var(--gold-wash); }
+.back { margin-top: 26px; font-size: 0.9rem; font-weight: 700; color: var(--text-secondary); }
+.back:hover { color: var(--gold-ink); }
+
+/* ---------- result ---------- */
+.result { max-width: 860px; }
+.resultHead h2 { font-family: var(--font-primary); font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
+.resultHead p { margin-top: 12px; color: var(--text-secondary); line-height: 1.6; }
+.zone { margin-top: 34px; }
+.zone h3 { font-family: var(--font-primary); font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; }
+.steps { display: flex; flex-direction: column; gap: 12px; }
+.step { display: flex; gap: 16px; padding: 16px; border: 1px solid var(--card-border); background: var(--surface); }
+.num { flex-shrink: 0; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--gold-metal); color: #15130f; font-family: var(--font-primary); font-weight: 800; }
+.stepBody { flex: 1; min-width: 0; }
+.stepTitle { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
+.stepTitle strong { color: var(--text-main); font-size: 1rem; }
+.product { display: flex; align-items: center; gap: 14px; }
+.thumb { position: relative; flex-shrink: 0; width: 76px; height: 76px; background: var(--photo-bg); overflow: hidden; }
+.thumb img { object-fit: cover; }
+.info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.info span { font-size: 0.78rem; font-weight: 700; color: var(--gold-ink); }
+.info strong { font-weight: 700; color: var(--text-main); }
+.info em { font-style: normal; font-family: var(--font-primary); font-weight: 800; }
+.product:hover strong { color: var(--gold-ink); }
+.alts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); }
+.alts button { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 5px 10px; border: 1px solid var(--card-border); font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); }
+.alts button:hover { border-color: var(--gold-real); color: var(--gold-ink); }
+
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 28px; padding: 22px; background: var(--gold-wash); }
+.cta p { width: 100%; font-size: 1rem; }
+.cta strong { font-family: var(--font-primary); font-size: 1.3rem; }
+.wa { font-size: 0.9rem; font-weight: 700; color: var(--gold-ink); text-decoration: underline; text-underline-offset: 3px; }
+.note { margin-top: 20px; font-size: 0.8rem; color: var(--text-muted); }
+
+@media (max-width: 640px) {
+  .options { grid-template-columns: 1fr; }
+  .step { padding: 12px; gap: 12px; }
+  .thumb { width: 60px; height: 60px; }
+}
+
+/* ingredients to avoid: several can be chosen */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1px solid var(--card-border);
+  background: var(--surface);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.chip:hover { border-color: var(--gold-real); }
+.next { margin-top: 26px; }
+/* chosen: dark with gold text (wins over .chip, declared above) */
+.chip.on { background: #15130f; border-color: #15130f; color: #ead5a4; }
+.chip.on:hover { border-color: #b8892f; }
+:global([data-theme="dark"]) .chip.on { background: var(--gold-metal); border-color: transparent; color: #15130f; }
+
+/* budget of the routine */
+.budget { font-size: 0.9rem; color: var(--text-muted); }
+.budgetNote { font-size: 0.88rem; color: var(--gold-ink); }
+
+/* the second priority, under the main one */
+.resultHead .second { margin-top: 6px; font-family: var(--font-primary); font-size: 1.2rem; font-weight: 700; color: var(--gold-ink); }

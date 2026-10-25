@@ -45,6 +45,10 @@ export interface SiteContent {
   advice: { eyebrow: string; title: string; text: string }
   packs: { eyebrow: string; title: string; text: string }
   footer: { description: string; signature: string }
+  /** links (https://…): the WhatsApp channel (news and offers), the networks; empty: not shown */
+  social: { whatsappChannel: string; instagram: string; facebook: string; tiktok: string }
+  /** the legal pages (mentions légales, CGV, livraison, confidentialité); empty: the line is left out */
+  legal: { company: string; legalForm: string; rccm: string; ncc: string; address: string; email: string; phone: string; director: string; host: string; deliveryDelay: string; returnDelay: string }
   /** by universe slug: tagline + round image shown on its tile */
   universes: Record<string, { tagline: string; image: string }>
   /** order of the universes on the site (slugs); empty: the web app's order */
@@ -61,7 +65,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     eyebrow: "Hari Store Cosmetics",
     title: "La beauté,",
     subtitle: "entre de bonnes mains.",
-    text: "Soins visage, corps, bébé et bien-être choisis dans nos boutiques de Yopougon et Adjamé. Livrés chez vous à Abidjan.",
+    text: "Soins visage, corps, bébé et bien-être choisis dans nos boutiques de Yopougon et Cocody. Livrés chez vous à Abidjan.",
     cta: "Découvrir la boutique",
     image: "",
   },
@@ -85,6 +89,11 @@ export const DEFAULT_CONTENT: SiteContent = {
     description: "Soins visage, corps, bébé et bien-être, choisis avec exigence dans nos boutiques d'Abidjan. Produits authentiques, conseils sincères.",
     signature: "Avec soin, Hari Store",
   },
+  social: { whatsappChannel: "", instagram: "", facebook: "", tiktok: "" },
+  legal: {
+    company: "Hari Store Cosmetics", legalForm: "", rccm: "", ncc: "", address: "Abidjan, Côte d'Ivoire", email: "", phone: "",
+    director: "", host: "", deliveryDelay: "24 à 72 heures", returnDelay: "48 heures",
+  },
   universes: {},
   universeOrder: [],
   testimonials: [],
@@ -102,6 +111,7 @@ export const MAX_SHOPS = 6
 
 /** a link of the site (/…) or an https address */
 const isSafeLink = (l: string) => /^\/(?!\/)[\w\-./?=&%#]*$/.test(l) || /^https:\/\/[^\s]+$/.test(l)
+const isHttps = (l: string) => /^https:\/\/[^\s<>"]+$/.test(l)
 const str = (v: unknown) => (typeof v === "string" ? v : "")
 
 /** Saved content over the defaults, field by field (an empty saved field keeps the default) */
@@ -126,6 +136,8 @@ export function mergeContent(saved: unknown): SiteContent {
     advice: section("advice"),
     packs: section("packs"),
     footer: section("footer"),
+    social: Object.fromEntries(Object.entries(section("social")).map(([k, v]) => [k, isHttps(v) ? v : ""])) as SiteContent["social"],
+    legal: section("legal"),
     testimonials: testimonials
       .map((t) => ({
         name: str(t?.name).trim().slice(0, 60),

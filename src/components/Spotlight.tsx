@@ -74,7 +74,10 @@ function Card({ p, i }: { p: SpotlightProduct; i: number }) {
         <h3><Link href={`/produit/${p.slug}`}>{p.name}</Link></h3>
         {p.pitch && <p className={styles.pitch}>{p.pitch}</p>}
         <div className={styles.foot}>
-          <strong className={styles.price}>{formatPrice(p.price)}</strong>
+          <strong className={styles.price}>
+            {formatPrice(p.price)}
+            {p.oldPrice && <s className={styles.oldPrice}>{formatPrice(p.oldPrice)}</s>}
+          </strong>
           <div className={styles.actions}>
             <Link href={`/produit/${p.slug}`} className={styles.more}>Découvrir <ArrowIcon size={15} /></Link>
             {p.inStock && (

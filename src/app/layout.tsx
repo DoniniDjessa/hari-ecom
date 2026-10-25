@@ -10,13 +10,28 @@ const vibes = Great_Vibes({ subsets: ["latin"], weight: "400", variable: "--font
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: `${SITE.fullName} | Soins visage, corps et bien-être à Abidjan`, template: `%s | ${SITE.name}` },
+  title: { default: `${SITE.fullName} | Cosmétiques authentiques à Abidjan, livrés chez vous`, template: `%s | ${SITE.name}` },
   description: SITE.description,
-  openGraph: { title: SITE.fullName, description: SITE.description, siteName: SITE.fullName, locale: "fr_FR", type: "website" },
-  icons: { icon: "/haristore-mark.png", apple: "/haristore-mark.png" },
+  applicationName: SITE.fullName,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: SITE.fullName, description: SITE.description, siteName: SITE.fullName, locale: "fr_FR", type: "website", url: "/",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: SITE.fullName }],
+  },
+  twitter: { card: "summary_large_image", title: SITE.fullName, description: SITE.description, images: ["/og-image.jpg"] },
+  icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: SITE.name, statusBarStyle: "default" },
+  formatDetection: { telephone: false },
+  // Google Search Console: the code of the "balise HTML" check (NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION)
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } : undefined,
 }
 
-export const viewport: Viewport = { themeColor: "#ffffff" }
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d0c0a" },
+  ],
+}
 
 // The public pages are in (site) (menu, footer, cart); the backoffice has its own layout.
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

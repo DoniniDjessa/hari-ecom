@@ -11,6 +11,7 @@ import { PackCard } from "@/components/PackCard"
 import { Spotlight } from "@/components/Spotlight"
 import { Testimonials } from "@/components/Testimonials"
 import { ShopsMap } from "@/components/ShopsMap"
+import { WhatsAppChannel } from "@/components/WhatsAppChannel"
 import { HeroCarousel, type HeroSlide } from "@/components/HeroCarousel"
 import { UniverseTiles } from "@/components/UniverseTiles"
 import { Commitments, Faq, ScrollText } from "@/components/HomeSections"
@@ -20,7 +21,7 @@ import styles from "./home.module.css"
 export const revalidate = 300
 
 const WHY = [
-  { icon: ShieldIcon, title: "Authenticité garantie", text: "Chaque soin vient de nos boutiques de Yopougon et Adjamé, où il est choisi et contrôlé. Nous ne vendons que ce que nous connaissons." },
+  { icon: ShieldIcon, title: "Authenticité garantie", text: "Chaque soin vient de nos boutiques de Yopougon et Cocody, où il est choisi et contrôlé. Nous ne vendons que ce que nous connaissons." },
   { icon: ChatIcon, title: "Conseil sincère", text: "Décrivez-nous votre peau : une conseillère vous oriente vers le soin adapté, sur WhatsApp, sans pression." },
   { icon: TruckIcon, title: "Livraison à Abidjan", text: "Partout dans la ville. Délai et frais confirmés avant l'envoi, selon votre quartier." },
   { icon: WalletIcon, title: "Paiement à la livraison", text: "En espèces ou Mobile Money. Vous ne payez qu'à la réception de votre colis." },
@@ -106,7 +107,7 @@ export default async function Home() {
         <UniverseTiles universes={universes} />
       </section>
 
-      <Row script="La sélection de nos conseillères" title="Nos coups de cœur." text="Les soins que nos conseillères recommandent le plus souvent." products={favourites} href="/boutique" />
+      <Row script="Elles les adorent" title="Meilleures ventes." text="Ce que nos clientes rachètent, encore et encore." products={bestsellers} href="/boutique?tri=ventes" />
 
       {/* --- PACKS --- */}
       {packs.length > 0 && (
@@ -134,7 +135,7 @@ export default async function Home() {
             items={[
               { value: `${all.length}+`, label: "soins en ligne", text: "Visage, corps, bébé, bien-être : toute notre sélection." },
               { value: `${brands}`, label: "marques", text: "Des marques reconnues et des pépites à découvrir." },
-              { value: "2", label: "boutiques", text: "À Yopougon et à Adjamé, pour voir et sentir avant d'acheter." },
+              { value: "2", label: "boutiques", text: "À Yopougon et à Cocody, pour voir et sentir avant d'acheter." },
               { value: "100%", label: "authentiques", text: "Des produits contrôlés, que nous connaissons." },
             ]}
           />
@@ -155,7 +156,7 @@ export default async function Home() {
             </div>
             <div className={styles.aboutBadge}>
               <strong className="text-gold">{SITE.fullName}</strong>
-              <span>Abidjan ( Faya · Yopougon )</span>
+              <span>Abidjan ( Cocody · Yopougon )</span>
             </div>
           </div>
           <div className={styles.aboutBody}>
@@ -176,7 +177,7 @@ export default async function Home() {
       </section>
 
       <Row script="Tout juste arrivés" title="Nouveautés." text="Les derniers arrivés en boutique." products={news} href="/boutique?tri=nouveautes" />
-      <Row script="Elles les adorent" title="Meilleures ventes." text="Ce que nos clientes rachètent, encore et encore." products={bestsellers} href="/boutique?tri=ventes" />
+      <Row script="La sélection de nos conseillères" title="Nos coups de cœur." text="Les soins que nos conseillères recommandent le plus souvent." products={favourites} href="/boutique" />
 
       {/* --- WHY US: sticky intro + cards that stack on top of each other while scrolling --- */}
       <section className={styles.why} data-station="Nos atouts">
@@ -230,6 +231,7 @@ export default async function Home() {
       </section>
 
       {/* --- REVIEWS: right above the footer --- */}
+      <WhatsAppChannel url={content.social.whatsappChannel} />
       <Testimonials items={content.testimonials} />
 
       {/* --- OUR SHOPS, right above the footer: a simple Google map (Backoffice › Nos boutiques) --- */}

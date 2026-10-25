@@ -1,0 +1,27 @@
+.page { padding-top: 28px; padding-bottom: 90px; }
+.crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 26px; }
+.crumbs i { font-style: normal; margin-right: 8px; }
+.crumbs a:hover { color: var(--text-main); }
+
+.head { max-width: 760px; margin-bottom: 44px; }
+.head h1 {
+  font-family: var(--font-primary);
+  font-size: clamp(2.4rem, 5.4vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+.head p { margin-top: 16px; font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.65; color: var(--text-secondary); }
+.head small { display: inline-block; margin-top: 14px; font-size: 0.85rem; font-weight: 700; color: var(--gold-ink); }
+
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 44px 22px; }
+.empty { padding: 60px 0; color: var(--text-muted); }
+
+.more { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--card-border); }
+.more h2 { font-family: var(--font-primary); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+.more div { display: flex; flex-wrap: wrap; gap: 10px; }
+.more a { padding: 9px 16px; border: 1px solid var(--card-border); font-size: 0.9rem; font-weight: 600; transition: border-color 0.2s ease, color 0.2s ease; }
+.more a:hover { border-color: var(--gold-real); color: var(--gold-ink); }
+
+@media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 30px 12px; } }

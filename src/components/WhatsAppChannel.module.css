@@ -1,0 +1,4 @@
+.band { padding: 70px 0; background: linear-gradient(160deg, #1d1b16 0%, #0d0c0a 100%); color: #f4efe5; }
+.inner { display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; }
+.inner h2 { max-width: 640px; font-family: var(--font-primary); font-size: clamp(1.7rem, 3.4vw, 2.6rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.1; }
+.inner p { margin-top: 10px; color: rgba(244, 239, 229, 0.7); }

@@ -7,6 +7,7 @@ import type { CardProduct } from "@/lib/types"
 import { formatPrice, UNIVERSES } from "@/lib/site"
 import { ProductCard } from "./ProductCard"
 import { StarIcon, CloseIcon, FilterIcon, SearchIcon } from "./icons"
+import { indexProducts, searchProducts } from "@/lib/search"
 import styles from "./Catalogue.module.css"
 
 const SORTS = [
@@ -29,6 +30,7 @@ const PRICES: { label: string; min: number | null; max: number | null }[] = [
 ]
 
 const SELECTIONS = [
+  { id: "promo", label: "En promotion", test: (p: CardProduct) => !!p.oldPrice },
   { id: "new", label: "Nouveautés", test: (p: CardProduct) => p.isNew },
   { id: "bestseller", label: "Meilleures ventes", test: (p: CardProduct) => p.bestseller },
   { id: "featured", label: "Coups de cœur", test: (p: CardProduct) => p.featured },
@@ -113,15 +115,12 @@ export function Catalogue({ products, universes = [], initial }: {
   }, [panel])
 
   // universe + search first; the filters below count within this set
+  // the search forgives accents and typos (lib/search.ts)
+  const index = useMemo(() => indexProducts(products), [products])
   const base = useMemo(() => {
-    const words = norm(q).split(/\s+/).filter(Boolean)
-    return products.filter((p) => {
-      if (universe && p.universe !== universe) return false
-      if (!words.length) return true
-      const text = norm(`${p.name} ${p.brand} ${p.form} ${p.universe} ${p.benefits.join(" ")} ${p.skinTypes.join(" ")} ${p.code}`)
-      return words.every((w) => text.includes(w))
-    })
-  }, [products, universe, q])
+    const found = q.trim() ? new Set(searchProducts(index, q)) : null
+    return products.filter((p) => (!universe || p.universe === universe) && (!found || found.has(p)))
+  }, [products, index, universe, q])
 
   const result = useMemo(() => {
     const list = base.filter((p) => passes(p, filters))

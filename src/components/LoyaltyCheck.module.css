@@ -1,0 +1,38 @@
+.box { padding: 28px; background: linear-gradient(160deg, #1d1b16 0%, #0d0c0a 100%); color: #f4efe5; }
+.form label { display: block; font-size: 0.85rem; font-weight: 700; color: rgba(244, 239, 229, 0.7); margin-bottom: 10px; }
+.form > div { display: flex; gap: 10px; flex-wrap: wrap; }
+.form input {
+  flex: 1;
+  min-width: 200px;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(216, 195, 154, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4efe5;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  outline: none;
+}
+.form input:focus { border-color: #e8c977; }
+.error { margin-top: 10px; color: #f0a48c; font-size: 0.88rem; font-weight: 600; }
+
+.balance { margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(216, 195, 154, 0.2); animation: rise 0.5s var(--ease); }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+.points { font-size: 1.1rem; }
+.points strong {
+  font-family: var(--font-primary);
+  font-size: 3.4rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 8px;
+}
+.reward { margin-top: 6px; color: rgba(244, 239, 229, 0.8); }
+.reward strong { color: #e8c977; }
+.bar { height: 6px; margin-top: 16px; background: rgba(216, 195, 154, 0.15); }
+.bar span { display: block; height: 100%; background: var(--gold-metal); transition: width 0.8s var(--ease); }
+.hint { margin-top: 14px; font-size: 0.85rem; color: rgba(244, 239, 229, 0.6); }

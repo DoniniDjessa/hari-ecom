@@ -102,7 +102,7 @@ const FAQ = [
   { q: "Comment passer commande ?", a: "Ajoutez vos soins au panier, indiquez votre nom, votre téléphone et votre lieu de livraison, puis validez : votre commande nous arrive sur WhatsApp. Nous vous rappelons pour confirmer." },
   { q: "Livrez-vous partout à Abidjan ?", a: "Oui, dans toutes les communes d'Abidjan. Le délai et les frais de livraison dépendent de votre quartier : nous vous les confirmons avant l'envoi." },
   { q: "Comment puis-je payer ?", a: "À la livraison, en espèces ou par Mobile Money (Wave, Orange Money, MTN, Moov). Vous ne payez qu'à la réception de votre colis." },
-  { q: "Vos produits sont-ils authentiques ?", a: "Tous nos produits viennent de nos boutiques de Yopougon et Adjamé, où ils sont sélectionnés et contrôlés. Nous ne vendons que ce que nous connaissons." },
+  { q: "Vos produits sont-ils authentiques ?", a: "Tous nos produits viennent de nos boutiques de Yopougon et Cocody, où ils sont sélectionnés et contrôlés. Nous ne vendons que ce que nous connaissons." },
   { q: "Je ne sais pas quel soin choisir…", a: "Écrivez-nous sur WhatsApp en décrivant votre peau et votre besoin (taches, hydratation, éclat, sensibilité) : une conseillère vous oriente vers le soin adapté, sans pression." },
 ]
 

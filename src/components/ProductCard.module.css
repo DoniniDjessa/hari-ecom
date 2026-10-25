@@ -162,6 +162,9 @@
   justify-content: space-between;
   gap: 10px;
 }
+/* flash sale: the usual price crossed out, the saving in black on the photo */
+.oldPrice { margin-left: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); text-decoration-thickness: 1.5px; }
+.badges .promo { background: #15130f; color: #fff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); }
 .priceRow > div { display: flex; flex-direction: column; min-width: 0; }
 .price { font-family: var(--font-primary); font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; white-space: nowrap; }
 .lot {
@@ -212,3 +215,6 @@
 @media (prefers-reduced-motion: reduce) {
   .card { animation: none; }
 }
+
+/* the heart, top right of the photo */
+.fav { position: absolute; z-index: 3; top: 10px; right: 10px; }

@@ -72,6 +72,31 @@ const SECTIONS: { id: Section; title: string; hint: string; fields: Field[] }[] 
     ],
   },
   {
+    id: "social", title: "Réseaux et WhatsApp", hint: "Liens complets (https://…). Un lien vide n'est pas affiché.",
+    fields: [
+      { key: "whatsappChannel", label: "Chaîne WhatsApp (nouveautés et promos)", half: true },
+      { key: "instagram", label: "Instagram", half: true },
+      { key: "tiktok", label: "TikTok", half: true },
+      { key: "facebook", label: "Facebook", half: true },
+    ],
+  },
+  {
+    id: "legal", title: "Informations légales", hint: "Mentions légales, CGV, livraison et retours, confidentialité. Un champ vide n'est pas affiché.",
+    fields: [
+      { key: "company", label: "Raison sociale", half: true },
+      { key: "legalForm", label: "Forme juridique (SARL, entreprise individuelle…)", half: true },
+      { key: "rccm", label: "N° RCCM", half: true },
+      { key: "ncc", label: "N° de compte contribuable (NCC)", half: true },
+      { key: "address", label: "Adresse du siège", half: true },
+      { key: "phone", label: "Téléphone", half: true },
+      { key: "email", label: "E-mail de contact", half: true },
+      { key: "director", label: "Responsable de la publication", half: true },
+      { key: "host", label: "Hébergeur du site (nom et adresse)", half: true },
+      { key: "deliveryDelay", label: "Délai de livraison (ex. 24 à 72 heures)", half: true },
+      { key: "returnDelay", label: "Délai pour signaler un problème (ex. 48 heures)", half: true },
+    ],
+  },
+  {
     id: "footer", title: "Pied de page", hint: "En bas de toutes les pages.",
     fields: [
       { key: "description", label: "Présentation", long: true },
@@ -94,6 +119,8 @@ const NAV: { label: string; items: { id: View; title: string; icon: string }[] }
   { label: "Pages", items: [
     { id: "packs", title: "Nos packs", icon: "❖" },
     { id: "footer", title: "Pied de page", icon: "▁" },
+    { id: "social", title: "Réseaux et WhatsApp", icon: "↗" },
+    { id: "legal", title: "Informations légales", icon: "§" },
   ] },
 ]
 

@@ -9,8 +9,21 @@ export const revalidate = 300
 type Params = Promise<{ univers?: string; q?: string; tri?: string }>
 
 export async function generateMetadata({ searchParams }: { searchParams: Params }): Promise<Metadata> {
-  const u = universeBySlug((await searchParams).univers ?? "")
-  return { title: u ? `Soins ${u.name.toLowerCase()}` : "Boutique" }
+  const params = await searchParams
+  const u = universeBySlug(params.univers ?? "")
+  // a search or a sort: same page as the shop for Google (no duplicate pages)
+  if (params.q || params.tri) return { title: "Boutique", alternates: { canonical: u ? `/boutique?univers=${u.slug}` : "/boutique" }, robots: { index: false, follow: true } }
+  return u
+    ? {
+        title: `Soins ${u.name.toLowerCase()} à Abidjan`,
+        description: `${u.tagline} : tous nos soins ${u.name.toLowerCase()} authentiques, livrés partout à Abidjan avec paiement à la livraison.`,
+        alternates: { canonical: `/boutique?univers=${u.slug}` },
+      }
+    : {
+        title: "Boutique : tous nos soins",
+        description: "Toute la boutique Hari Store : soins visage, corps, bébé et bien-être, authentiques et livrés partout à Abidjan.",
+        alternates: { canonical: "/boutique" },
+      }
 }
 
 export default async function Boutique({ searchParams }: { searchParams: Params }) {

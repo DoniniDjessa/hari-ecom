@@ -1,5 +1,6 @@
 "use client"
 
+import { track } from "@/lib/track"
 import { useState } from "react"
 import Link from "next/link"
 import { placeOrder } from "@/app/(site)/panier/actions"
@@ -14,7 +15,9 @@ import styles from "./CartPage.module.css"
 // browser for the next order.
 const INFO_KEY = "hari-customer"
 
-export function CartPage() {
+export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perThousand: number; minPurchase: number } | null }) {
+  // Hari Gold points (or purchase) an order earns
+  const earned = (total: number) => !gold || total < gold.minPurchase ? 0 : gold.mode === "amount" ? Math.floor((total / 1000) * gold.perThousand) : 1
   const { lines, total, count, ready, setQuantity, remove, clear } = useCart()
   const [info, setInfo] = useState(() => {
     const empty = { name: "", phone: "", place: "", note: "" }
@@ -28,6 +31,8 @@ export function CartPage() {
   const [error, setError] = useState("")
   const [sending, setSending] = useState(false)
   const [done, setDone] = useState<string | null>(null)
+  // the order just sent (the cart is emptied): for the points and the WhatsApp summary
+  const [sent, setSent] = useState<{ total: number; summary: string } | null>(null)
 
   const order = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,6 +52,13 @@ export function CartPage() {
     }).catch(() => ({ ok: false as const, error: "Connexion perdue. Réessayez : votre panier est conservé." }))
     setSending(false)
     if (!result.ok) return setError(result.error)
+    track("purchase", {
+      transaction_id: result.number,
+      value: lines.reduce((n, l) => n + l.price * l.quantity, 0),
+      items: lines.map((l) => ({ id: l.id, name: l.name, price: l.price, quantity: l.quantity, brand: l.brand })),
+    })
+    const total = lines.reduce((n, l) => n + l.price * l.quantity, 0)
+    setSent({ total, summary: lines.map((l) => `- ${l.quantity} × ${l.name}`).join("\n") })
     clear()
     setDone(result.number)
     window.scrollTo({ top: 0 })
@@ -66,11 +78,19 @@ export function CartPage() {
             Votre commande <strong>{done}</strong> est bien reçue. Nous vous appelons très vite au {info.phone} pour
             confirmer la livraison et ses frais. Paiement à la livraison.
           </p>
+          {sent && earned(sent.total) > 0 && (
+            <p className={styles.gold}>
+              ✪ Une fois livrée, cette commande vous rapportera{" "}
+              <strong>{gold?.mode === "purchases" ? "1 achat" : `${earned(sent.total)} points`} Hari Gold</strong>.{" "}
+              <Link href="/fidelite">Le programme</Link>
+            </p>
+          )}
           <div className={styles.doneActions}>
             <Link href="/boutique" className="btn btn-dark">Continuer mes achats <ArrowIcon size={18} /></Link>
             {SITE.whatsapp && (
-              <a href={whatsappLink(`Bonjour Hari Store, j'ai passé la commande ${done}.`)} target="_blank" rel="noopener" className="btn btn-light">
-                Une question ? WhatsApp
+              <a href={whatsappLink(`Bonjour Hari Store, je viens de passer la commande ${done} :\n${sent?.summary ?? ""}\nNom : ${info.name}\nLivraison : ${info.place}`)}
+                target="_blank" rel="noopener" className="btn btn-light">
+                Confirmer aussi sur WhatsApp
               </a>
             )}
           </div>

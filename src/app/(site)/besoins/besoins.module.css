@@ -1,0 +1,24 @@
+.page { padding-top: 40px; padding-bottom: 90px; }
+.head { max-width: 760px; margin-bottom: 40px; }
+.head h1 { font-family: var(--font-primary); font-size: clamp(2.4rem, 5.4vw, 4rem); font-weight: 800; letter-spacing: -0.045em; line-height: 1.02; }
+.head p { margin-top: 14px; color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6; }
+.head a { color: var(--gold-ink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 24px;
+  border: 1px solid var(--card-border);
+  background: var(--surface);
+  transition: border-color 0.3s ease, transform 0.3s var(--ease), box-shadow 0.3s ease;
+}
+.card:hover { border-color: var(--gold-real); transform: translateY(-3px); box-shadow: 0 16px 34px rgba(143, 116, 68, 0.12); }
+.card strong { font-family: var(--font-primary); font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+.card span { flex: 1; font-size: 0.92rem; line-height: 1.6; color: var(--text-secondary); }
+.card small { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 700; color: var(--gold-ink); }
+
+@media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }

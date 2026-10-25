@@ -31,6 +31,8 @@ function toSiteProduct(r: Row): SiteProduct {
     name: r.name,
     brand: r.brand ?? "",
     price: Number(r.price) || 0,
+    oldPrice: null,
+    promoEnds: null,
     image: key && key.startsWith("haritest/ecom/") ? `/api/img/${key}` : null,
     universe: r.universe || r.section || "",
     form: r.form ?? "",
@@ -58,12 +60,53 @@ function toSiteProduct(r: Row): SiteProduct {
     rating: r.site_rating == null ? null : Number(r.site_rating),
     reviews: Number(r.site_reviews) || 0,
     inStock: stock > 0,
+    stock,
     createdAt: r.created_at,
   }
 }
 
-/** Every product of the site (≈ 600: the whole list is read at once and filtered in memory), kept 5 min */
-export const getProducts = cache(() => cachedProducts())
+/** Every product of the site (≈ 600: the whole list is read at once and filtered in memory), kept 5 min.
+ *  The flash sales of the web app are applied at each read: a sale starts and ends on time. */
+export const getProducts = cache(async (): Promise<SiteProduct[]> => {
+  const [products, flash] = await Promise.all([cachedProducts(), flashPrices()])
+  if (!flash.size) return products
+  return products.map((p) => {
+    const f = flash.get(p.id)
+    return f && f.price < p.price ? { ...p, price: f.price, oldPrice: p.price, promoEnds: f.endsAt } : p
+  })
+})
+
+/** Flash sales not over yet (web app › Paramètres › Ventes flash), kept 5 min (refreshed by the web app) */
+const cachedFlashSales = unstable_cache(async (): Promise<{ startsAt: string; endsAt: string; items: { id: string; price: number }[] }[]> => {
+  const { data, error } = await db()
+    .from("hari-flash-sales")
+    .select("starts_at, ends_at, items:hari-flash-sale-items(product_id, flash_price)" as string)
+    .eq("active", true)
+    .gt("ends_at", new Date().toISOString())
+  if (error) {
+    if (!/flash|schema cache|does not exist/i.test(error.message)) console.error("Ventes flash:", error.message)
+    return []
+  }
+  return ((data ?? []) as unknown as Row[]).map((s) => ({
+    startsAt: s.starts_at,
+    endsAt: s.ends_at,
+    items: ((s.items ?? []) as Row[]).map((i) => ({ id: i.product_id, price: Number(i.flash_price) })),
+  }))
+}, ["site-flash-sales"], { revalidate: 300, tags: ["products"] })
+
+/** Flash price of each product right now (the lowest when two sales overlap) */
+export async function flashPrices(): Promise<Map<string, { price: number; endsAt: string }>> {
+  const now = Date.now()
+  const map = new Map<string, { price: number; endsAt: string }>()
+  for (const s of await cachedFlashSales()) {
+    if (new Date(s.startsAt).getTime() > now || new Date(s.endsAt).getTime() <= now) continue
+    for (const i of s.items) {
+      const current = map.get(i.id)
+      if (i.price >= 0 && (!current || i.price < current.price)) map.set(i.id, { price: i.price, endsAt: s.endsAt })
+    }
+  }
+  return map
+}
 
 const cachedProducts = unstable_cache(async (): Promise<SiteProduct[]> => {
   let query = db()
@@ -80,7 +123,7 @@ const cachedProducts = unstable_cache(async (): Promise<SiteProduct[]> => {
     return []
   }
   return (data as Row[]).map(toSiteProduct)
-}, ["site-products-v2"], { revalidate: 300, tags: ["products"] }) // v2: moments, range, alert ingredients
+}, ["site-products-v4"], { revalidate: 300, tags: ["products"] }) // v4: stock left
 
 export async function getProduct(slug: string) {
   const code = codeFromSlug(slug)
@@ -114,6 +157,15 @@ export async function getUniverseCards(): Promise<UniverseCard[]> {
       forms: [...new Set(ps.map((p) => p.form).filter(Boolean))].slice(0, 4),
     }
   })
+}
+
+/** The brands that have products on the site, A → Z, with their page /marques/<slug> */
+export async function getBrands(): Promise<{ name: string; slug: string; count: number }[]> {
+  const counts = new Map<string, number>()
+  for (const p of await getProducts()) if (p.brand.trim()) counts.set(p.brand.trim(), (counts.get(p.brand.trim()) ?? 0) + 1)
+  return [...counts].map(([name, count]) => ({ name, slug: slugify(name), count }))
+    .filter((b) => b.slug)
+    .sort((a, b) => a.name.localeCompare(b.name, "fr"))
 }
 
 /** Products with a website photo come first: the site looks finished while photos are being made */

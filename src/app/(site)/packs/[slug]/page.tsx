@@ -13,6 +13,11 @@ export const revalidate = 300
 
 type Params = Promise<{ slug: string }>
 
+// built on the first visit, then served from the cache (refreshed every 5 min, or at once by the web app)
+export function generateStaticParams() {
+  return []
+}
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const p = await getPack((await params).slug)
   return p ? { title: `Pack ${p.name}`, description: p.description || undefined } : { title: "Pack introuvable" }

@@ -1,5 +1,6 @@
 "use client"
 
+import { track } from "@/lib/track"
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import type { CardProduct, CartLine, SitePack } from "@/lib/types"
@@ -62,6 +63,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return [...prev, { id: p.id, slug: p.slug, name: p.name, brand: p.brand, price: p.price, image: p.image, quantity }]
     })
     setToast((t) => ({ name: p.name, n: (t?.n ?? 0) + 1 }))
+    track("add_to_cart", { value: p.price * quantity, items: [{ id: p.id, name: p.name, price: p.price, quantity, brand: p.brand, category: p.universe }] })
   }, [])
 
   // a pack is one line (id "pack:…"), its products are listed in the order message

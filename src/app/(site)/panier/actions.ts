@@ -3,6 +3,7 @@
 import { headers } from "next/headers"
 import { db } from "@/lib/db"
 import { formatPrice } from "@/lib/site"
+import { flashPrices } from "@/lib/catalog"
 
 // Places an order from the cart: it lands in the web app (Livraisons › Commandes en ligne), which calls
 // the client back to confirm. Only ids and quantities come from the browser: names, prices and
@@ -62,6 +63,7 @@ export async function placeOrder(input: OrderInput): Promise<{ ok: true; number:
     return { ok: false, error: "La commande n'a pas pu être enregistrée. Réessayez dans un instant." }
   }
   const byProduct = new Map(((products.data ?? []) as Row[]).map((p) => [p.id, p]))
+  const flash = await flashPrices()
   const byPack = new Map(((packs.data ?? []) as unknown as Row[]).map((p) => [p.id, p]))
 
   const items: Item[] = []
@@ -85,7 +87,8 @@ export async function placeOrder(input: OrderInput): Promise<{ ok: true; number:
         unavailable.push(p?.name ?? "un produit")
         continue
       }
-      const unit = Number(p.price) || 0
+      const usual = Number(p.price) || 0
+      const unit = Math.min(usual, flash.get(p.id)?.price ?? usual)
       items.push({ kind: "product", id: p.id, code: p.code, name: p.name, quantity: l.quantity, unitPrice: unit, total: unit * l.quantity })
     }
   }

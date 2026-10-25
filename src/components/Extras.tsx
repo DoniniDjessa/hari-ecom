@@ -122,7 +122,7 @@ export function Intro() {
       html.classList.remove("hari-intro-hold")
       html.classList.add("hari-intro", "hari-intro-nav")
     } else if (!html.classList.contains("hari-intro")) return
-    const done = setTimeout(() => html.classList.remove("hari-intro", "hari-intro-nav"), nav ? 800 : 3500)
+    const done = setTimeout(() => html.classList.remove("hari-intro", "hari-intro-nav"), html.classList.contains("hari-intro-nav") ? 800 : 3500)
     return () => clearTimeout(done)
   }, [pathname])
 

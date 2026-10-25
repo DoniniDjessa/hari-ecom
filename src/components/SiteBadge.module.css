@@ -12,10 +12,11 @@
   color: #ead5a4;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(216, 195, 154, 0.35);
 }
+/* "beige" group (Coup de cœur, Recommandé): a flat golden yellow, apart from the metal gold */
 .badge.beige {
-  background: #efe4cf;
-  color: #6b5428;
-  box-shadow: 0 4px 12px rgba(143, 116, 68, 0.15);
+  background: #f3c53b;
+  color: #3d2a00;
+  box-shadow: 0 4px 12px rgba(184, 137, 47, 0.3);
 }
 .badge.white {
   background: #fff;

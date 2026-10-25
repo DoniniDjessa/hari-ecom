@@ -266,3 +266,8 @@
 }
 
 @keyframes goldShine { to { background-position: 220% center; } }
+
+.suggest { max-width: 1320px; margin: -8px auto 0; padding: 0 22px 18px; }
+.suggest:empty { display: none; }
+
+@media (max-width: 420px) { .favLink { display: none; } }

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hors ligne | Hari Store</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f1ec; color: #1d1d1f; text-align: center; }
+    @media (prefers-color-scheme: dark) { body { background: #0d0c0a; color: #ead5a4; } }
+    img { width: 90px; height: auto; }
+    h1 { margin: 18px 0 8px; font-size: 1.8rem; letter-spacing: -0.03em; }
+    p { margin: 0 auto; max-width: 360px; line-height: 1.6; opacity: 0.75; }
+    button { margin-top: 22px; padding: 13px 24px; border: 0; background: #1d1d1f; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    @media (prefers-color-scheme: dark) { button { background: #ead5a4; color: #15130f; } }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="/haristore-mark.png" alt="Hari Store" />
+    <h1>Vous êtes hors ligne</h1>
+    <p>Vérifiez votre connexion internet : votre panier et vos favoris sont gardés sur votre téléphone.</p>
+    <button onclick="location.reload()">Réessayer</button>
+  </main>
+</body>
+</html>

@@ -435,3 +435,6 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .vercel
+
+# production build made next to next dev (NEXT_DIST_DIR)
+.next-build/

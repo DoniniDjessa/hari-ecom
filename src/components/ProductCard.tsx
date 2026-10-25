@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import type { CardProduct } from "@/lib/types"
+import { discount } from "@/lib/types"
 import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { Stars } from "./Stars"
 import { ArrowIcon, CheckIcon, PlusIcon } from "./icons"
 import { SiteBadge } from "./SiteBadge"
+import { FavButton } from "./FavButton"
 import styles from "./ProductCard.module.css"
 
 // Card: the photo on its studio background (soft halo, badges stacked on the left). On hover the photo
@@ -41,9 +43,11 @@ export function ProductCard({ product: p, priority, n = 0 }: { product: CardProd
           <ProductVisual src={p.image} alt={p.name} brand={p.brand} sizes="(max-width: 600px) 50vw, (max-width: 1100px) 33vw, 300px" priority={priority} />
         </Link>
 
+        <FavButton product={p} className={styles.fav} />
         {p.inStock ? (
-          p.badge && (
+          (p.badge || discount(p) > 0) && (
             <div className={styles.badges}>
+              {discount(p) > 0 && <span className={styles.promo}>-{discount(p)} %</span>}
               <SiteBadge label={p.badge} />
             </div>
           )
@@ -74,7 +78,10 @@ export function ProductCard({ product: p, priority, n = 0 }: { product: CardProd
         {p.rating != null && <Stars rating={p.rating} reviews={p.reviews} />}
         <div className={styles.priceRow}>
           <div>
-            <strong className={styles.price}>{formatPrice(p.price)}</strong>
+            <strong className={styles.price}>
+              {formatPrice(p.price)}
+              {p.oldPrice && <s className={styles.oldPrice}>{formatPrice(p.oldPrice)}</s>}
+            </strong>
             {p.lot && <span className={styles.lot}>{p.lot.quantity} pour {formatPrice(p.lot.price)}</span>}
           </div>
           <Link href={`/produit/${p.slug}`} className={styles.view} aria-label={`Voir ${p.name}`}>

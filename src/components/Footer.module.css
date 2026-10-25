@@ -51,3 +51,8 @@
   .grid { grid-template-columns: 1fr; gap: 28px; }
   .footer { padding-bottom: 90px; }
 }
+
+.legal { display: flex; flex-wrap: wrap; gap: 16px; }
+.legal a:hover, .networks a:hover { color: var(--gold-ink); }
+.networks { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; font-size: 0.88rem; font-weight: 700; }
+.contactList + .list { margin-top: 16px; }

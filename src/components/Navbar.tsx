@@ -6,8 +6,11 @@ import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import type { UniverseCard } from "@/lib/types"
 import { useCart } from "./CartProvider"
+import { useFavourites } from "./Saved"
 import { ProductVisual } from "./ProductVisual"
 import { SideDrawer } from "./SideDrawer"
+import { SearchSuggestions } from "./SearchSuggestions"
+import { track } from "@/lib/track"
 import type { Shop } from "@/lib/content"
 import { ThemeToggle } from "./ThemeToggle"
 import { ArrowIcon, BagIcon, ChevronIcon, CloseIcon, SearchIcon } from "./icons"
@@ -18,6 +21,7 @@ import styles from "./Navbar.module.css"
 // "Boutique" mega panel (universes + preview). Right: light / dark, search, cart.
 export function Navbar({ universes, shops }: { universes: UniverseCard[]; shops: Shop[] }) {
   const { count, ready } = useCart()
+  const { ready: favReady, favourites } = useFavourites()
   const router = useRouter()
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
@@ -68,6 +72,7 @@ export function Navbar({ universes, shops }: { universes: UniverseCard[]; shops:
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (q.trim()) track("search", { search_term: q.trim() })
     router.push(q.trim() ? `/boutique?q=${encodeURIComponent(q.trim())}` : "/boutique")
     setSearch(false)
   }
@@ -137,6 +142,12 @@ export function Navbar({ universes, shops }: { universes: UniverseCard[]; shops:
               <button type="button" className={styles.iconBtn} onClick={() => setSearch((s) => !s)} aria-label="Rechercher">
                 <SearchIcon size={19} />
               </button>
+              <Link href="/favoris" className={`${styles.iconBtn} ${styles.favLink}`} aria-label={`Mes favoris (${favourites.length})`}>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.3 4.5 6.9 4.5c2.1 0 3.6 1.2 5.1 3 1.5-1.8 3-3 5.1-3 3.6 0 5.5 3.5 4.2 6.8-1.8 4.6-9.3 9.2-9.3 9.2Z" />
+                </svg>
+                {favReady && favourites.length > 0 && <span key={favourites.length} className={styles.count}>{favourites.length > 99 ? "99+" : favourites.length}</span>}
+              </Link>
               <Link href="/panier" className={styles.iconBtn} aria-label={`Panier (${count} article${count > 1 ? "s" : ""})`}>
                 <BagIcon size={20} />
                 {ready && count > 0 && <span key={count} className={styles.count}>{count > 99 ? "99+" : count}</span>}
@@ -152,6 +163,10 @@ export function Navbar({ universes, shops }: { universes: UniverseCard[]; shops:
               <SearchIcon size={20} />
               <input ref={input} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Un soin, une marque, un besoin…" aria-label="Rechercher" />
               <button type="button" onClick={() => setSearch(false)} aria-label="Fermer la recherche"><CloseIcon size={20} /></button>
+            </div>
+            {/* suggestions while typing: products, brands, needs (typos forgiven) */}
+            <div className={styles.suggest}>
+              <SearchSuggestions query={q} onPick={() => { setSearch(false); setQ("") }} />
             </div>
           </form>
         )}

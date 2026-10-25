@@ -131,3 +131,19 @@
   .gallery, .info > *, .photo img { animation: none; }
 }
 .detailBody > * + * { margin-top: 12px; }
+
+/* flash sale */
+.oldPrice { margin-left: 12px; font-size: 1.1rem; font-weight: 600; letter-spacing: 0; color: var(--text-muted); }
+.off { margin-left: 10px; padding: 4px 10px; border-radius: 980px; background: #15130f; color: #fff; font-size: 0.85rem; letter-spacing: 0; vertical-align: middle; }
+.countdown { display: inline-block; margin-top: 8px; padding: 5px 12px; border-radius: 980px; background: var(--gold-wash); color: var(--gold-ink); font-size: 0.82rem; font-weight: 700; }
+
+.tags a:hover { color: var(--gold-ink); text-decoration: underline; }
+a.brand:hover { color: var(--gold-ink); }
+
+/* stock running low, heart beside the buy box, share */
+.low { margin-top: 14px; font-size: 0.88rem; font-weight: 700; color: #b4532a; }
+.buyRow { display: flex; align-items: flex-start; gap: 10px; }
+.buyRow > :first-child { flex: 1; min-width: 0; }
+.fav { flex-shrink: 0; margin-top: 30px; } /* level with the buy box (its own top margin) */
+.share { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 0.9rem; font-weight: 700; color: var(--gold-ink); }
+.share:hover { text-decoration: underline; }

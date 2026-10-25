@@ -8,6 +8,7 @@ import type { UniverseCard } from "@/lib/types"
 import { SITE, whatsappLink } from "@/lib/site"
 import { ThemeToggle } from "./ThemeToggle"
 import { ArrowIcon, BagIcon, ChatIcon, CloseIcon, SearchIcon } from "./icons"
+import { SearchSuggestions } from "./SearchSuggestions"
 import styles from "./SideDrawer.module.css"
 import type { Shop } from "@/lib/content"
 
@@ -82,11 +83,12 @@ export function SideDrawer({ open, onClose, universes, shops, count }: {
               <ArrowIcon size={18} />
             </button>
           </form>
-          <div className={styles.quick}>
+          <SearchSuggestions query={q} onPick={onClose} compact />
+          {q.trim().length < 2 && <div className={styles.quick}>
             {QUICK.map((t) => (
               <button key={t} type="button" onClick={() => find(t)} tabIndex={open ? 0 : -1}>{t}</button>
             ))}
-          </div>
+          </div>}
         </div>
 
         <nav className={styles.nav} aria-label="Menu">
@@ -111,7 +113,11 @@ export function SideDrawer({ open, onClose, universes, shops, count }: {
           <Link href="/packs" className={`${styles.gold} text-gold`} style={{ ["--i" as string]: 3 }} tabIndex={open ? 0 : -1}>Nos packs</Link>
           <Link href="/boutique?tri=nouveautes" style={{ ["--i" as string]: 4 }} tabIndex={open ? 0 : -1}>Nouveautés</Link>
           <Link href="/boutique?tri=ventes" style={{ ["--i" as string]: 5 }} tabIndex={open ? 0 : -1}>Meilleures ventes</Link>
-          <Link href="/panier" className={styles.cart} style={{ ["--i" as string]: 6 }} tabIndex={open ? 0 : -1}>
+          <Link href="/diagnostic" style={{ ["--i" as string]: 6 }} tabIndex={open ? 0 : -1}>Diagnostic de peau</Link>
+          <Link href="/marques" style={{ ["--i" as string]: 7 }} tabIndex={open ? 0 : -1}>Nos marques</Link>
+          <Link href="/favoris" style={{ ["--i" as string]: 8 }} tabIndex={open ? 0 : -1}>Mes favoris</Link>
+          <Link href="/fidelite" className={`${styles.gold} text-gold`} style={{ ["--i" as string]: 9 }} tabIndex={open ? 0 : -1}>Hari Gold</Link>
+          <Link href="/panier" className={styles.cart} style={{ ["--i" as string]: 10 }} tabIndex={open ? 0 : -1}>
             <BagIcon size={22} /> Panier {count > 0 && <em>{count}</em>}
           </Link>
         </nav>

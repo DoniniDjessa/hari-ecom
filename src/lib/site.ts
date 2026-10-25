@@ -2,8 +2,9 @@ export const SITE = {
   name: "Hari Store",
   fullName: "Hari Store Cosmetics",
   description:
-    "Soins visage, corps, bébé et bien-être sélectionnés par Hari Store Cosmetics. Produits authentiques, conseils personnalisés, livraison à Abidjan.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001",
+    "Cosmétiques authentiques à Abidjan : soins visage, corps, bébé et bien-être choisis par nos conseillères. Livraison partout à Abidjan, paiement à la livraison.",
+  // the address of the site in production (canonical links, sitemap, Google data)
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://haristorecosmetics.com",
   // shop that receives the orders (international format, digits only)
   whatsapp: (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "").replace(/\D/g, ""),
 }

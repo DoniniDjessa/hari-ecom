@@ -1,0 +1,20 @@
+.page { padding-top: 40px; padding-bottom: 90px; }
+.head { max-width: 720px; }
+.head h1 { font-family: var(--font-primary); font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; letter-spacing: -0.05em; line-height: 0.95; }
+.head h1 span { background: var(--gold-metal); background-size: 220% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.head p { margin-top: 16px; font-size: 1.1rem; line-height: 1.6; color: var(--text-secondary); }
+
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 44px 0 50px; }
+.steps li { padding: 24px; border: 1px solid var(--card-border); background: var(--surface); }
+.steps strong { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--gold-metal); color: #15130f; font-family: var(--font-primary); font-weight: 800; }
+.steps h2 { margin-top: 14px; font-family: var(--font-primary); font-size: 1.3rem; font-weight: 800; }
+.steps p { margin-top: 6px; color: var(--text-secondary); line-height: 1.55; }
+
+.check { max-width: 720px; }
+.check h2 { font-family: var(--font-primary); font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 14px; }
+.small { margin-top: 14px; font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+.small a { color: var(--gold-ink); font-weight: 700; }
+
+@media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
+
+.soon { max-width: 640px; margin-top: 36px; padding: 22px; background: var(--gold-wash); color: var(--gold-ink); font-weight: 600; line-height: 1.6; }

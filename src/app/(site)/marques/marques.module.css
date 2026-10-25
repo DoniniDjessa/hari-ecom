@@ -1,0 +1,15 @@
+.page { padding-top: 40px; padding-bottom: 90px; }
+.head { margin-bottom: 30px; }
+.head h1 { font-family: var(--font-primary); font-size: clamp(2.6rem, 6vw, 4.4rem); font-weight: 800; letter-spacing: -0.045em; line-height: 1; }
+.head p { margin-top: 14px; color: var(--text-secondary); font-size: 1.05rem; }
+
+.letters { position: sticky; top: var(--header-height); z-index: 5; display: flex; flex-wrap: wrap; gap: 4px; padding: 12px 0; margin-bottom: 30px; background: var(--background); border-bottom: 1px solid var(--card-border); }
+.letters a { display: grid; place-items: center; min-width: 32px; height: 32px; font-weight: 800; font-size: 0.9rem; color: var(--text-secondary); }
+.letters a:hover { background: var(--gold-wash); color: var(--gold-ink); }
+
+.groups { columns: 4 240px; column-gap: 40px; }
+.group { break-inside: avoid; margin-bottom: 30px; scroll-margin-top: calc(var(--header-height) + 70px); }
+.group h2 { font-family: var(--font-primary); font-size: 1.6rem; font-weight: 800; color: var(--gold-ink); margin-bottom: 8px; }
+.group li a { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--card-border); font-weight: 600; color: var(--text-main); }
+.group li a:hover { color: var(--gold-ink); }
+.group li span { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
