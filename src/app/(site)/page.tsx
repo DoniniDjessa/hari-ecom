@@ -35,7 +35,7 @@ const initials = (t: string) => t.split(/[\s'’-]+/).filter((w) => w && !SMALL.
 /** Label on the page thread: "Nos coups de cœur." → "Coups de cœur" */
 const station = (title: string) => { const t = title.replace(/\.$/, "").replace(/^Nos /, ""); return t[0].toUpperCase() + t.slice(1) }
 
-function Row({ script, title, text, products, href, favourites }: { script: string; title: string; text: string; products: SiteProduct[]; href: string; favourites?: boolean }) {
+function Row({ script, title, text, products, href }: { script: string; title: string; text: string; products: SiteProduct[]; href: string }) {
   if (!products.length) return null
   return (
     <section className="section reveal" data-station={station(title)}>
@@ -49,7 +49,7 @@ function Row({ script, title, text, products, href, favourites }: { script: stri
           <Link href={href} className="link-more">Tout voir <ArrowIcon size={16} /></Link>
         </div>
         <div className={`${styles.grid} stagger`}>
-          {products.map((p) => <ProductCard key={p.id} product={toCard(p)} favourites={favourites} />)}
+          {products.map((p) => <ProductCard key={p.id} product={toCard(p)} />)}
         </div>
       </div>
     </section>
@@ -106,7 +106,7 @@ export default async function Home() {
         <UniverseTiles universes={universes} />
       </section>
 
-      <Row script="La sélection de nos conseillères" title="Nos coups de cœur." text="Les soins que nos conseillères recommandent le plus souvent." products={favourites} href="/boutique" favourites />
+      <Row script="La sélection de nos conseillères" title="Nos coups de cœur." text="Les soins que nos conseillères recommandent le plus souvent." products={favourites} href="/boutique" />
 
       {/* --- PACKS --- */}
       {packs.length > 0 && (

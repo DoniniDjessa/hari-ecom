@@ -8,14 +8,16 @@ import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { Stars } from "./Stars"
 import { ArrowIcon, CheckIcon, PlusIcon } from "./icons"
+import { SiteBadge } from "./SiteBadge"
 import styles from "./ProductCard.module.css"
 
 // Card: the photo on its studio background (soft halo, badges stacked on the left). On hover the photo
 // rises a little, a gold line draws itself on top and an "Ajouter au panier" bar slides up from the
 // bottom of the photo (phones: a round "+" always there). Adding shows "Ajouté" for a moment.
 // Below: brand · form, name, rating, price and the best "n for x" offer. `n` staggers the entrance.
-// `favourites`: in the "Nos coups de cœur" row, the own badge (else "Coup de cœur"), never "Nouveau".
-export function ProductCard({ product: p, priority, n = 0, favourites }: { product: CardProduct; priority?: boolean; n?: number; favourites?: boolean }) {
+// Badge: only the one chosen in the web app (the switches Nouveau, Coup de cœur… only place the product in
+// a section of the home), in its colour (SiteBadge).
+export function ProductCard({ product: p, priority, n = 0 }: { product: CardProduct; priority?: boolean; n?: number }) {
   const { add } = useCart()
   const [added, setAdded] = useState(false)
 
@@ -30,14 +32,6 @@ export function ProductCard({ product: p, priority, n = 0, favourites }: { produ
     setAdded(true)
   }
 
-  const badges = (favourites
-    ? [{ label: p.badge || "Coup de cœur", gold: true }, p.bestseller && { label: "Meilleure vente", gold: false }]
-    : [
-        p.badge && { label: p.badge, gold: true },
-        p.bestseller && { label: "Meilleure vente", gold: !p.badge },
-        !p.badge && p.featured && { label: "Coup de cœur", gold: false },
-        p.isNew && { label: "Nouveau", gold: false },
-      ]).filter(Boolean).slice(0, 2) as { label: string; gold: boolean }[]
   const meta = [p.brand, p.form, p.volume].filter(Boolean)
 
   return (
@@ -48,9 +42,9 @@ export function ProductCard({ product: p, priority, n = 0, favourites }: { produ
         </Link>
 
         {p.inStock ? (
-          badges.length > 0 && (
+          p.badge && (
             <div className={styles.badges}>
-              {badges.map((b) => <span key={b.label} className={b.gold ? styles.badgeGold : ""}>{b.label}</span>)}
+              <SiteBadge label={p.badge} />
             </div>
           )
         ) : (

@@ -38,7 +38,10 @@ function toSiteProduct(r: Row): SiteProduct {
     description: r.description ?? "",
     pitch: r.pitch ?? "",
     usage: r.usage ?? "",
+    moments: list(r.moments),
     precautions: r.precautions ?? "",
+    alertIngredients: list(r.alert_ingredients),
+    range: r.range_name ?? "",
     benefits: list(r.benefits),
     skinTypes: list(r.skin_types),
     hairTypes: list(r.hair_types),
@@ -77,7 +80,7 @@ const cachedProducts = unstable_cache(async (): Promise<SiteProduct[]> => {
     return []
   }
   return (data as Row[]).map(toSiteProduct)
-}, ["site-products"], { revalidate: 300, tags: ["products"] })
+}, ["site-products-v2"], { revalidate: 300, tags: ["products"] }) // v2: moments, range, alert ingredients
 
 export async function getProduct(slug: string) {
   const code = codeFromSlug(slug)

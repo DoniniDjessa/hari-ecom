@@ -1,0 +1,24 @@
+/* colours only (two classes: they win over the place's own style); size and position come from the place */
+.badge { display: inline-flex; align-items: center; border-radius: 980px; font-weight: 700; white-space: nowrap; }
+
+.badge.gold {
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  color: #15130f;
+  box-shadow: 0 6px 16px rgba(193, 154, 63, 0.3);
+}
+.badge.black {
+  background: #15130f;
+  color: #ead5a4;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(216, 195, 154, 0.35);
+}
+.badge.beige {
+  background: #efe4cf;
+  color: #6b5428;
+  box-shadow: 0 4px 12px rgba(143, 116, 68, 0.15);
+}
+.badge.white {
+  background: #fff;
+  color: #1d1d1f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}

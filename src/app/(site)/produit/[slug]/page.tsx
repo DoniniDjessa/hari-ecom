@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/ProductCard"
 import { BuyBox } from "@/components/BuyBox"
 import { Stars } from "@/components/Stars"
 import { ChatIcon, ShieldIcon, TruckIcon } from "@/components/icons"
+import { SiteBadge } from "@/components/SiteBadge"
 import styles from "./product.module.css"
 
 export const revalidate = 300
@@ -30,11 +31,23 @@ export default async function ProductPage({ params }: { params: Params }) {
   if (!p) notFound()
   const universe = UNIVERSES.find((u) => u.name === p.universe)
   const others = related(await getProducts(), p).map(toCard)
+  // the pitch is the lead under the price; the long description opens the details below
   const about = p.pitch || p.description
+  const description = p.pitch && p.description && p.description !== p.pitch ? p.description : ""
 
   const details = [
+    { title: "Description", show: !!description, body: <p>{description}</p> },
     { title: "Bienfaits", show: p.benefits.length > 0, body: <ul className={styles.tags}>{p.benefits.map((b) => <li key={b}>{b}</li>)}</ul> },
-    { title: "Conseils d'utilisation", show: !!p.usage, body: <p>{p.usage}</p> },
+    {
+      title: "Conseils d'utilisation",
+      show: !!p.usage || p.moments.length > 0,
+      body: (
+        <>
+          {p.usage && <p>{p.usage}</p>}
+          {p.moments.length > 0 && <ul className={styles.tags}>{p.moments.map((m) => <li key={m}>{m}</li>)}</ul>}
+        </>
+      ),
+    },
     { title: "Ingrédients clés", show: p.keyIngredients.length > 0, body: <ul className={styles.tags}>{p.keyIngredients.map((b) => <li key={b}>{b}</li>)}</ul> },
     {
       title: "Pour qui ?",
@@ -47,7 +60,16 @@ export default async function ProductPage({ params }: { params: Params }) {
         </dl>
       ),
     },
-    { title: "Précautions", show: !!p.precautions, body: <p>{p.precautions}</p> },
+    {
+      title: "Précautions",
+      show: !!p.precautions || p.alertIngredients.length > 0,
+      body: (
+        <>
+          {p.precautions && <p>{p.precautions}</p>}
+          {p.alertIngredients.length > 0 && <p><strong>Contient :</strong> {p.alertIngredients.join(", ")}</p>}
+        </>
+      ),
+    },
   ].filter((d) => d.show)
 
   return (
@@ -69,7 +91,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           <div className={styles.gallery}>
             <div className={styles.photo}>
               <ProductVisual src={p.image} alt={p.name} brand={p.brand} sizes="(max-width: 900px) 100vw, 620px" priority />
-              {p.isNew && <span className={styles.badge}>Nouveau</span>}
+              <SiteBadge label={p.badge} className={styles.badge} />
             </div>
           </div>
 
@@ -78,7 +100,9 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h1>{p.name}</h1>
             <div className={styles.meta}>
               {p.rating != null && <Stars rating={p.rating} reviews={p.reviews} size={15} />}
-              {[p.form, p.volume].filter(Boolean).length > 0 && <span>{[p.form, p.volume].filter(Boolean).join(" · ")}</span>}
+              {[p.range && `Gamme ${p.range}`, p.form, p.volume].filter(Boolean).length > 0 && (
+                <span>{[p.range && `Gamme ${p.range}`, p.form, p.volume].filter(Boolean).join(" · ")}</span>
+              )}
             </div>
 
             <p className={styles.price}>{formatPrice(p.price)}</p>

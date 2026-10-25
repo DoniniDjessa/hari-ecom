@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, PlusIcon } from "./icons"
+import { SiteBadge } from "./SiteBadge"
 import styles from "./Spotlight.module.css"
 
 export type SpotlightProduct = CardProduct & { pitch: string }
@@ -59,7 +60,7 @@ function Card({ p, i }: { p: SpotlightProduct; i: number }) {
     <article className={styles.card} onPointerMove={move} onPointerLeave={leave}>
       <span className={styles.light} aria-hidden="true" />
       <span className={styles.num} aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-      {p.badge && <span className={styles.badge}>{p.badge}</span>}
+      <SiteBadge label={p.badge} className={styles.badge} />
 
       <Link href={`/produit/${p.slug}`} className={styles.stage} aria-label={p.name}>
         <span className={styles.pedestal} aria-hidden="true" />

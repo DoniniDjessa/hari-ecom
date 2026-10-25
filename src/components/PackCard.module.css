@@ -75,6 +75,9 @@
 .saving small { margin-top: 3px; font-family: var(--font-secondary); font-size: 0.66rem; font-weight: 700; letter-spacing: 0; }
 .card:hover .saving { background-position: 100% center; }
 
+/* the pack's own badge, bottom left of the photo */
+.badge { position: absolute; z-index: 2; left: 14px; bottom: 14px; padding: 6px 13px; font-size: 0.72rem; }
+
 .count {
   position: absolute;
   z-index: 2;

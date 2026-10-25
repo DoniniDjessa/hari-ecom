@@ -14,7 +14,13 @@ export interface SiteProduct {
   description: string
   pitch: string
   usage: string
+  /** when to use it (Matin, Soir, Après la douche…) */
+  moments: string[]
   precautions: string
+  /** ingredients to watch (allergies…) */
+  alertIngredients: string[]
+  /** the brand's range (Butter Glow, Hydra Sebiaclear…) */
+  range: string
   benefits: string[]
   skinTypes: string[]
   hairTypes: string[]
@@ -65,6 +71,8 @@ export interface SitePack {
   saving: number
   /** photo of the pack, or null: the site shows its products' photos */
   image: string | null
+  /** badge chosen in the web app (Spécial Hari Store…), "" when none */
+  badge: string
   items: { id: string; slug: string; name: string; brand: string; price: number; image: string | null; quantity: number; inStock: boolean }[]
   inStock: boolean
 }

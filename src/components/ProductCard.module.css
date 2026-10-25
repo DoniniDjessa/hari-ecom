@@ -61,7 +61,6 @@
   font-weight: 700;
   letter-spacing: 0.01em;
 }
-.badges .badgeGold { background: var(--gold-metal); color: var(--on-gold); box-shadow: 0 6px 16px rgba(193, 154, 63, 0.3); }
 
 .soldOut {
   position: absolute;

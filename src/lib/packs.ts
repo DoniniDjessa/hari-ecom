@@ -47,6 +47,7 @@ const cachedPacks = unstable_cache(async (): Promise<SitePack[]> => {
       slug: `${slugify(r.name)}-${String(r.id).slice(0, 8)}`,
       name: r.name,
       description: r.description ?? "",
+      badge: typeof r.badge === "string" ? r.badge.trim() : "",
       price,
       value,
       saving: value > price ? value - price : 0,

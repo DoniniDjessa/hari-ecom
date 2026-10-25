@@ -130,3 +130,4 @@
 @media (prefers-reduced-motion: reduce) {
   .gallery, .info > *, .photo img { animation: none; }
 }
+.detailBody > * + * { margin-top: 12px; }
