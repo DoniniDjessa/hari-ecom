@@ -10,10 +10,13 @@
 
 .layout {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  /* minmax(0, …): a long name or a wide row never pushes a column past the screen */
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 64px;
   align-items: start;
 }
+.layout > * { min-width: 0; }
+.info { overflow-wrap: anywhere; }
 
 .gallery { position: sticky; top: calc(var(--header-height) + 24px); animation: rise 1.1s var(--ease) both; }
 .photo { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--photo-bg); }
@@ -121,10 +124,13 @@
   .related { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; gap: 28px; }
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .gallery { position: static; }
 }
 @media (max-width: 700px) {
+  .gallery { margin: 0 -22px; } /* the photo edge to edge: out of the container's side padding */
+  .info h1 { font-size: clamp(1.55rem, 6.8vw, 2rem); }
+  .price { font-size: 1.8rem; }
   .related { grid-template-columns: repeat(2, 1fr); gap: 30px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {

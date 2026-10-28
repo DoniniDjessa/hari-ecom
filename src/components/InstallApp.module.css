@@ -22,7 +22,17 @@
 .install { padding: 9px 16px; background: var(--ink); color: var(--ink-contrast, #fff); font-size: 0.85rem; font-weight: 700; }
 .later { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
 
+/* phone: a sheet flush with the bottom edge (over the floating buttons for its few seconds) */
 @media (max-width: 520px) {
-  .card { bottom: 84px; } /* above the floating WhatsApp / cart button */
+  .card {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    border-width: 1px 0 0;
+    transform: none;
+    animation-name: upSheet;
+  }
 }
+@keyframes upSheet { from { transform: translateY(100%); } }
 @media (prefers-reduced-motion: reduce) { .card { animation: none; } }
