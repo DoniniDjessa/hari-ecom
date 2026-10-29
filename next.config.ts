@@ -1,13 +1,17 @@
 import type { NextConfig } from "next"
 
-// Product photos come from /api/img (R2, read by the server): next/image resizes and compresses them
+// Product photos come from /api/img (R2, read by the server); Cloudflare resizes and compresses them
+// (src/lib/image-loader.ts), so Vercel's image optimisation is not used
 const nextConfig: NextConfig = {
   // NEXT_DIST_DIR: a production build next to a running `next dev` (they must not share .next)
   distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
   images: {
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 31536000, // an R2 key never changes content
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    // few widths: each width of each photo is one Cloudflare transformation (5 000 a month free)
+    deviceSizes: [640, 828, 1080, 1600],
+    imageSizes: [64, 128, 256, 384],
   },
   async headers() {
     return [
