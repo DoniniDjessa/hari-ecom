@@ -19,7 +19,11 @@ export const metadata: Metadata = {
     images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: SITE.fullName }],
   },
   twitter: { card: "summary_large_image", title: SITE.fullName, description: SITE.description, images: ["/og-image.jpg"] },
-  icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
+  // + /favicon.ico (src/app): Google shows the icon beside the results, from a multiple of 48 px
+  icons: {
+    icon: [{ url: "/icons/icon-48.png", sizes: "48x48", type: "image/png" }, { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: "/icons/apple-touch-icon.png",
+  },
   appleWebApp: { capable: true, title: SITE.name, statusBarStyle: "default" },
   formatDetection: { telephone: false },
   // Google Search Console: the code of the "balise HTML" check (NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION)

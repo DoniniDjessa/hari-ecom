@@ -40,7 +40,9 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
         {
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: SITE.fullName,
+          // the name Google writes above the result, instead of the bare domain
+          name: SITE.name,
+          alternateName: [SITE.fullName, "Haristore", "haristorecosmetics.com"],
           url: abs("/"),
           inLanguage: "fr",
           potentialAction: { "@type": "SearchAction", target: `${abs("/boutique")}?q={search_term_string}`, "query-input": "required name=search_term_string" },
