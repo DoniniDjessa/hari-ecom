@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/lib/db"
-import { waveLink } from "@/lib/site"
+import { waveAmount, waveLink } from "@/lib/site"
 
 // Paying an order with the shop's Wave link. Wave doesn't tell us whether the payment went through, so
 // each click on "Payer avec Wave" is recorded (hari-web-payments) and the shop checks it in its Wave
@@ -51,14 +51,16 @@ export async function startWavePayment(orderId: string, payerPhone: string): Pro
     return { ok: false, error: "Trop de tentatives de paiement pour cette commande. Contactez-nous sur WhatsApp." }
   }
 
+  // the amount the client pays in Wave (articles + 1 %): what the shop looks for in Wave Business
+  const amount = waveAmount(Number(order.total))
   const { data, error } = await db().from("hari-web-payments")
-    .insert({ order_id: order.id, amount: order.total, payer_phone: phone, status: "started" })
+    .insert({ order_id: order.id, amount, payer_phone: phone, status: "started" })
     .select("id").single()
   if (error || !data) {
     console.error("Paiement Wave:", error?.message)
     return { ok: false, error: "Le paiement Wave n'est pas disponible pour le moment. Réessayez ou payez à la livraison." }
   }
-  return { ok: true, attemptId: data.id, url: waveLink(Number(order.total)) }
+  return { ok: true, attemptId: data.id, url: waveLink(amount) }
 }
 
 /** Back from Wave: the client says whether they paid. "Oui" only puts the payment in the shop's list to

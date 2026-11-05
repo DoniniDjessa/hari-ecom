@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { placeOrder } from "@/app/(site)/panier/actions"
-import { formatPrice, SITE, whatsappLink } from "@/lib/site"
+import { formatPrice, SITE, WAVE_FEE_PERCENT, waveAmount, waveFee, whatsappLink } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, MinusIcon, PlusIcon, TrashIcon } from "./icons"
@@ -171,7 +171,12 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
           <h2>Récapitulatif</h2>
           <div className={styles.sumRow}><span>Articles</span><span>{formatPrice(total)}</span></div>
           <div className={styles.sumRow}><span>Livraison</span><span>Confirmée par téléphone</span></div>
-          <div className={`${styles.sumRow} ${styles.sumTotal}`}><span>Total</span><span>{formatPrice(total)}</span></div>
+          {payment === "wave" && (
+            <div className={styles.sumRow}><span>Frais Wave ({WAVE_FEE_PERCENT} %)</span><span>{formatPrice(waveFee(total))}</span></div>
+          )}
+          <div className={`${styles.sumRow} ${styles.sumTotal}`}>
+            <span>Total</span><span>{formatPrice(payment === "wave" ? waveAmount(total) : total)}</span>
+          </div>
 
           <div className={styles.fields}>
             <input value={info.name} onChange={(e) => setInfo({ ...info, name: e.target.value })} placeholder="Nom et prénom" autoComplete="name" />
@@ -192,7 +197,7 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
               <input type="radio" name="payment" checked={payment === "wave"} onChange={() => setPayment("wave")} />
               <span>
                 <strong>Payer maintenant avec Wave</strong>
-                <small>Dans l&apos;application Wave, en quelques secondes</small>
+                <small>Dans l&apos;application Wave, en quelques secondes · frais Wave {WAVE_FEE_PERCENT} %</small>
               </span>
               <Image src="/wave.jpg" alt="Wave" width={34} height={34} className={styles.payLogo} unoptimized />
             </label>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { formatPrice, SITE, whatsappLink } from "@/lib/site"
+import { formatPrice, SITE, WAVE_FEE_PERCENT, waveAmount, waveFee, whatsappLink } from "@/lib/site"
 import {
   declareWavePayment, getWavePayment, payAtDeliveryInstead, startWavePayment,
 } from "@/app/(site)/panier/wave-actions"
@@ -115,7 +115,8 @@ export function WavePay({ initial, onClose }: { initial: WaveOrder; onClose: () 
     else setError("Le changement n'a pas pu être fait. Contactez-nous sur WhatsApp.")
   }
 
-  const amount = formatPrice(o.total)
+  // what the client pays in Wave: the articles + 1 % (o.total stays the articles' total)
+  const amount = formatPrice(waveAmount(o.total))
   const help = SITE.whatsapp && (
     <a href={whatsappLink(`Bonjour Hari Store, au sujet du paiement Wave de ma commande ${o.number} (${amount}).`)}
       target="_blank" rel="noopener" className="btn btn-light">
@@ -238,7 +239,10 @@ export function WavePay({ initial, onClose }: { initial: WaveOrder; onClose: () 
         <div className={styles.amount}>
           <span>Montant à payer</span>
           <strong>{amount}</strong>
-          <small>Articles uniquement · les frais de livraison se règlent à la livraison</small>
+          <small>
+            Articles {formatPrice(o.total)} + frais Wave {WAVE_FEE_PERCENT} % ({formatPrice(waveFee(o.total))}) · les frais de
+            livraison se règlent à la livraison
+          </small>
         </div>
         <label className={styles.field}>
           <span>Numéro Wave utilisé pour payer</span>

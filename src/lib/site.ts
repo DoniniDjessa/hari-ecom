@@ -12,6 +12,13 @@ export const SITE = {
   waveLink: process.env.NEXT_PUBLIC_WAVE_LINK || "https://pay.wave.com/m/M_ci_LfyIheW2bq7H/c/ci/",
 }
 
+/** Paying with Wave adds 1 % to the articles (Wave's fee): 15 000 → 15 150. Rounded up to the franc, in whole
+ *  numbers (n * 1.01 would give 15 150.000000000002). The order keeps the articles' total; only the Wave
+ *  payment carries the fee. */
+export const WAVE_FEE_PERCENT = 1
+export const waveFee = (total: number) => Math.ceil((Math.round(total) * WAVE_FEE_PERCENT) / 100)
+export const waveAmount = (total: number) => Math.round(total) + waveFee(total)
+
 /** The Wave link with the amount filled in (the client still sees it in Wave before paying) */
 export const waveLink = (amount: number) => `${SITE.waveLink}?amount=${Math.round(amount)}`
 
