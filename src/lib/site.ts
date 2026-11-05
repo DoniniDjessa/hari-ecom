@@ -8,7 +8,12 @@ export const SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.haristorecosmetics.com",
   // shop that receives the orders (international format, digits only)
   whatsapp: (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "").replace(/\D/g, ""),
+  // the shop's Wave payment link (Wave Business › lien de paiement): opens the Wave app to pay
+  waveLink: process.env.NEXT_PUBLIC_WAVE_LINK || "https://pay.wave.com/m/M_ci_LfyIheW2bq7H/c/ci/",
 }
+
+/** The Wave link with the amount filled in (the client still sees it in Wave before paying) */
+export const waveLink = (amount: number) => `${SITE.waveLink}?amount=${Math.round(amount)}`
 
 // the universes of the web app (lib/product-taxonomy.ts in haritest), in the order shown on the site
 export const UNIVERSES = [

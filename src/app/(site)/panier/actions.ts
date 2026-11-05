@@ -16,6 +16,8 @@ export type OrderInput = {
   note: string
   /** cart lines: a product id, or "pack:<id>" */
   lines: { id: string; quantity: number }[]
+  /** "livraison": paid at the door (default); "wave": paid now with the Wave link (wave-actions.ts) */
+  payment?: "livraison" | "wave"
 }
 
 type Row = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -27,7 +29,10 @@ const recent = new Map<string, number[]>()
 const uuid = /^[0-9a-f-]{36}$/i
 const stockOf = (r: Row) => ((r.stock ?? []) as Row[]).reduce((n, s) => n + Number(s.quantity || 0), 0)
 
-export async function placeOrder(input: OrderInput): Promise<{ ok: true; number: string } | { ok: false; error: string }> {
+export async function placeOrder(input: OrderInput): Promise<
+  { ok: true; id: string; number: string; total: number } | { ok: false; error: string }
+> {
+  const wave = input.payment === "wave"
   const name = String(input.name ?? "").trim().slice(0, 120)
   const phone = String(input.phone ?? "").trim().slice(0, 40)
   const place = String(input.place ?? "").trim().slice(0, 300)
@@ -99,8 +104,10 @@ export async function placeOrder(input: OrderInput): Promise<{ ok: true; number:
   const total = items.reduce((n, i) => n + i.total, 0)
   const { data, error } = await db()
     .from("hari-web-orders")
-    .insert({ customer_name: name, customer_phone: phone, address: place, note, items, total })
-    .select("number")
+    // payment columns only for Wave: orders paid at the door still work before add-web-payments.sql
+    .insert({ customer_name: name, customer_phone: phone, address: place, note, items, total,
+              ...(wave ? { payment_method: "wave", payment_status: "pending" } : {}) })
+    .select("id, number")
     .single()
   if (error || !data) {
     console.error("Commande:", error?.message)
@@ -113,10 +120,10 @@ export async function placeOrder(input: OrderInput): Promise<{ ok: true; number:
   // the shop sees it in the web app's notifications
   await db().from("hari-notifications").insert({
     title: "Nouvelle commande en ligne",
-    message: `${data.number} · ${name} · ${items.reduce((n, i) => n + i.quantity, 0)} article(s) · ${formatPrice(total)}`,
+    message: `${data.number} · ${name} · ${items.reduce((n, i) => n + i.quantity, 0)} article(s) · ${formatPrice(total)}${wave ? " · paiement Wave" : ""}`,
     type: "info",
     performed_by_name: "Site e-commerce",
   }).then(({ error: e }) => e && console.error("Notification de commande:", e.message))
 
-  return { ok: true, number: data.number }
+  return { ok: true, id: data.id, number: data.number, total }
 }

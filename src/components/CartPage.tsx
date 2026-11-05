@@ -1,13 +1,15 @@
 "use client"
 
 import { track } from "@/lib/track"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { placeOrder } from "@/app/(site)/panier/actions"
 import { formatPrice, SITE, whatsappLink } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, MinusIcon, PlusIcon, TrashIcon } from "./icons"
+import { WavePay, readWaveOrder, saveWaveOrder, type WaveOrder } from "./WavePay"
 import styles from "./CartPage.module.css"
 
 // Checkout: the order is sent to the shop (web app, Livraisons › Commandes en ligne), which calls the
@@ -33,6 +35,10 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
   const [done, setDone] = useState<string | null>(null)
   // the order just sent (the cart is emptied): for the points and the WhatsApp summary
   const [sent, setSent] = useState<{ total: number; summary: string } | null>(null)
+  const [payment, setPayment] = useState<"livraison" | "wave">("livraison")
+  // an order to pay with Wave (kept in this browser: the client comes back from the Wave app to this page)
+  const [waveOrder, setWaveOrder] = useState<WaveOrder | null>(null)
+  useEffect(() => setWaveOrder(readWaveOrder()), [])
 
   const order = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,6 +55,7 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
     const result = await placeOrder({
       name: info.name, phone: info.phone, place: info.place, note: info.note,
       lines: lines.map((l) => ({ id: l.id, quantity: l.quantity })),
+      payment,
     }).catch(() => ({ ok: false as const, error: "Connexion perdue. Réessayez : votre panier est conservé." }))
     setSending(false)
     if (!result.ok) return setError(result.error)
@@ -60,11 +67,26 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
     const total = lines.reduce((n, l) => n + l.price * l.quantity, 0)
     setSent({ total, summary: lines.map((l) => `- ${l.quantity} × ${l.name}`).join("\n") })
     clear()
-    setDone(result.number)
     window.scrollTo({ top: 0 })
+    if (payment === "wave") {
+      const w: WaveOrder = { orderId: result.id, number: result.number, total: result.total, phone: info.phone, step: "pay" }
+      saveWaveOrder(w)
+      setWaveOrder(w)
+      return
+    }
+    setDone(result.number)
   }
 
   if (!ready) return <div className={`container ${styles.page}`} />
+
+  // an order waiting for its Wave payment (or being checked)
+  if (waveOrder) {
+    return (
+      <div className={`container ${styles.page}`}>
+        <WavePay key={waveOrder.orderId} initial={waveOrder} onClose={() => setWaveOrder(null)} />
+      </div>
+    )
+  }
 
   // order sent: its number, what happens next
   if (done) {
@@ -157,9 +179,33 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
             <input value={info.place} onChange={(e) => setInfo({ ...info, place: e.target.value })} placeholder="Commune, quartier, repère" autoComplete="street-address" />
             <textarea value={info.note} onChange={(e) => setInfo({ ...info, note: e.target.value })} placeholder="Une précision ? (facultatif)" rows={2} />
           </div>
+          <fieldset className={styles.payments}>
+            <legend>Paiement</legend>
+            <label className={`${styles.payOption} ${payment === "livraison" ? styles.payActive : ""}`}>
+              <input type="radio" name="payment" checked={payment === "livraison"} onChange={() => setPayment("livraison")} />
+              <span>
+                <strong>Payer à la livraison</strong>
+                <small>Espèces ou Mobile Money, à la réception</small>
+              </span>
+            </label>
+            <label className={`${styles.payOption} ${payment === "wave" ? styles.payActive : ""}`}>
+              <input type="radio" name="payment" checked={payment === "wave"} onChange={() => setPayment("wave")} />
+              <span>
+                <strong>Payer maintenant avec Wave</strong>
+                <small>Dans l&apos;application Wave, en quelques secondes</small>
+              </span>
+              <Image src="/wave.jpg" alt="Wave" width={34} height={34} className={styles.payLogo} unoptimized />
+            </label>
+          </fieldset>
           {error && <p className={styles.error}>{error}</p>}
-          <button type="submit" className="btn btn-dark" disabled={sending}>{sending ? "Envoi de la commande…" : "Valider la commande"}</button>
-          <p className={styles.hint}>Paiement à la livraison, en espèces ou Mobile Money. Nous vous appelons pour confirmer le délai et les frais de livraison.</p>
+          <button type="submit" className="btn btn-dark" disabled={sending}>
+            {sending ? "Envoi de la commande…" : payment === "wave" ? "Commander et payer avec Wave" : "Valider la commande"}
+          </button>
+          <p className={styles.hint}>
+            {payment === "wave"
+              ? "Votre commande est validée après vérification de votre paiement Wave. Les frais de livraison se règlent à la livraison."
+              : "Paiement à la livraison, en espèces ou Mobile Money. Nous vous appelons pour confirmer le délai et les frais de livraison."}
+          </p>
         </form>
       </div>
     </div>
