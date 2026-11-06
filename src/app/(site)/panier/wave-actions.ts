@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/lib/db"
-import { waveAmount, waveLink } from "@/lib/site"
+import { formatPrice, waveAmount, waveLink } from "@/lib/site"
 
 // Paying an order with the shop's Wave link. Wave doesn't tell us whether the payment went through, so
 // each click on "Payer avec Wave" is recorded (hari-web-payments) and the shop checks it in its Wave
@@ -24,8 +24,25 @@ export type WavePaymentState = {
 async function loadOrder(orderId: string): Promise<Row | null> {
   if (!uuid.test(orderId)) return null
   const { data } = await db().from("hari-web-orders")
-    .select("id, number, total, status, payment_method, payment_status").eq("id", orderId).maybeSingle()
+    .select("id, number, customer_name, total, status, payment_method, payment_status").eq("id", orderId).maybeSingle()
   return data
+}
+
+/**
+ * The Wave order becomes an order for the shop: shown in the web app from now on, and announced in its
+ * notifications. Only the first time (submitted_at still NULL): several clicks, one notification.
+ */
+async function submitOrder(order: Row, how: string) {
+  const { data } = await db().from("hari-web-orders")
+    .update({ submitted_at: new Date().toISOString() })
+    .eq("id", order.id).is("submitted_at", null).select("id")
+  if (!data?.length) return
+  await db().from("hari-notifications").insert({
+    title: "Nouvelle commande en ligne",
+    message: `${order.number} · ${order.customer_name} · ${formatPrice(Number(order.total))} · ${how}`,
+    type: "info",
+    performed_by_name: "Site e-commerce",
+  }).then(({ error: e }) => e && console.error("Notification de commande:", e.message))
 }
 
 const stateOf = (o: Row): WavePaymentState => ({
@@ -60,6 +77,9 @@ export async function startWavePayment(orderId: string, payerPhone: string): Pro
     console.error("Paiement Wave:", error?.message)
     return { ok: false, error: "Le paiement Wave n'est pas disponible pour le moment. Réessayez ou payez à la livraison." }
   }
+
+  // first click on "Payer … avec Wave": only now is it an order for the shop
+  await submitOrder(order, `paiement Wave lancé (${formatPrice(amount)}), à vérifier`)
   return { ok: true, attemptId: data.id, url: waveLink(amount) }
 }
 
@@ -91,5 +111,7 @@ export async function payAtDeliveryInstead(orderId: string): Promise<{ ok: boole
   // its attempts no longer wait for a check
   await db().from("hari-web-payments").update({ status: "abandoned" })
     .eq("order_id", order.id).in("status", ["started", "declared"])
+  // never opened Wave: it becomes an order now, paid at the door
+  await submitOrder(order, "paiement à la livraison")
   return { ok: true }
 }

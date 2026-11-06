@@ -104,9 +104,11 @@ export async function placeOrder(input: OrderInput): Promise<
   const total = items.reduce((n, i) => n + i.total, 0)
   const { data, error } = await db()
     .from("hari-web-orders")
-    // payment columns only for Wave: orders paid at the door still work before add-web-payments.sql
+    // payment columns only for Wave: orders paid at the door still work before add-web-payments.sql.
+    // A Wave order is not an order for the shop yet (submitted_at NULL, hidden from the web app): it becomes
+    // one when the client clicks "Payer … avec Wave" or "Payer à la livraison" (wave-actions.ts).
     .insert({ customer_name: name, customer_phone: phone, address: place, note, items, total,
-              ...(wave ? { payment_method: "wave", payment_status: "pending" } : {}) })
+              ...(wave ? { payment_method: "wave", payment_status: "pending", submitted_at: null } : {}) })
     .select("id, number")
     .single()
   if (error || !data) {
@@ -117,13 +119,16 @@ export async function placeOrder(input: OrderInput): Promise<
   }
 
   recent.set(who, [...times, Date.now()])
-  // the shop sees it in the web app's notifications
-  await db().from("hari-notifications").insert({
-    title: "Nouvelle commande en ligne",
-    message: `${data.number} · ${name} · ${items.reduce((n, i) => n + i.quantity, 0)} article(s) · ${formatPrice(total)}${wave ? " · paiement Wave" : ""}`,
-    type: "info",
-    performed_by_name: "Site e-commerce",
-  }).then(({ error: e }) => e && console.error("Notification de commande:", e.message))
+  // the shop sees it in the web app's notifications. A Wave order only once it becomes an order
+  // (wave-actions.ts › submitOrder): leaving without paying must not bother the shop.
+  if (!wave) {
+    await db().from("hari-notifications").insert({
+      title: "Nouvelle commande en ligne",
+      message: `${data.number} · ${name} · ${items.reduce((n, i) => n + i.quantity, 0)} article(s) · ${formatPrice(total)}`,
+      type: "info",
+      performed_by_name: "Site e-commerce",
+    }).then(({ error: e }) => e && console.error("Notification de commande:", e.message))
+  }
 
   return { ok: true, id: data.id, number: data.number, total }
 }
