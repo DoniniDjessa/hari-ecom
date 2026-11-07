@@ -87,7 +87,7 @@
   text-align: left;
 }
 .faqNum { font-family: var(--font-primary); font-weight: 800; font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s ease; }
-.faqLabel { font-size: clamp(1.05rem, 1.5vw, 1.25rem); font-weight: 700; transition: transform 0.4s var(--ease); }
+.faqLabel { font-family: var(--font-small-title); font-size: clamp(1.05rem, 1.5vw, 1.25rem); font-weight: 400; transition: transform 0.4s var(--ease); }
 .faqQ:hover .faqLabel { transform: translateX(6px); }
 .faqOpen .faqNum { color: var(--gold-ink); }
 

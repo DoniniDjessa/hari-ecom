@@ -11,9 +11,6 @@
   flex-wrap: wrap;
 }
 .universesHead p { color: var(--text-muted); font-size: 1.05rem; }
-@media (hover: none) {
-  .universesHead p { display: none; }
-}
 
 /* ============ PACKS ============ */
 .packs { padding: 120px 0; background: linear-gradient(180deg, var(--background) 0%, var(--gold-wash) 100%); }
@@ -21,6 +18,8 @@
 
 /* ============ PRODUCT ROWS ============ */
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 44px 22px; }
+/* showcase cards (Meilleures ventes): room for the pill astride the right edge and the button astride the bottom */
+.showcaseGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 64px 36px; padding-bottom: 24px; }
 
 /* ============ ABOUT ============ */
 .about {
@@ -122,7 +121,7 @@
   transition: transform 0.4s var(--ease);
 }
 .aboutValues li:hover .aboutCheck { transform: scale(1.15) rotate(-8deg); }
-.aboutValue { flex: 1; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
+.aboutValue { flex: 1; font-family: var(--font-small-title); font-size: 1.1rem; font-weight: 400; letter-spacing: 0; }
 .aboutValues small { font-family: var(--font-primary); font-weight: 800; color: var(--text-muted); }
 
 /* ============ WHY ============ */
@@ -198,10 +197,10 @@
 .whyLight .whyIcon { background: var(--ink); color: var(--on-ink-accent); }
 .whyText { grid-column: 1 / -1; align-self: end; position: relative; max-width: 440px; }
 .whyText h3 {
-  font-family: var(--font-primary);
+  font-family: var(--font-small-title);
   font-size: clamp(1.7rem, 2.6vw, 2.3rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  font-weight: 400;
+  letter-spacing: 0;
   line-height: 1.08;
   margin-bottom: 10px;
 }
@@ -224,6 +223,7 @@
 /* ============ ADVICE ============ */
 .advice { padding: 0 0 120px; }
 .adviceInner {
+  --script-gold: var(--gold-metal); /* black block: bright gold calligraphy */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -264,6 +264,7 @@
 
 @media (max-width: 1000px) {
   .grid { grid-template-columns: repeat(3, 1fr); }
+  .showcaseGrid { grid-template-columns: repeat(3, 1fr); }
   .packGrid { grid-template-columns: repeat(2, 1fr); }
   .aboutGrid { grid-template-columns: 1fr; gap: 40px; }
   .aboutVisual { position: relative; top: 0; max-width: 460px; }
@@ -284,6 +285,7 @@
 }
 @media (max-width: 700px) {
   .grid { grid-template-columns: repeat(2, 1fr); gap: 30px 12px; }
+  .showcaseGrid { grid-template-columns: repeat(2, 1fr); gap: 48px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .whyCard { animation: none; }

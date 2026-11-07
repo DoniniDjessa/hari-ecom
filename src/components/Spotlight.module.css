@@ -1,5 +1,6 @@
 /* black and gold showcase, the same in both themes */
 .section {
+  --script-gold: var(--gold-metal); /* black block: bright gold calligraphy */
   position: relative;
   overflow: hidden;
   padding: 90px 22px 100px;
@@ -142,8 +143,9 @@
 @keyframes float { 50% { translate: 0 -8px; } }
 
 .body { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; padding: 18px 26px 24px; }
-.brand { font-size: 1.8rem; margin-bottom: 0; }
-.body h3 { font-family: var(--font-primary); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.12; }
+/* the brand: the brand font (Hachi Maru Pop), in gold; .body .brand wins over the global .script font */
+.body .brand { font-family: var(--font-brand); font-size: 1.15rem; line-height: 1.3; margin-bottom: 6px; }
+.body h3 { font-family: var(--font-small-title); font-size: 1.45rem; font-weight: 400; letter-spacing: 0; line-height: 1.12; }
 .body h3 a { background: linear-gradient(var(--gold-real), var(--gold-real)) 0 100% / 0 1.5px no-repeat; transition: background-size 0.5s var(--ease); }
 .card:hover .body h3 a { background-size: 100% 1.5px; }
 .pitch {
@@ -159,10 +161,10 @@
 
 .foot { margin-top: auto; padding-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .price {
-  font-family: var(--font-primary);
+  font-family: var(--font-price);
   font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-weight: 700;
+  letter-spacing: 0;
   background: var(--gold-metal);
   background-size: 220% auto;
   -webkit-background-clip: text;

@@ -92,7 +92,7 @@
 
 .body { flex: 1; display: flex; flex-direction: column; padding: 18px 20px 20px; }
 .kicker { font-size: 1.7rem; margin-bottom: -2px; }
-.body h3 { font-family: var(--font-primary); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.1; }
+.body h3 { font-family: var(--font-small-title); font-size: 1.45rem; font-weight: 400; letter-spacing: 0; line-height: 1.1; }
 
 .items { display: flex; flex-direction: column; gap: 4px; margin: 14px 0 18px; font-size: 0.86rem; color: var(--text-secondary); }
 .items li { display: flex; gap: 8px; min-width: 0; }
@@ -110,7 +110,7 @@
   flex-wrap: wrap;
 }
 .price { display: flex; flex-direction: column; }
-.price strong { font-family: var(--font-primary); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.04em; }
+.price strong { font-family: var(--font-price); font-size: 1.5rem; font-weight: 700; letter-spacing: 0; }
 .price s { font-size: 0.82rem; color: var(--text-muted); }
 .add { padding: 11px 18px; font-size: 0.9rem; }
 

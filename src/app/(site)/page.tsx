@@ -7,6 +7,7 @@ import { isSiteImage } from "@/lib/content"
 import { SITE, whatsappLink } from "@/lib/site"
 import { toCard, type SiteProduct } from "@/lib/types"
 import { ProductCard } from "@/components/ProductCard"
+import { ShowcaseCard } from "@/components/ShowcaseCard"
 import { PackCard } from "@/components/PackCard"
 import { Spotlight } from "@/components/Spotlight"
 import { Testimonials } from "@/components/Testimonials"
@@ -14,7 +15,7 @@ import { ShopsMap } from "@/components/ShopsMap"
 import { WhatsAppChannel } from "@/components/WhatsAppChannel"
 import { HeroCarousel, type HeroSlide } from "@/components/HeroCarousel"
 import { UniverseTiles } from "@/components/UniverseTiles"
-import { Commitments, Faq, ScrollText } from "@/components/HomeSections"
+import { Faq, ScrollText } from "@/components/HomeSections"
 import { ArrowIcon, ChatIcon, CheckIcon, ShieldIcon, TruckIcon, WalletIcon } from "@/components/icons"
 import styles from "./home.module.css"
 
@@ -36,7 +37,8 @@ const initials = (t: string) => t.split(/[\s'’-]+/).filter((w) => w && !SMALL.
 /** Label on the page thread: "Nos coups de cœur." → "Coups de cœur" */
 const station = (title: string) => { const t = title.replace(/\.$/, "").replace(/^Nos /, ""); return t[0].toUpperCase() + t.slice(1) }
 
-function Row({ script, title, text, products, href }: { script: string; title: string; text: string; products: SiteProduct[]; href: string }) {
+/** A row of products; `showcase`: the big cards with stars (ShowcaseCard), else the usual ProductCard */
+function Row({ script, title, text, products, href, showcase }: { script: string; title: string; text: string; products: SiteProduct[]; href: string; showcase?: boolean }) {
   if (!products.length) return null
   return (
     <section className="section reveal" data-station={station(title)}>
@@ -49,8 +51,10 @@ function Row({ script, title, text, products, href }: { script: string; title: s
           </div>
           <Link href={href} className="link-more">Tout voir <ArrowIcon size={16} /></Link>
         </div>
-        <div className={`${styles.grid} stagger`}>
-          {products.map((p) => <ProductCard key={p.id} product={toCard(p)} />)}
+        <div className={`${showcase ? styles.showcaseGrid : styles.grid} stagger`}>
+          {products.map((p, i) => showcase
+            ? <ShowcaseCard key={p.id} product={toCard(p)} n={i} />
+            : <ProductCard key={p.id} product={toCard(p)} />)}
         </div>
       </div>
     </section>
@@ -68,7 +72,6 @@ export default async function Home() {
   const news = pick((p) => p.isNew)
   // "Meilleures sélections pour vous": ticked in the web app, 3 at most
   const spotlight = pick((p) => p.spotlight, 3).map((p) => ({ ...toCard(p), pitch: p.pitch || p.description }))
-  const brands = new Set(all.map((p) => p.brand).filter(Boolean)).size
   const { hero, about, advice } = content
 
   // the posters of the backoffice; none yet: the brand slide (backoffice texts)
@@ -102,12 +105,12 @@ export default async function Home() {
             <span className="script text-gold">À chacun son rituel</span>
             <h2 className="section-title">Nos univers.</h2>
           </div>
-          <p>Survolez un univers pour en découvrir plus.</p>
+          <p>Choisissez un univers pour découvrir ses soins.</p>
         </div>
         <UniverseTiles universes={universes} />
       </section>
 
-      <Row script="Elles les adorent" title="Meilleures ventes." text="Ce que nos clientes rachètent, encore et encore." products={bestsellers} href="/boutique?tri=ventes" />
+      <Row script="Elles les adorent" title="Meilleures ventes." text="Ce que nos clientes rachètent, encore et encore." products={bestsellers} href="/boutique?tri=ventes" showcase />
 
       {/* --- PACKS --- */}
       {packs.length > 0 && (
@@ -127,20 +130,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-      {/* --- FIGURES --- */}
-      <section className="section reveal" data-station="Engagements">
-        <div className="container">
-          <Commitments
-            items={[
-              { value: `${all.length}+`, label: "soins en ligne", text: "Visage, corps, bébé, bien-être : toute notre sélection." },
-              { value: `${brands}`, label: "marques", text: "Des marques reconnues et des pépites à découvrir." },
-              { value: "2", label: "boutiques", text: "À Yopougon et à Cocody, pour voir et sentir avant d'acheter." },
-              { value: "100%", label: "authentiques", text: "Des produits contrôlés, que nous connaissons." },
-            ]}
-          />
-        </div>
-      </section>
 
       {/* --- ABOUT: editorial split, sticky visual + statement revealed while scrolling --- */}
       <section className={`${styles.about} reveal`} data-station="Qui sommes-nous">

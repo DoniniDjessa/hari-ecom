@@ -37,7 +37,7 @@
 .resultHead h2 { font-family: var(--font-primary); font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
 .resultHead p { margin-top: 12px; color: var(--text-secondary); line-height: 1.6; }
 .zone { margin-top: 34px; }
-.zone h3 { font-family: var(--font-primary); font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; }
+.zone h3 { font-family: var(--font-small-title); font-size: 1.3rem; font-weight: 400; margin-bottom: 12px; }
 .steps { display: flex; flex-direction: column; gap: 12px; }
 .step { display: flex; gap: 16px; padding: 16px; border: 1px solid var(--card-border); background: var(--surface); }
 .num { flex-shrink: 0; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--gold-metal); color: #15130f; font-family: var(--font-primary); font-weight: 800; }

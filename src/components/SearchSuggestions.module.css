@@ -24,7 +24,7 @@
 .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .info strong { font-size: 0.9rem; font-weight: 700; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .info span { font-size: 0.78rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.price { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; font-family: var(--font-primary); font-weight: 800; font-size: 0.9rem; }
+.price { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; font-family: var(--font-price); font-weight: 700; font-size: 0.9rem; }
 .price s { font-family: var(--font-secondary); font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
 
 .all { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 13px; border-top: 1px solid var(--card-border); font-size: 0.88rem; font-weight: 700; color: var(--gold-ink); }

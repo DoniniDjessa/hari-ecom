@@ -35,11 +35,11 @@
 .line:hover::after { transform: scaleX(1); }
 .thumb { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--photo-bg); }
 .lineInfo { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.brand { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
-.name { font-family: var(--font-primary); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; line-height: 1.2; }
+.brand { font-family: var(--font-brand); font-size: 0.8rem; font-weight: 400; color: var(--gold-ink); }
+.name { font-family: var(--font-small-title); font-weight: 400; font-size: 1.1rem; letter-spacing: 0; line-height: 1.2; }
 .unit { font-size: 0.85rem; color: var(--text-muted); }
 .lineActions { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
-.lineTotal { font-family: var(--font-primary); font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+.lineTotal { font-family: var(--font-price); font-size: 1.15rem; font-weight: 700; letter-spacing: 0; white-space: nowrap; }
 
 .qty { display: inline-flex; align-items: center; height: 38px; border: 1px solid var(--card-border); border-radius: 980px; }
 .qty button { width: 36px; height: 100%; display: grid; place-items: center; border-radius: 980px; }
@@ -64,7 +64,7 @@
 .summary h2 { font-size: 1.9rem; letter-spacing: -0.04em; margin-bottom: 8px; }
 .sumRow { display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
 .sumTotal { padding-top: 14px; border-top: 1px solid var(--card-border); color: var(--text-main); align-items: baseline; }
-.sumTotal span:last-child { font-family: var(--font-primary); font-size: 1.8rem; font-weight: 800; letter-spacing: -0.04em; }
+.sumTotal span:last-child { font-family: var(--font-price); font-size: 1.8rem; font-weight: 700; letter-spacing: 0; }
 
 .fields { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 .fields input, .fields textarea {

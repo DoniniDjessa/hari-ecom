@@ -1,74 +1,150 @@
+/* ==========================================
+   NOS BOUTIQUES (components/ShopsMap.tsx): a big map in a gold frame, a frosted panel on top of it.
+   Phones: the map, then the panel under it.
+   ========================================== */
 .wrap {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 16px;
-  align-items: stretch;
-}
-
-/* ---------- the shops: choose the one on the map ---------- */
-.list { display: flex; flex-direction: column; gap: 12px; }
-.list li {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 18px;
-  border-radius: 0;
-  border: 1px solid var(--card-border);
-  background: var(--surface);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.list li.on { border-color: var(--gold-real); box-shadow: 0 0 0 4px var(--gold-wash); }
-
-.shop { display: flex; align-items: center; gap: 14px; text-align: left; }
-.num {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--gold-wash);
-  color: var(--gold-ink);
-  font-family: var(--font-primary);
-  font-weight: 800;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-.on .num { background: var(--gold-metal); color: #15130f; }
-.info { display: flex; flex-direction: column; gap: 2px; }
-.info strong { font-family: var(--font-primary); font-size: 1.08rem; font-weight: 700; color: var(--text-main); }
-.info span { font-size: 0.88rem; color: var(--text-muted); }
-
-.route {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 58px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--gold-ink);
-}
-.route:hover { text-decoration: underline; }
-
-/* ---------- the map ---------- */
-.map {
   position: relative;
-  min-height: 420px;
-  border-radius: 0;
+  min-height: 560px;
+  border-radius: 28px;
   overflow: hidden;
-  border: 1px solid var(--card-border);
+  isolation: isolate;
   background: var(--surface-2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 24px 56px rgba(143, 116, 68, 0.14);
 }
-.map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; animation: mapIn 0.6s var(--ease); }
+/* the double gold line, drawn over the edge of the map */
+.wrap::before,
+.wrap::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.wrap::before { inset: 0; border: 1px solid rgba(193, 154, 63, 0.55); }
+.wrap::after { inset: 7px; border-radius: 22px; border: 1px solid rgba(193, 154, 63, 0.28); }
+
+/* ---------- the map: a little warm, to match the site ---------- */
+.map { position: absolute; inset: 0; z-index: -1; }
+.map iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: sepia(0.18) saturate(0.85);
+  animation: mapIn 0.7s var(--ease);
+}
+:global([data-theme="dark"]) .map iframe { filter: sepia(0.18) saturate(0.85) brightness(0.88); }
 @keyframes mapIn { from { opacity: 0; } }
 
+/* ---------- the panel ---------- */
+.panel {
+  position: absolute;
+  z-index: 3;
+  top: 28px;
+  left: 28px;
+  bottom: 28px;
+  width: min(400px, 42%);
+  display: flex;
+  flex-direction: column;
+  padding: 26px 28px 22px;
+  border-radius: 22px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(193, 154, 63, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14);
+}
+
+/* tabs: choose the shop */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 980px;
+  background: var(--surface-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button {
+  flex: 1 0 auto;
+  padding: 9px 16px;
+  border-radius: 980px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.tabs button:hover { color: var(--text-main); }
+.tabs .tabOn {
+  background: var(--gold-metal);
+  background-size: 220% auto;
+  color: var(--on-gold);
+  box-shadow: 0 6px 16px rgba(193, 154, 63, 0.3);
+}
+
+/* the shop shown */
+.shop { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 26px 0 18px; animation: shopIn 0.6s var(--ease); }
+@keyframes shopIn { from { opacity: 0; transform: translateY(12px); } }
+.panel .kicker { font-size: 2.1rem; margin-bottom: 0; }
+.name {
+  font-family: var(--font-primary);
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  color: var(--text-main);
+}
+.city { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 0.95rem; font-weight: 600; color: var(--gold-ink); }
+.text { margin-top: 14px; font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 24px; }
+.chat { display: inline-flex; align-items: center; gap: 7px; font-size: 0.92rem; font-weight: 700; color: var(--text-main); }
+.chat:hover { color: var(--gold-ink); }
+
+/* previous / next */
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border);
+}
+.counter { font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.08em; }
+.counter strong { font-weight: 800; color: var(--text-main); }
+.arrows { display: flex; gap: 8px; }
+.arrows button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  background: var(--surface);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.arrows button:hover { background: var(--ink); border-color: var(--ink); color: var(--ink-contrast); }
+.back { transform: rotate(180deg); }
+
+/* ---------- phones: the map, then the panel ---------- */
 @media (max-width: 900px) {
-  .wrap { grid-template-columns: 1fr; }
-  .list { flex-direction: row; overflow-x: auto; scrollbar-width: none; }
-  .list li { flex: 0 0 min(78vw, 300px); }
-  .map { min-height: 340px; order: -1; }
+  .wrap { min-height: 0; display: flex; flex-direction: column; border-radius: 22px; }
+  .wrap::after { border-radius: 16px; }
+  .map { position: relative; height: 300px; z-index: 0; }
+  .panel {
+    position: relative;
+    inset: auto;
+    width: auto;
+    margin: -34px 12px 12px;
+    padding: 20px 20px 18px;
+    border-radius: 18px;
+    background: var(--surface);
+  }
+  .shop { padding: 20px 0 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .map iframe { animation: none; }
+  .map iframe, .shop { animation: none; }
 }

@@ -112,7 +112,7 @@ export function Faq() {
   return (
     <div className={styles.faq}>
       <div className={styles.faqAside}>
-        <p className="eyebrow">Questions fréquentes</p>
+        <span className="script text-gold">Questions fréquentes</span>
         <h2 className={styles.title}>Commander, simplement.</h2>
         <p className={styles.faqText}>Tout ce qu&apos;il faut savoir sur la commande, la livraison et le paiement. Une autre question ? Nous répondons vite.</p>
         {SITE.whatsapp && (

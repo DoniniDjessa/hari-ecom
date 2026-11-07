@@ -1,4 +1,4 @@
-.box { padding: 28px; background: linear-gradient(160deg, #1d1b16 0%, #0d0c0a 100%); color: #f4efe5; }
+.box { --script-gold: var(--gold-metal); padding: 28px; background: linear-gradient(160deg, #1d1b16 0%, #0d0c0a 100%); color: #f4efe5; }
 .form label { display: block; font-size: 0.85rem; font-weight: 700; color: rgba(244, 239, 229, 0.7); margin-bottom: 10px; }
 .form > div { display: flex; gap: 10px; flex-wrap: wrap; }
 .form input {

@@ -1,7 +1,7 @@
 /* ==========================================
    HARI STORE — design tokens
-   Same language as sngcompany ("Apple" look: white, Apple gray, black, Outfit + Plus Jakarta Sans,
-   square cards, pill buttons, scroll reveals). Its orange accent becomes a pale gold that fades to
+   Same language as sngcompany ("Apple" look: white, Apple gray, black, Plus Jakarta Sans + Cookie
+   + Hachi Maru Pop, square cards, pill buttons, scroll reveals). Its orange accent becomes a pale gold that fades to
    white (the gold of the logo, softened).
    Product photos are shot on #F4F1EC (haritest/scripts/ecom-image-prompt.txt): --photo-bg is the
    same color, so a photo melts into its card.
@@ -45,9 +45,15 @@
   --max-width: 1200px;
   --header-height: 52px;
 
-  --font-primary: var(--font-outfit), sans-serif;
+  /* fonts (app/layout.tsx): Plus Jakarta Sans for the text and the big titles, Cookie for the
+     calligraphy (.script), Hachi Maru Pop for the small titles (h3–h6) and the product names, Baumans
+     for the brand names and the prices */
+  --font-primary: var(--font-jakarta), sans-serif;
   --font-secondary: var(--font-jakarta), sans-serif;
-  --font-script: var(--font-vibes), cursive;
+  --font-script: var(--font-cookie), cursive;
+  --font-small-title: var(--font-hachi), var(--font-jakarta), sans-serif;
+  --font-brand: var(--font-baumans), var(--font-jakarta), sans-serif;
+  --font-price: var(--font-brand);  /* the prices: Baumans too, its figures are round and clear */
 
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --transition: all 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -129,11 +135,13 @@ h1, h2 {
   letter-spacing: -0.03em;
 }
 
+/* small titles: Hachi Maru Pop has a single weight, so no fake bold even where a component asks for 700/800 */
 h3, h4, h5, h6 {
-  font-family: var(--font-secondary);
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
+  font-family: var(--font-small-title);
+  font-weight: 400;
+  font-synthesis: none;
+  line-height: 1.3;
+  letter-spacing: 0;
 }
 
 a { color: inherit; text-decoration: none; transition: var(--transition); }
@@ -203,16 +211,22 @@ img { display: block; max-width: 100%; }
 .btn-gold { background: var(--gold-soft); color: var(--ink); }
 .btn-gold:hover:not(:disabled) { background: var(--gold); }
 
-/* handwriting accent (Great Vibes), usually above a title */
+/* handwriting accent (Cookie), usually above a title */
 .script {
   display: block;
   font-family: var(--font-script);
   font-weight: 400;
-  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-size: clamp(2.3rem, 3.6vw, 3.1rem); /* the calligraphy is fine: a little bigger to read well */
   line-height: 1.1;
   letter-spacing: 0;
   margin-bottom: 2px;
 }
+/* its thin strokes would fade into the light parts of the metallic gradient: on light backgrounds the
+   gold is deeper (--script-gold); the dark theme and the black blocks (Spotlight, advice, loyalty,
+   WhatsApp) set it back to the bright gold */
+:root { --script-gold: linear-gradient(110deg, #6f511b 0%, #a37a2c 22%, #c9a24e 40%, #8c6a26 58%, #b58c3a 76%, #7a5a1e 100%); }
+:root[data-theme='dark'] { --script-gold: var(--gold-metal); }
+.script.text-gold { background-image: var(--script-gold); }
 /* handwriting always starts with a capital */
 .script::first-letter { text-transform: uppercase; }
 

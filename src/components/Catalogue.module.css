@@ -343,7 +343,7 @@
 }
 
 .empty { padding: 80px 20px; text-align: center; background: var(--surface-2); }
-.empty h3 { font-family: var(--font-primary); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
+.empty h3 { font-family: var(--font-small-title); font-size: 1.6rem; font-weight: 400; letter-spacing: 0; }
 .empty p { color: var(--text-muted); margin: 6px 0 22px; }
 
 .backdrop { display: none; }

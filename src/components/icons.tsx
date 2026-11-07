@@ -23,6 +23,8 @@ export const ShieldIcon = (p: P) => <Svg {...p}><path d="M12 3 5 6v6c0 4 3 7 7 9
 export const ChatIcon = (p: P) => <Svg {...p}><path d="M4 18.5 5.3 15A7.5 7.5 0 1 1 8.5 18L4 18.5Z" /></Svg>
 export const WalletIcon = (p: P) => <Svg {...p}><rect x="3" y="6" width="18" height="13" rx="2" /><path d="M16 12.5h2M3 9h18" /></Svg>
 export const ChevronIcon = (p: P) => <Svg {...p}><path d="m9 6 6 6-6 6" /></Svg>
+export const ShareIcon = (p: P) => <Svg {...p}><circle cx="18" cy="5.5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="18.5" r="2.5" /><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1" /></Svg>
+export const PinIcon = (p: P) => <Svg {...p}><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.4" /></Svg>
 
 export const StarIcon = ({ size = 14, filled = 1 }: { size?: number; filled?: number }) => {
   const id = `s${Math.round(filled * 100)}`
