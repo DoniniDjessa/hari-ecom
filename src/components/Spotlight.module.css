@@ -3,7 +3,7 @@
   --script-gold: var(--gold-metal); /* black block: bright gold calligraphy */
   position: relative;
   overflow: hidden;
-  padding: 90px 22px 100px;
+  padding: 90px var(--gutter) 100px;
   background: linear-gradient(180deg, #0b0a08 0%, #16130d 100%);
   color: #f4efe5;
   isolation: isolate;

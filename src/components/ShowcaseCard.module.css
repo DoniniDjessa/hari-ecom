@@ -125,13 +125,15 @@
 .add.done { background: var(--gold-metal); color: var(--on-gold); }
 .add:disabled { background: var(--surface-2); color: var(--text-muted); box-shadow: none; cursor: not-allowed; }
 
-/* ---------- phones: 2 per row, the pill inside the card ---------- */
+/* ---------- phones: 2 per row ---------- */
 @media (max-width: 700px) {
   .card { padding: 8px 8px 40px; border-radius: 20px; }
   .media { border-radius: 14px; }
   .badges { top: 16px; left: 16px; }
-  .side { top: 16px; right: 16px; padding: 4px; border-radius: 13px; }
-  .side .sideBtn.sideBtn { width: 32px; height: 32px; border-radius: 10px; }
+  /* astride the right edge, as on big screens, a little smaller */
+  .side { top: 40px; right: -9px; gap: 0; padding: 3px; border-radius: 11px; }
+  .side .sideBtn.sideBtn { width: 28px; height: 28px; border-radius: 8px; }
+  .side .sideBtn.sideBtn svg { width: 15px; height: 15px; }
   .body { padding: 12px 4px 0; }
   .name { font-size: 0.92rem; }
   .price { font-size: 1rem; }

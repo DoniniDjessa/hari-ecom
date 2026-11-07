@@ -30,6 +30,6 @@
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 680px) {
-  .head { padding: 56px 18px 44px; margin-bottom: 32px; }
+  .head { padding: 56px var(--gutter) 44px; margin-bottom: 32px; }
   .grid { grid-template-columns: 1fr; }
 }

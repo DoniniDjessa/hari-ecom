@@ -356,7 +356,7 @@
 /* ---------- phones: full sheet from the bottom ---------- */
 @media (max-width: 860px) {
   .hero { margin-bottom: 28px; }
-  .heroInner { grid-template-columns: 1fr; padding: 40px 18px 44px; min-height: 0; gap: 8px; }
+  .heroInner { grid-template-columns: 1fr; padding: 40px var(--gutter) 44px; min-height: 0; gap: 8px; }
   .heroArt { order: -1; width: min(62vw, 260px); }
   .layout { grid-template-columns: 1fr; }
   .sort { display: none; }

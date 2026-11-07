@@ -128,7 +128,7 @@
   .gallery { position: static; }
 }
 @media (max-width: 700px) {
-  .gallery { margin: 0 -22px; } /* the photo edge to edge: out of the container's side padding */
+  .gallery { margin: 0 calc(-1 * var(--gutter)); } /* the photo edge to edge: out of the container's side padding */
   .info h1 { font-size: clamp(1.55rem, 6.8vw, 2rem); }
   .price { font-size: 1.8rem; }
   .related { grid-template-columns: repeat(2, 1fr); gap: 30px 12px; }

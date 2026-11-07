@@ -44,6 +44,8 @@
 
   --max-width: 1200px;
   --header-height: 52px;
+  /* side space of the page: a little less on phones, the content closer to the edges */
+  --gutter: 22px;
 
   /* fonts (app/layout.tsx): Plus Jakarta Sans for the text and the big titles, Cookie for the
      calligraphy (.script), Hachi Maru Pop for the small titles (h3–h6) and the product names, Baumans
@@ -154,7 +156,10 @@ img { display: block; max-width: 100%; }
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 22px;
+  padding: 0 var(--gutter);
+}
+@media (max-width: 768px) {
+  :root { --gutter: 14px; }
 }
 
 /* small line above a title, as on sngcompany */
