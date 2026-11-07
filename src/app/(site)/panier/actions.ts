@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers"
 import { db } from "@/lib/db"
-import { formatPrice } from "@/lib/site"
+import { formatPrice, hasPrice } from "@/lib/site"
 import { flashPrices } from "@/lib/catalog"
 
 // Places an order from the cart: it lands in the web app (Livraisons › Commandes en ligne), which calls
@@ -88,7 +88,7 @@ export async function placeOrder(input: OrderInput): Promise<
       })
     } else {
       const p = byProduct.get(l.id)
-      if (!p || !p.active || !p.on_site || stockOf(p) < l.quantity) {
+      if (!p || !p.active || !p.on_site || !hasPrice(Number(p.price)) || stockOf(p) < l.quantity) {
         unavailable.push(p?.name ?? "un produit")
         continue
       }

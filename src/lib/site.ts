@@ -32,6 +32,11 @@ export const UNIVERSES = [
   { name: "Cheveux", slug: "cheveux", tagline: "Shampoings et soins" },
 ]
 
+/** Price set to 1 F in the web app = price not known yet (filled in later): such products are not on the site
+ *  and cannot be ordered, as products without a price (0 F). Only exactly 1 F (2 F is a real price). */
+export const NO_PRICE = 1
+export const hasPrice = (price: number) => price > 0 && price !== NO_PRICE
+
 export const universeBySlug = (slug: string) => UNIVERSES.find((u) => u.slug === slug)
 
 export const formatPrice = (n: number) => `${Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ")} FCFA`

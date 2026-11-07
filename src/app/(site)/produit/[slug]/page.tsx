@@ -17,6 +17,8 @@ import { FavButton } from "@/components/FavButton"
 import { BoughtTogether } from "@/components/BoughtTogether"
 import { RecentlyViewed } from "@/components/SavedRows"
 import { TrackView } from "@/components/TrackView"
+import { ProductReviews } from "@/components/ProductReviews"
+import { productReviews } from "@/lib/reviews"
 import styles from "./product.module.css"
 
 export const revalidate = 300
@@ -76,7 +78,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   const p = await getProduct((await params).slug)
   if (!p) notFound()
   const universe = UNIVERSES.find((u) => u.name === p.universe)
-  const all = await getProducts()
+  const [all, reviewList] = await Promise.all([getProducts(), productReviews(p.id)])
   const others = related(all, p).map(toCard)
   // completes it: same range first, else same brand and universe; another form, in stock
   const together = all
@@ -172,7 +174,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             {p.brand && <Link href={`/marques/${slugify(p.brand)}`} className={styles.brand}>{p.brand}</Link>}
             <h1>{p.name}</h1>
             <div className={styles.meta}>
-              {p.rating != null && <Stars rating={p.rating} reviews={p.reviews} size={15} />}
+              {p.rating != null && <a href="#avis" className={styles.ratingLink}><Stars rating={p.rating} reviews={p.reviews} size={15} /></a>}
               {[p.range && `Gamme ${p.range}`, p.form, p.volume].filter(Boolean).length > 0 && (
                 <span>{[p.range && `Gamme ${p.range}`, p.form, p.volume].filter(Boolean).join(" · ")}</span>
               )}
@@ -233,6 +235,8 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
 
         {together.length > 0 && <BoughtTogether product={toCard(p)} others={together.map(toCard)} />}
+
+        <ProductReviews productId={p.id} productName={p.name} rating={p.rating} reviews={p.reviews} list={reviewList} />
       </div>
 
       {others.length > 0 && (

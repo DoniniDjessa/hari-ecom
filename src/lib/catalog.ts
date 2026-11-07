@@ -3,9 +3,10 @@ import { cache } from "react"
 import { unstable_cache } from "next/cache"
 import { db } from "./db"
 import type { SiteProduct, UniverseCard } from "./types"
-import { UNIVERSES } from "./site"
+import { NO_PRICE, UNIVERSES } from "./site"
 import { getSiteContent } from "./backoffice"
 import { inUniverseOrder, isSiteImage } from "./content"
+import { blendRating, reviewStats } from "./reviews"
 
 // SITE_PREVIEW_ALL=true: every active product, before "Afficher sur le site" is ticked in the web app
 const PREVIEW_ALL = process.env.SITE_PREVIEW_ALL === "true"
@@ -68,11 +69,13 @@ function toSiteProduct(r: Row): SiteProduct {
 /** Every product of the site (≈ 600: the whole list is read at once and filtered in memory), kept 5 min.
  *  The flash sales of the web app are applied at each read: a sale starts and ends on time. */
 export const getProducts = cache(async (): Promise<SiteProduct[]> => {
-  const [products, flash] = await Promise.all([cachedProducts(), flashPrices()])
-  if (!flash.size) return products
+  const [products, flash, stats] = await Promise.all([cachedProducts(), flashPrices(), reviewStats()])
   return products.map((p) => {
+    // the visitors' reviews blended into the base rating (lib/reviews.ts)
+    const s = stats[p.id]
+    const rated = s ? { ...p, ...blendRating(p.rating, p.reviews, s) } : p
     const f = flash.get(p.id)
-    return f && f.price < p.price ? { ...p, price: f.price, oldPrice: p.price, promoEnds: f.endsAt } : p
+    return f && f.price < rated.price ? { ...rated, price: f.price, oldPrice: rated.price, promoEnds: f.endsAt } : rated
   })
 })
 
@@ -114,6 +117,7 @@ const cachedProducts = unstable_cache(async (): Promise<SiteProduct[]> => {
     .select("*, stock:hari-stock(quantity)")
     .eq("active", true)
     .gt("price", 0)
+    .neq("price", NO_PRICE) // 1 F: price to come (lib/site.ts)
     .order("created_at", { ascending: false })
   if (!PREVIEW_ALL) query = query.eq("on_site", true)
   const { data, error } = await query
