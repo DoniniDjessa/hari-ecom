@@ -52,17 +52,18 @@ export type Question = {
   show?: (a: Partial<Answers>) => boolean
   options: { value: string; label: string; text?: string; zones?: Zone[]; swatch?: string }[]
 }
-/** the complexion, lightest to darkest (web app › lib/product-taxonomy.ts › TEINTES) */
+/** the complexion, lightest to darkest (web app › lib/product-taxonomy.ts › TEINTES). Here "métisse" is lighter
+ *  than "claire" (what the shop and its clients mean by it): between "très claire" and "claire". */
 export const TONES = [
   { value: "tres-claire", label: "Très claire", swatch: "#F1D3B8" },
-  { value: "claire", label: "Claire", swatch: "#DDAF88" },
-  { value: "metisse", label: "Métisse", swatch: "#C48A5E" },
+  { value: "metisse", label: "Métisse", swatch: "#E4BC97" },
+  { value: "claire", label: "Claire", swatch: "#D2A077" },
   { value: "caramel", label: "Caramel", swatch: "#A86B40" },
   { value: "chocolat", label: "Chocolat", swatch: "#7A4A2A" },
   { value: "ebene", label: "Ébène", swatch: "#4A2C1A" },
 ]
 const toneGroup = (v: string | undefined) =>
-  v === "tres-claire" || v === "claire" ? "light" : v === "chocolat" || v === "ebene" ? "deep" : v ? "medium" : ""
+  v === "tres-claire" || v === "metisse" || v === "claire" ? "light" : v === "chocolat" || v === "ebene" ? "deep" : v ? "medium" : ""
 const GOAL_OPTIONS: Question["options"] = [
   { value: "eclaircir", label: "Éclaircir et unifier le teint" },
   { value: "intense", label: "Un éclaircissement intense", text: "Un teint nettement plus clair, des soins plus concentrés" },
