@@ -9,6 +9,7 @@ import { useCart } from "./CartProvider"
 import { CheckIcon, PlusIcon } from "./icons"
 import { SiteBadge } from "./SiteBadge"
 import styles from "./PackCard.module.css"
+import { Euro } from "@/components/Euro"
 
 // A pack: its photo, or a mosaic of its products' photos, a real-gold saving badge, the products inside,
 // the price against what the products cost one by one, and "Ajouter le pack" (one line in the cart).
@@ -58,6 +59,7 @@ export function PackCard({ pack: p }: { pack: SitePack }) {
           <p className={styles.price}>
             <strong>{formatPrice(p.price)}</strong>
             {p.saving > 0 && <s>{formatPrice(p.value)}</s>}
+            <Euro amount={p.price} />
           </p>
           <button
             type="button"

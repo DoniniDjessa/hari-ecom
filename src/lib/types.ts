@@ -52,7 +52,7 @@ export interface SiteProduct {
 export type CardProduct = Pick<SiteProduct,
   "id" | "code" | "slug" | "name" | "brand" | "price" | "oldPrice" | "promoEnds" | "image" | "universe" | "form" | "benefits" | "skinTypes"
   | "hairTypes" | "targets"
-  | "isNew" | "bestseller" | "featured" | "badge" | "rating" | "reviews" | "inStock" | "createdAt" | "volume"> & {
+  | "isNew" | "bestseller" | "featured" | "badge" | "rating" | "reviews" | "inStock" | "createdAt" | "volume" | "moments"> & {
   /** the best "n for x" offer, shown under the price */
   lot: { quantity: number; price: number } | null
   /** key ingredients and ingredients to watch (skin diagnosis: what to avoid) */
@@ -64,7 +64,7 @@ export const toCard = (p: SiteProduct): CardProduct => ({
   universe: p.universe, form: p.form, benefits: p.benefits, skinTypes: p.skinTypes, hairTypes: p.hairTypes,
   targets: p.targets, isNew: p.isNew,
   bestseller: p.bestseller, featured: p.featured, badge: p.badge, rating: p.rating, reviews: p.reviews, inStock: p.inStock,
-  createdAt: p.createdAt, volume: p.volume,
+  createdAt: p.createdAt, volume: p.volume, moments: p.moments,
   lot: [...p.lots].sort((a, b) => a.price / a.quantity - b.price / b.quantity)[0] ?? null,
   ingredients: [...p.keyIngredients, ...p.alertIngredients],
 })

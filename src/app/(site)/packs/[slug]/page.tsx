@@ -8,6 +8,7 @@ import { PackBuy } from "@/components/PackBuy"
 import { ProductVisual } from "@/components/ProductVisual"
 import { ChatIcon, ShieldIcon, TruckIcon } from "@/components/icons"
 import styles from "./pack.module.css"
+import { Euro } from "@/components/Euro"
 
 export const revalidate = 300
 
@@ -60,7 +61,7 @@ export default async function PackPage({ params }: { params: Params }) {
           <p className={styles.meta}>{count} articles · {p.items.length} produit{p.items.length > 1 ? "s" : ""}</p>
 
           <div className={styles.priceBox}>
-            <strong>{formatPrice(p.price)}</strong>
+            <strong>{formatPrice(p.price)}<Euro amount={p.price} /></strong>
             {p.saving > 0 && (
               <span>
                 au lieu de <s>{formatPrice(p.value)}</s>

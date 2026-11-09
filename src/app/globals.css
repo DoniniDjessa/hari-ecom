@@ -332,3 +332,16 @@ img { display: block; max-width: 100%; }
 @media (max-width: 768px) {
   .section, .section-gray { padding: 72px 0; }
 }
+
+/* the price in euros under the price in FCFA (components/Euro.tsx) */
+.euro {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-primary);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.euro-inline { display: inline; margin: 0 0 0 4px; }

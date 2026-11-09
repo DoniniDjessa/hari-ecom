@@ -32,6 +32,19 @@ export const UNIVERSES = [
   { name: "Cheveux", slug: "cheveux", tagline: "Shampoings et soins" },
 ]
 
+/** Prices also shown in euros, for the clients abroad (diaspora): the fixed rate of the franc CFA, plus a
+ *  margin for the costs of a payment from abroad (transfer, exchange). Indicative: the order is in FCFA. */
+export const EUR_RATE = 655.957
+export const EURO_MARGIN_PERCENT = 5
+export const toEuro = (fcfa: number) => (fcfa / EUR_RATE) * (1 + EURO_MARGIN_PERCENT / 100)
+/** 24 € from 10 € (rounded up to the euro), 2,40 € below (rounded up to 10 cents) */
+export const formatEuro = (fcfa: number) => {
+  const e = toEuro(fcfa)
+  return e >= 10
+    ? `${Math.ceil(e).toLocaleString("fr-FR").replace(/ | /g, " ")} €`
+    : `${(Math.ceil(e * 10) / 10).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+}
+
 /** Price set to 1 F in the web app = price not known yet (filled in later): such products are not on the site
  *  and cannot be ordered, as products without a price (0 F). Only exactly 1 F (2 F is a real price). */
 export const NO_PRICE = 1

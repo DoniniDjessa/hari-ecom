@@ -138,7 +138,8 @@
   animation: float 6s ease-in-out infinite;
 }
 .card:nth-child(2) .product { animation-delay: -2s; }
-.card:nth-child(3) .product { animation-delay: -4s; }
+.card:nth-child(3n) .product { animation-delay: -4s; }
+.card:nth-child(3n + 2) .product { animation-delay: -2s; }
 .card:hover .product { top: 0; }
 @keyframes float { 50% { translate: 0 -8px; } }
 

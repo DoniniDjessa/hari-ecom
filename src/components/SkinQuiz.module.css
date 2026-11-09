@@ -95,3 +95,28 @@
 
 /* the second priority, under the main one */
 .resultHead .second { margin-top: 6px; font-family: var(--font-primary); font-size: 1.2rem; font-weight: 700; color: var(--gold-ink); }
+
+/* why this care: the reasons of the engine (lib/diagnostic.ts) */
+.why { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.why li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 980px;
+  background: var(--gold-wash);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--gold-ink);
+}
+
+/* the advisers' advice that goes with the routine */
+.advice { margin-top: 28px; padding: 22px 24px; border: 1px solid var(--card-border); background: var(--surface); }
+.advice h3 { font-family: var(--font-small-title); font-size: 1.15rem; font-weight: 400; margin-bottom: 12px; }
+.advice ul { display: flex; flex-direction: column; gap: 10px; }
+.advice li { position: relative; padding-left: 20px; font-size: 0.92rem; line-height: 1.55; color: var(--text-secondary); }
+.advice li::before { content: ''; position: absolute; left: 2px; top: 0.6em; width: 7px; height: 7px; border-radius: 50%; background: var(--gold-real); }
+
+/* complexion: a swatch beside each tone */
+.tone { flex-direction: row; align-items: center; gap: 14px; }
+.swatch { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.12); }

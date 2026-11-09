@@ -11,6 +11,7 @@ import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, MinusIcon, PlusIcon, TrashIcon } from "./icons"
 import { WavePay, readWaveOrder, saveWaveOrder, type WaveOrder } from "./WavePay"
 import styles from "./CartPage.module.css"
+import { Euro } from "@/components/Euro"
 
 // Checkout: the order is sent to the shop (web app, Livraisons › Commandes en ligne), which calls the
 // client back to confirm the delivery fee and the time. Name, phone and place are remembered in this
@@ -175,7 +176,7 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
             <div className={styles.sumRow}><span>Frais Wave ({WAVE_FEE_PERCENT} %)</span><span>{formatPrice(waveFee(total))}</span></div>
           )}
           <div className={`${styles.sumRow} ${styles.sumTotal}`}>
-            <span>Total</span><span>{formatPrice(payment === "wave" ? waveAmount(total) : total)}</span>
+            <span>Total</span><span>{formatPrice(payment === "wave" ? waveAmount(total) : total)}<Euro amount={payment === "wave" ? waveAmount(total) : total} /></span>
           </div>
 
           <div className={styles.fields}>

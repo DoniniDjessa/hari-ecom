@@ -91,10 +91,19 @@ export const useRecent = () => {
   return { ready, recent, see }
 }
 
-/** The light catalogue, loaded once per visit (null while loading) */
+/** The light catalogue, shared by the components of the page (null while loading). Loaded again when it is
+ *  more than 2 minutes old: a tab (or the installed app) left open finds the products added since. */
+const FRESH_MS = 2 * 60_000
 let catalog: Promise<CardProduct[]> | null = null
+let loadedAt = 0
 export function loadCatalog() {
-  if (!catalog) catalog = fetch("/api/catalog").then((r) => (r.ok ? r.json() : Promise.reject(r.status))).catch(() => { catalog = null; return [] })
+  if (!catalog || Date.now() - loadedAt > FRESH_MS) {
+    loadedAt = Date.now()
+    const previous = catalog
+    catalog = fetch("/api/catalog", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .catch(() => { loadedAt = 0; return previous ?? [] }) // offline: the last list rather than nothing
+  }
   return catalog
 }
 export function useCatalog(enabled = true) {
@@ -102,8 +111,12 @@ export function useCatalog(enabled = true) {
   useEffect(() => {
     if (!enabled) return
     let alive = true
-    loadCatalog().then((p) => alive && setProducts(p))
-    return () => { alive = false }
+    const load = () => loadCatalog().then((p) => alive && setProducts(p))
+    load()
+    // back on the tab after a while: the latest products
+    const back = () => document.visibilityState === "visible" && Date.now() - loadedAt > FRESH_MS && load()
+    document.addEventListener("visibilitychange", back)
+    return () => { alive = false; document.removeEventListener("visibilitychange", back) }
   }, [enabled])
   return products
 }

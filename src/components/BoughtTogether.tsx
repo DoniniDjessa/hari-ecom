@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { PlusIcon } from "./icons"
 import styles from "./BoughtTogether.module.css"
+import { Euro } from "@/components/Euro"
 
 /** "Souvent achetés ensemble": the product + 1 to 3 that complete it (same range, else same brand and
  *  universe, other forms). All ticked; one click adds the ticked ones to the cart. */
@@ -49,7 +50,7 @@ export function BoughtTogether({ product, others }: { product: CardProduct; othe
         ))}
       </div>
       <div className={styles.foot}>
-        <span>Total : <strong>{formatPrice(total)}</strong></span>
+        <span>Total : <strong>{formatPrice(total)}</strong> <Euro amount={total} className="euro-inline" /></span>
         <button type="button" className="btn btn-dark" onClick={addAll} disabled={!chosen.length}>
           {added ? "Ajoutés au panier" : `Ajouter les ${chosen.length} au panier`}
         </button>

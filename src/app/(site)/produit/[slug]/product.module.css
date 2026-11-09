@@ -147,7 +147,6 @@
 a.brand:hover { color: var(--gold-ink); }
 
 /* stock running low, heart beside the buy box, share */
-.low { margin-top: 14px; font-size: 0.88rem; font-weight: 700; color: #b4532a; }
 .buyRow { display: flex; align-items: flex-start; gap: 10px; }
 .buyRow > :first-child { flex: 1; min-width: 0; }
 .fav { flex-shrink: 0; margin-top: 30px; } /* level with the buy box (its own top margin) */

@@ -9,10 +9,11 @@ import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, PlusIcon } from "./icons"
 import { SiteBadge } from "./SiteBadge"
 import styles from "./Spotlight.module.css"
+import { Euro } from "@/components/Euro"
 
 export type SpotlightProduct = CardProduct & { pitch: string }
 
-// "Meilleures sélections pour vous", right under the hero: the products ticked in the web app (3 at most),
+// "Meilleures sélections pour vous", right under the hero: the products ticked in the web app (6 at most, two rows of 3),
 // a black and gold showcase, unlike the other cards.
 // A halo of light follows the pointer over each card, the product floats over its reflection and tilts
 // toward the pointer. Phones: one swipeable row.
@@ -77,6 +78,7 @@ function Card({ p, i }: { p: SpotlightProduct; i: number }) {
           <strong className={styles.price}>
             {formatPrice(p.price)}
             {p.oldPrice && <s className={styles.oldPrice}>{formatPrice(p.oldPrice)}</s>}
+            <Euro amount={p.price} />
           </strong>
           <div className={styles.actions}>
             <Link href={`/produit/${p.slug}`} className={styles.more}>Découvrir <ArrowIcon size={15} /></Link>

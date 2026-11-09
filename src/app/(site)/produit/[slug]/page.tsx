@@ -20,6 +20,7 @@ import { TrackView } from "@/components/TrackView"
 import { ProductReviews } from "@/components/ProductReviews"
 import { productReviews } from "@/lib/reviews"
 import styles from "./product.module.css"
+import { Euro } from "@/components/Euro"
 
 export const revalidate = 300
 
@@ -188,6 +189,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                   <span className={styles.off}>-{discount(p)} %</span>
                 </>
               )}
+              <Euro amount={p.price} />
             </p>
             {p.promoEnds && <Countdown until={p.promoEnds} className={styles.countdown} />}
             {p.lots.length > 0 && (
@@ -203,7 +205,6 @@ export default async function ProductPage({ params }: { params: Params }) {
 
             {about && <p className={styles.about}>{about}</p>}
 
-            {p.inStock && p.stock <= 3 && <p className={styles.low}>Plus que {p.stock} en stock</p>}
 
             <div className={styles.buyRow}>
               <BuyBox product={toCard(p)} />

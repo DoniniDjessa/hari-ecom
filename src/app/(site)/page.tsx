@@ -70,8 +70,8 @@ export default async function Home() {
   const favourites = pick((p) => p.featured)
   const bestsellers = pick((p) => p.bestseller)
   const news = pick((p) => p.isNew)
-  // "Meilleures sélections pour vous": ticked in the web app, 3 at most
-  const spotlight = pick((p) => p.spotlight, 3).map((p) => ({ ...toCard(p), pitch: p.pitch || p.description }))
+  // "Meilleures sélections pour vous": ticked in the web app, 6 at most (two rows of 3)
+  const spotlight = pick((p) => p.spotlight, 6).map((p) => ({ ...toCard(p), pitch: p.pitch || p.description }))
   const { hero, about, advice } = content
 
   // the posters of the backoffice; none yet: the brand slide (backoffice texts)

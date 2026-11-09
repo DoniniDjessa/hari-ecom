@@ -31,5 +31,7 @@ export async function POST(request: Request) {
 
   for (const t of tags) revalidateTag(t, { expire: 0 })
   revalidatePath("/", "layout") // the pages kept as HTML (home, shop…) too
+  // the light catalogue of the instant search and the diagnostic (a route, outside the layouts)
+  if (tags.includes("products")) revalidatePath("/api/catalog")
   return NextResponse.json({ ok: true, tags })
 }
