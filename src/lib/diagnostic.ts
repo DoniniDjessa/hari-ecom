@@ -100,9 +100,6 @@ export const QUESTIONS: Question[] = [
   { key: "sensitive", title: "Votre peau réagit-elle facilement ?", hint: "Rougeurs, picotements, irritations avec certains produits.", options: [
     { value: "oui", label: "Oui, elle est sensible" }, { value: "non", label: "Non" },
   ] },
-  { key: "pregnant", title: "Êtes-vous enceinte ou allaitez-vous ?", hint: "Certains actifs sont déconseillés pendant la grossesse et l'allaitement : nous les écartons.", options: [
-    { value: "oui", label: "Oui" }, { value: "non", label: "Non, ou pas concernée" },
-  ] },
   { key: "avoid", multi: true, title: "Certains ingrédients vous font-ils réagir ?",
     hint: "Choisissez ceux que vous ne supportez pas : nous ne vous proposerons aucun soin qui en contient. Aucun ? Continuez.",
     options: AVOID.map(({ value, label }) => ({ value, label })) },

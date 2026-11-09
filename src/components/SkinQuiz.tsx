@@ -29,7 +29,7 @@ export function SkinQuiz() {
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(KEY) || "null")
-      if (saved?.goal) { setAnswers({ avoid: [], pregnant: "non", ...saved }); setStep(99) }
+      if (saved?.goal) { setAnswers({ avoid: [], ...saved, pregnant: "non" }); setStep(99) }
     } catch {}
   }, [])
 
@@ -127,7 +127,7 @@ export function SkinQuiz() {
         <span className="script text-gold">Votre routine</span>
         <h2>{goal}</h2>
         {goal2 && <p className={styles.second}>+ {goal2.charAt(0).toLowerCase() + goal2.slice(1)}</p>}
-        <p>{profile}{answers.sensitive === "oui" ? ", sensible" : ""}{answers.pregnant === "oui" ? ", grossesse ou allaitement" : ""}{avoided.length ? `, sans ${avoided.join(", ")}` : ""}. Voici les soins de notre boutique qui y répondent le mieux, dans l&apos;ordre où les appliquer.</p>
+        <p>{profile}{answers.sensitive === "oui" ? ", sensible" : ""}{avoided.length ? `, sans ${avoided.join(", ")}` : ""}. Voici les soins de notre boutique qui y répondent le mieux, dans l&apos;ordre où les appliquer.</p>
       </div>
 
       {!routine.length ? (
