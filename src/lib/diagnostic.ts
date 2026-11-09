@@ -53,11 +53,12 @@ export type Question = {
   options: { value: string; label: string; text?: string; zones?: Zone[]; swatch?: string }[]
 }
 /** the complexion, lightest to darkest (web app › lib/product-taxonomy.ts › TEINTES). Here "métisse" is lighter
- *  than "claire" (what the shop and its clients mean by it): between "très claire" and "claire". */
+ *  than "claire" (what the shop and its clients mean by it): between "très claire" and "claire"; "bronze" comes between "claire" and "caramel". */
 export const TONES = [
-  { value: "tres-claire", label: "Très claire", swatch: "#F1D3B8" },
-  { value: "metisse", label: "Métisse", swatch: "#E4BC97" },
-  { value: "claire", label: "Claire", swatch: "#D2A077" },
+  { value: "tres-claire", label: "Très claire", swatch: "#FBF0E6" },
+  { value: "metisse", label: "Métisse", swatch: "#F1D3B8" },
+  { value: "claire", label: "Claire", swatch: "#E4BC97" },
+  { value: "bronze", label: "Bronze", swatch: "#D2A077" },
   { value: "caramel", label: "Caramel", swatch: "#A86B40" },
   { value: "chocolat", label: "Chocolat", swatch: "#7A4A2A" },
   { value: "ebene", label: "Ébène", swatch: "#4A2C1A" },
