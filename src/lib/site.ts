@@ -52,7 +52,10 @@ export const hasPrice = (price: number) => price > 0 && price !== NO_PRICE
 
 export const universeBySlug = (slug: string) => UNIVERSES.find((u) => u.slug === slug)
 
-export const formatPrice = (n: number) => `${Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ")} FCFA`
+/** 15 000 (the amount alone: components/Price.tsx writes "FCFA" small beside it) */
+export const formatAmount = (n: number) => Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ")
+/** "15 000 FCFA" in a text (messages, titles, descriptions) */
+export const formatPrice = (n: number) => `${formatAmount(n)} FCFA`
 
 export const whatsappLink = (text: string) =>
   `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`

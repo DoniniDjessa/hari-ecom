@@ -5,10 +5,10 @@ import Image from "next/image"
 import { useMemo } from "react"
 import { indexProducts, searchLabels, searchProducts } from "@/lib/search"
 import { NEEDS } from "@/lib/seo"
-import { formatPrice } from "@/lib/site"
 import { useCatalog } from "./Saved"
 import { ArrowIcon } from "./icons"
 import styles from "./SearchSuggestions.module.css"
+import { Price } from "@/components/Price"
 
 const slugify = (s: string) =>
   s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/&/g, " et ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80)
@@ -59,8 +59,8 @@ export function SearchSuggestions({ query, onPick, compact }: { query: string; o
                       <span>{p.brand}{p.form ? ` · ${p.form}` : ""}</span>
                     </span>
                     <span className={styles.price}>
-                      {formatPrice(p.price)}
-                      {p.oldPrice && <s>{formatPrice(p.oldPrice)}</s>}
+                      <Price amount={p.price} />
+                      {p.oldPrice && <s><Price amount={p.oldPrice} /></s>}
                     </span>
                   </Link>
                 </li>

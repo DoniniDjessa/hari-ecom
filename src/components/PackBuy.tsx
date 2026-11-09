@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation"
 import type { SitePack } from "@/lib/types"
-import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { PlusIcon } from "./icons"
+import { Price } from "@/components/Price"
 
 export function PackBuy({ pack: p }: { pack: SitePack }) {
   const { addPack } = useCart()
@@ -15,7 +15,7 @@ export function PackBuy({ pack: p }: { pack: SitePack }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, margin: "26px 0 8px" }}>
       <button type="button" className="btn btn-real-gold" style={{ height: 54 }} onClick={() => addPack(p)}>
-        <PlusIcon size={18} /> Ajouter le pack · {formatPrice(p.price)}
+        <PlusIcon size={18} /> Ajouter le pack · <Price amount={p.price} />
       </button>
       <button type="button" className="btn btn-dark" style={{ height: 54 }} onClick={() => { addPack(p); router.push("/panier") }}>
         Acheter maintenant

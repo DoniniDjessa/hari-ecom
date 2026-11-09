@@ -3,12 +3,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getPack } from "@/lib/packs"
-import { formatPrice } from "@/lib/site"
 import { PackBuy } from "@/components/PackBuy"
 import { ProductVisual } from "@/components/ProductVisual"
 import { ChatIcon, ShieldIcon, TruckIcon } from "@/components/icons"
 import styles from "./pack.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 export const revalidate = 300
 
@@ -61,11 +61,11 @@ export default async function PackPage({ params }: { params: Params }) {
           <p className={styles.meta}>{count} articles · {p.items.length} produit{p.items.length > 1 ? "s" : ""}</p>
 
           <div className={styles.priceBox}>
-            <strong>{formatPrice(p.price)}<Euro amount={p.price} /></strong>
+            <strong><Price amount={p.price} /><Euro amount={p.price} /></strong>
             {p.saving > 0 && (
               <span>
-                au lieu de <s>{formatPrice(p.value)}</s>
-                <em className="text-gold">soit {formatPrice(p.saving)} d&apos;économie</em>
+                au lieu de <s><Price amount={p.value} /></s>
+                <em className="text-gold">soit <Price amount={p.saving} /> d&apos;économie</em>
               </span>
             )}
           </div>
@@ -83,7 +83,7 @@ export default async function PackPage({ params }: { params: Params }) {
                   <span className={styles.itemText}>
                     {i.brand && <small>{i.brand}</small>}
                     <strong>{i.name}</strong>
-                    <span>{formatPrice(i.price)}{i.quantity > 1 ? ` × ${i.quantity}` : ""}</span>
+                    <span><Price amount={i.price} />{i.quantity > 1 ? ` × ${i.quantity}` : ""}</span>
                   </span>
                   {i.quantity > 1 && <span className={styles.qty}>× {i.quantity}</span>}
                 </Link>

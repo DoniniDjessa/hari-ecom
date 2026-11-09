@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import type { CardProduct } from "@/lib/types"
 import { discount } from "@/lib/types"
-import { formatPrice, whatsappLink } from "@/lib/site"
+import { whatsappLink } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { Stars } from "./Stars"
@@ -13,6 +13,7 @@ import { SiteBadge } from "./SiteBadge"
 import { FavButton } from "./FavButton"
 import styles from "./ShowcaseCard.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 // Showcase card (home › Meilleures ventes): a white rounded card, the product photo large, a gold pill
 // astride the right edge (favourite + share), then brand, name, price and the stars out of 5 (the rating set
@@ -64,8 +65,8 @@ export function ShowcaseCard({ product: p, n = 0 }: { product: CardProduct; n?: 
         {p.brand && <span className={styles.brand}>{p.brand}</span>}
         <h3 className={styles.name}><Link href={`/produit/${p.slug}`}>{p.name}</Link></h3>
         <p className={styles.price}>
-          {formatPrice(p.price)}
-          {p.oldPrice && <s>{formatPrice(p.oldPrice)}</s>}
+          <Price amount={p.price} />
+          {p.oldPrice && <s><Price amount={p.oldPrice} /></s>}
           <Euro amount={p.price} />
         </p>
         {p.rating != null && <span className={styles.stars}><Stars rating={p.rating} reviews={p.reviews} size={15} /></span>}

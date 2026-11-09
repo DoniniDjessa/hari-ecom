@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import type { CardProduct } from "@/lib/types"
 import { discount } from "@/lib/types"
-import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { Stars } from "./Stars"
@@ -13,6 +12,7 @@ import { SiteBadge } from "./SiteBadge"
 import { FavButton } from "./FavButton"
 import styles from "./ProductCard.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 // Card: the photo on its studio background (soft halo, badges stacked on the left). On hover the photo
 // rises a little, a gold line draws itself on top and an "Ajouter au panier" bar slides up from the
@@ -80,11 +80,11 @@ export function ProductCard({ product: p, priority, n = 0 }: { product: CardProd
         <div className={styles.priceRow}>
           <div>
             <strong className={styles.price}>
-              {formatPrice(p.price)}
-              {p.oldPrice && <s className={styles.oldPrice}>{formatPrice(p.oldPrice)}</s>}
+              <Price amount={p.price} />
+              {p.oldPrice && <s className={styles.oldPrice}><Price amount={p.oldPrice} /></s>}
             </strong>
             <Euro amount={p.price} />
-            {p.lot && <span className={styles.lot}>{p.lot.quantity} pour {formatPrice(p.lot.price)}</span>}
+            {p.lot && <span className={styles.lot}>{p.lot.quantity} pour <Price amount={p.lot.price} /></span>}
           </div>
           <Link href={`/produit/${p.slug}`} className={styles.view} aria-label={`Voir ${p.name}`}>
             <ArrowIcon size={16} />

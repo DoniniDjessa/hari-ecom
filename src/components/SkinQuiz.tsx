@@ -4,12 +4,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { AVOID, QUESTIONS, goalFits, goalLabel, momentFor, questionsFor, recommend, toneLabel, type Answers } from "@/lib/diagnostic"
-import { formatPrice, SITE, whatsappLink } from "@/lib/site"
+import { SITE, whatsappLink } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { useCatalog } from "./Saved"
 import { ArrowIcon, CheckIcon } from "./icons"
 import styles from "./SkinQuiz.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 // Skin diagnosis: 9 to 10 questions (the face's and the body's skin as the zone asks), then a routine built from the shop's products (lib/diagnostic.ts: the
 // questions and the engine), step by step, each product with its reasons and an alternative, then the advice
@@ -150,7 +151,7 @@ export function SkinQuiz() {
                         <span className={styles.info}>
                           <span>{current.brand}</span>
                           <strong>{current.name}</strong>
-                          <em>{formatPrice(current.price)}</em>
+                          <em><Price amount={current.price} /></em>
                         </span>
                       </Link>
                       {why.length > 0 && (
@@ -185,8 +186,8 @@ export function SkinQuiz() {
       {routine.length > 0 && (
         <div className={styles.cta}>
           <p>
-            Toute la routine : <strong>{formatPrice(total)}</strong> <Euro amount={total} className="euro-inline" />
-            {result.budget !== Infinity && <span className={styles.budget}> · votre budget : {formatPrice(result.budget)}</span>}
+            Toute la routine : <strong><Price amount={total} /></strong> <Euro amount={total} />
+            {result.budget !== Infinity && <span className={styles.budget}> · votre budget : <Price amount={result.budget} /></span>}
           </p>
           {result.dropped.length > 0 && (
             <p className={styles.budgetNote}>

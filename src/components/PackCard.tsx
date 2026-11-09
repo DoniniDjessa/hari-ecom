@@ -4,12 +4,12 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import type { SitePack } from "@/lib/types"
-import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { CheckIcon, PlusIcon } from "./icons"
 import { SiteBadge } from "./SiteBadge"
 import styles from "./PackCard.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 // A pack: its photo, or a mosaic of its products' photos, a real-gold saving badge, the products inside,
 // the price against what the products cost one by one, and "Ajouter le pack" (one line in the cart).
@@ -40,7 +40,7 @@ export function PackCard({ pack: p }: { pack: SitePack }) {
         ) : (
           <span className={styles.empty}><span className="script text-gold">Pack</span><strong>{count} soins</strong></span>
         )}
-        {pct > 0 && <span className={styles.saving}>-{pct} %<small>{formatPrice(p.saving)} d&apos;économie</small></span>}
+        {pct > 0 && <span className={styles.saving}>-{pct} %<small><Price amount={p.saving} /> d&apos;économie</small></span>}
         <span className={styles.count}>{count} articles</span>
         <SiteBadge label={p.badge} className={styles.badge} />
       </Link>
@@ -57,8 +57,8 @@ export function PackCard({ pack: p }: { pack: SitePack }) {
 
         <div className={styles.footer}>
           <p className={styles.price}>
-            <strong>{formatPrice(p.price)}</strong>
-            {p.saving > 0 && <s>{formatPrice(p.value)}</s>}
+            <strong><Price amount={p.price} /></strong>
+            {p.saving > 0 && <s><Price amount={p.value} /></s>}
             <Euro amount={p.price} />
           </p>
           <button

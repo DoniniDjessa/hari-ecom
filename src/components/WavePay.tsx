@@ -10,6 +10,7 @@ import {
 import { ArrowIcon, CheckIcon } from "./icons"
 import cart from "./CartPage.module.css"
 import styles from "./WavePay.module.css"
+import { Price } from "@/components/Price"
 
 // Paying an order with Wave, after it is placed. Wave doesn't tell the site whether the money arrived:
 // the shop checks it by hand. So the client is never told "commande validée" just for opening the link:
@@ -240,7 +241,7 @@ export function WavePay({ initial, onClose }: { initial: WaveOrder; onClose: () 
           <span>Montant à payer</span>
           <strong>{amount}</strong>
           <small>
-            Articles {formatPrice(o.total)} + frais Wave {WAVE_FEE_PERCENT} % ({formatPrice(waveFee(o.total))}) · les frais de
+            Articles <Price amount={o.total} /> + frais Wave {WAVE_FEE_PERCENT} % (<Price amount={waveFee(o.total)} />) · les frais de
             livraison se règlent à la livraison
           </small>
         </div>

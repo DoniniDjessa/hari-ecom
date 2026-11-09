@@ -4,11 +4,11 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import type { CardProduct } from "@/lib/types"
-import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { PlusIcon } from "./icons"
 import styles from "./BoughtTogether.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 /** "Souvent achetés ensemble": the product + 1 to 3 that complete it (same range, else same brand and
  *  universe, other forms). All ticked; one click adds the ticked ones to the cart. */
@@ -43,14 +43,14 @@ export function BoughtTogether({ product, others }: { product: CardProduct; othe
               <span className={styles.thumb}>{p.image && <Image src={p.image} alt="" fill sizes="96px" />}</span>
               <span className={styles.name}>
                 {i === 0 ? <strong>Ce produit</strong> : <Link href={`/produit/${p.slug}`}>{p.name}</Link>}
-                <span>{formatPrice(p.price)}</span>
+                <span><Price amount={p.price} /></span>
               </span>
             </label>
           </div>
         ))}
       </div>
       <div className={styles.foot}>
-        <span>Total : <strong>{formatPrice(total)}</strong> <Euro amount={total} className="euro-inline" /></span>
+        <span>Total : <strong><Price amount={total} /></strong> <Euro amount={total} /></span>
         <button type="button" className="btn btn-dark" onClick={addAll} disabled={!chosen.length}>
           {added ? "Ajoutés au panier" : `Ajouter les ${chosen.length} au panier`}
         </button>

@@ -5,13 +5,14 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { placeOrder } from "@/app/(site)/panier/actions"
-import { formatPrice, SITE, WAVE_FEE_PERCENT, waveAmount, waveFee, whatsappLink } from "@/lib/site"
+import { SITE, WAVE_FEE_PERCENT, waveAmount, waveFee, whatsappLink } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, MinusIcon, PlusIcon, TrashIcon } from "./icons"
 import { WavePay, readWaveOrder, saveWaveOrder, type WaveOrder } from "./WavePay"
 import styles from "./CartPage.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 // Checkout: the order is sent to the shop (web app, Livraisons › Commandes en ligne), which calls the
 // client back to confirm the delivery fee and the time. Name, phone and place are remembered in this
@@ -151,7 +152,7 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
                 {l.brand && <span className={styles.brand}>{l.brand}</span>}
                 <Link href={l.href ?? `/produit/${l.slug}`} className={styles.name}>{l.name}</Link>
                 {l.detail && <span className={styles.unit}>{l.detail}</span>}
-                <span className={styles.unit}>{formatPrice(l.price)}</span>
+                <span className={styles.unit}><Price amount={l.price} /></span>
                 <div className={styles.lineActions}>
                   <div className={styles.qty}>
                     <button type="button" onClick={() => setQuantity(l.id, l.quantity - 1)} disabled={l.quantity <= 1} aria-label="Retirer un"><MinusIcon size={15} /></button>
@@ -163,20 +164,20 @@ export function CartPage({ gold }: { gold: { mode: "amount" | "purchases"; perTh
                   </button>
                 </div>
               </div>
-              <strong className={styles.lineTotal}>{formatPrice(l.price * l.quantity)}</strong>
+              <strong className={styles.lineTotal}><Price amount={l.price * l.quantity} /></strong>
             </li>
           ))}
         </ul>
 
         <form className={styles.summary} onSubmit={order}>
           <h2>Récapitulatif</h2>
-          <div className={styles.sumRow}><span>Articles</span><span>{formatPrice(total)}</span></div>
+          <div className={styles.sumRow}><span>Articles</span><span><Price amount={total} /></span></div>
           <div className={styles.sumRow}><span>Livraison</span><span>Confirmée par téléphone</span></div>
           {payment === "wave" && (
-            <div className={styles.sumRow}><span>Frais Wave ({WAVE_FEE_PERCENT} %)</span><span>{formatPrice(waveFee(total))}</span></div>
+            <div className={styles.sumRow}><span>Frais Wave ({WAVE_FEE_PERCENT} %)</span><span><Price amount={waveFee(total)} /></span></div>
           )}
           <div className={`${styles.sumRow} ${styles.sumTotal}`}>
-            <span>Total</span><span>{formatPrice(payment === "wave" ? waveAmount(total) : total)}<Euro amount={payment === "wave" ? waveAmount(total) : total} /></span>
+            <span>Total</span><span><Price amount={payment === "wave" ? waveAmount(total) : total} /><Euro amount={payment === "wave" ? waveAmount(total) : total} /></span>
           </div>
 
           <div className={styles.fields}>

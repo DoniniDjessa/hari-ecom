@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { CardProduct } from "@/lib/types"
-import { formatPrice, SITE, whatsappLink } from "@/lib/site"
+import { SITE, whatsappLink } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { MinusIcon, PlusIcon } from "./icons"
 import styles from "./BuyBox.module.css"
+import { Price } from "@/components/Price"
 
 export function BuyBox({ product: p }: { product: CardProduct }) {
   const { add } = useCart()
@@ -35,7 +36,7 @@ export function BuyBox({ product: p }: { product: CardProduct }) {
           <button type="button" onClick={() => setQty((n) => Math.min(99, n + 1))} aria-label="Ajouter un"><PlusIcon size={16} /></button>
         </div>
         <button type="button" className={`btn btn-dark ${styles.add}`} onClick={() => add(p, qty)}>
-          Ajouter au panier · {formatPrice(p.price * qty)}
+          Ajouter au panier · <Price amount={p.price * qty} />
         </button>
       </div>
       {/* straight to the cart, to place the order */}

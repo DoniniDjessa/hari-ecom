@@ -3,13 +3,13 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import type { CardProduct } from "@/lib/types"
-import { formatPrice } from "@/lib/site"
 import { useCart } from "./CartProvider"
 import { ProductVisual } from "./ProductVisual"
 import { ArrowIcon, CheckIcon, PlusIcon } from "./icons"
 import { SiteBadge } from "./SiteBadge"
 import styles from "./Spotlight.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 export type SpotlightProduct = CardProduct & { pitch: string }
 
@@ -76,8 +76,8 @@ function Card({ p, i }: { p: SpotlightProduct; i: number }) {
         {p.pitch && <p className={styles.pitch}>{p.pitch}</p>}
         <div className={styles.foot}>
           <strong className={styles.price}>
-            {formatPrice(p.price)}
-            {p.oldPrice && <s className={styles.oldPrice}>{formatPrice(p.oldPrice)}</s>}
+            <Price amount={p.price} />
+            {p.oldPrice && <s className={styles.oldPrice}><Price amount={p.oldPrice} /></s>}
             <Euro amount={p.price} />
           </strong>
           <div className={styles.actions}>

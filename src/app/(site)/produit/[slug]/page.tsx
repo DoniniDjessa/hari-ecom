@@ -21,6 +21,7 @@ import { ProductReviews } from "@/components/ProductReviews"
 import { productReviews } from "@/lib/reviews"
 import styles from "./product.module.css"
 import { Euro } from "@/components/Euro"
+import { Price } from "@/components/Price"
 
 export const revalidate = 300
 
@@ -182,10 +183,10 @@ export default async function ProductPage({ params }: { params: Params }) {
             </div>
 
             <p className={styles.price}>
-              {formatPrice(p.price)}
+              <Price amount={p.price} />
               {p.oldPrice && (
                 <>
-                  <s className={styles.oldPrice}>{formatPrice(p.oldPrice)}</s>
+                  <s className={styles.oldPrice}><Price amount={p.oldPrice} /></s>
                   <span className={styles.off}>-{discount(p)} %</span>
                 </>
               )}
@@ -196,8 +197,8 @@ export default async function ProductPage({ params }: { params: Params }) {
               <ul className={styles.lots}>
                 {p.lots.map((l) => (
                   <li key={l.quantity}>
-                    <strong>{l.quantity} pour {formatPrice(l.price)}</strong>
-                    <span>soit {formatPrice(l.price / l.quantity)} l&apos;unité</span>
+                    <strong>{l.quantity} pour <Price amount={l.price} /></strong>
+                    <span>soit <Price amount={l.price / l.quantity} /> l&apos;unité</span>
                   </li>
                 ))}
               </ul>

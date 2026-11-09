@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { checkPoints, type Balance } from "@/app/(site)/fidelite/actions"
 import { formatPrice } from "@/lib/site"
 import styles from "./LoyaltyCheck.module.css"
+import { Price } from "@/components/Price"
 
 /** Phone field → the Hari Gold balance, with the progress to the next voucher. The number used at
  *  checkout is offered first (hari-customer). */
@@ -55,11 +56,11 @@ export function LoyaltyCheck({ rewardPoints, rewardValue, unit = "points" }: {
           </p>
           {balance.vouchers > 0 ? (
             <p className={styles.reward}>
-              Vous avez droit à <strong>{balance.vouchers} bon{balance.vouchers > 1 ? "s" : ""} de {formatPrice(rewardValue)}</strong>
+              Vous avez droit à <strong>{balance.vouchers} bon{balance.vouchers > 1 ? "s" : ""} de <Price amount={rewardValue} /></strong>
               {balance.vouchers > 1 ? ` (${formatPrice(balance.value)})` : ""} : signalez-le à la commande ou en boutique.
             </p>
           ) : (
-            <p className={styles.reward}>Encore <strong>{balance.toNext} {unit}</strong> pour un bon de {formatPrice(rewardValue)}.</p>
+            <p className={styles.reward}>Encore <strong>{balance.toNext} {unit}</strong> pour un bon de <Price amount={rewardValue} />.</p>
           )}
           <div className={styles.bar} aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>
           {balance.orders === 0 && <p className={styles.hint}>Aucun achat trouvé pour ce numéro : vérifiez qu&apos;il s&apos;agit de celui donné à la commande ou en caisse.</p>}
