@@ -1,5 +1,13 @@
 // Texts and images of the site edited in the backoffice (/backoffice), stored in hari-site-settings
-// (key "site_content"). Every field has a default: an empty field in the backoffice shows the default.
+// (key "site_content"). Every field has a default: an empty field in the backoffice shows the default,
+// except the hero texts (brand slide, posters): there an empty field is simply not shown.
+
+/** where a text / the button of a hero slide is shown: everywhere, on a computer only, on a phone only, nowhere */
+export type Show = "all" | "desktop" | "mobile" | "none"
+export const SHOW_KEYS = ["eyebrow", "title", "subtitle", "text", "button"] as const
+export type ShowKey = (typeof SHOW_KEYS)[number]
+export type Shows = Record<ShowKey, Show>
+export const SHOW_ALL: Shows = { eyebrow: "all", title: "all", subtitle: "all", text: "all", button: "all" }
 
 /** A poster of the home carousel (made outside, uploaded in the backoffice) */
 export interface Poster {
@@ -11,8 +19,15 @@ export interface Poster {
   link: string
   /** button drawn over the poster, optional */
   label: string
-  /** the texts of the brand slide over the poster (off for a poster that has its own text) */
+  /** the poster's own texts over it, each optional (empty: not shown) */
+  eyebrow: string
+  title: string
+  subtitle: string
+  text: string
+  /** the texts above shown over the poster (off for a poster whose image already carries its text) */
   brandText: boolean
+  /** on which screens each text and the button are shown */
+  show: Shows
 }
 
 /** A client's review, written in the backoffice (real reviews only) */
@@ -40,7 +55,8 @@ export interface Shop {
 export interface SiteContent {
   /** home carousel; empty: the brand slide (hero texts) */
   posters: Poster[]
-  hero: { eyebrow: string; title: string; subtitle: string; text: string; cta: string; image: string }
+  /** the brand slide; once saved, an empty field is not shown (no default) */
+  hero: { eyebrow: string; title: string; subtitle: string; text: string; cta: string; image: string; show: Shows }
   about: { eyebrow: string; title: string; text: string; image: string }
   advice: { eyebrow: string; title: string; text: string }
   packs: { eyebrow: string; title: string; text: string }
@@ -68,6 +84,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     text: "Soins visage, corps, bébé et bien-être choisis dans nos boutiques de Yopougon et Cocody. Livrés chez vous à Abidjan.",
     cta: "Découvrir la boutique",
     image: "",
+    show: SHOW_ALL,
   },
   about: {
     eyebrow: "Qui sommes-nous",
@@ -114,24 +131,48 @@ const isSafeLink = (l: string) => /^\/(?!\/)[\w\-./?=&%#]*$/.test(l) || /^https:
 const isHttps = (l: string) => /^https:\/\/[^\s<>"]+$/.test(l)
 const str = (v: unknown) => (typeof v === "string" ? v : "")
 
+/** a new poster's screens: its long text on a computer only (little room over a phone poster) */
+export const POSTER_SHOW: Shows = { ...SHOW_ALL, text: "desktop" }
+const showsOf = (v: unknown, d: Shows): Shows => {
+  const o = (v && typeof v === "object" ? v : {}) as Obj
+  return Object.fromEntries(SHOW_KEYS.map((k) => [k, ["all", "desktop", "mobile", "none"].includes(o[k] as string) ? o[k] : d[k]])) as Shows
+}
+
 /** Saved content over the defaults, field by field (an empty saved field keeps the default) */
 export function mergeContent(saved: unknown): SiteContent {
   const s = (saved && typeof saved === "object" ? saved : {}) as Obj
-  const section = <K extends Exclude<keyof SiteContent, "universes" | "universeOrder" | "posters" | "testimonials" | "shops">>(k: K): SiteContent[K] => {
+  const section = <K extends Exclude<keyof SiteContent, "universes" | "universeOrder" | "posters" | "testimonials" | "shops" | "hero">>(k: K): SiteContent[K] => {
     const d = DEFAULT_CONTENT[k] as Record<string, string>
     const v = (s[k] && typeof s[k] === "object" ? s[k] : {}) as Obj
     return Object.fromEntries(Object.keys(d).map((f) => [f, str(v[f]).trim() || d[f]])) as SiteContent[K]
   }
+  // hero: a field saved (even empty) is kept as is, so the admin can leave one out; never saved: the default
+  const h = (s.hero && typeof s.hero === "object" ? s.hero : {}) as Obj
+  const hero = {
+    ...Object.fromEntries(Object.entries(DEFAULT_CONTENT.hero).map(([f, d]) => [f, typeof h[f] === "string" ? str(h[f]).trim() : d])),
+    // the old switch "bouton masqué" (before the screens): the button nowhere
+    show: { ...showsOf(h.show, SHOW_ALL), ...(h.button === false && { button: "none" as const }) },
+  } as SiteContent["hero"]
   const u = (s.universes && typeof s.universes === "object" ? s.universes : {}) as Record<string, Obj>
   const posters = (Array.isArray(s.posters) ? s.posters : []) as Obj[]
   const testimonials = (Array.isArray(s.testimonials) ? s.testimonials : []) as Obj[]
   return {
     posters: posters
-      .map((p) => ({ image: str(p?.image).trim(), mobile: str(p?.mobile).trim(), link: str(p?.link).trim(), label: str(p?.label).trim(), brandText: p?.brandText !== false }))
+      .map((p) => {
+        // a poster saved before it had its own texts: the brand slide's texts, as it showed them
+        const own = typeof p?.title === "string" || typeof p?.eyebrow === "string"
+        const t = (f: "eyebrow" | "title" | "subtitle" | "text") => (own ? str(p?.[f]).trim() : hero[f]).slice(0, f === "text" ? 400 : 120)
+        return {
+          image: str(p?.image).trim(), mobile: str(p?.mobile).trim(), link: str(p?.link).trim(), label: str(p?.label).trim().slice(0, 60),
+          eyebrow: t("eyebrow"), title: t("title"), subtitle: t("subtitle"), text: t("text"), brandText: p?.brandText !== false,
+          // never set: the text on a computer only, as posters always showed it
+          show: { ...showsOf(p?.show, POSTER_SHOW), ...(p?.button === false && { button: "none" as const }) },
+        }
+      })
       .filter((p) => isSiteImage(p.image))
       .map((p) => ({ ...p, mobile: isSiteImage(p.mobile) ? p.mobile : "", link: isSafeLink(p.link) ? p.link : "" }))
       .slice(0, MAX_POSTERS),
-    hero: section("hero"),
+    hero,
     about: section("about"),
     advice: section("advice"),
     packs: section("packs"),

@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { listImages, logout, saveContent } from "@/app/backoffice/actions"
-import { DEFAULT_CONTENT, inUniverseOrder, MAX_POSTERS, MAX_SHOPS, mergeContent, MAX_TESTIMONIALS, type Poster, type Shop, type SiteContent, type Testimonial } from "@/lib/content"
+import { DEFAULT_CONTENT, inUniverseOrder, MAX_POSTERS, MAX_SHOPS, mergeContent, MAX_TESTIMONIALS, POSTER_SHOW, type Poster, type Shop, type Show, type ShowKey, type SiteContent, type Testimonial } from "@/lib/content"
 import { ThemeToggle } from "../ThemeToggle"
 import styles from "./Backoffice.module.css"
 
@@ -36,7 +36,7 @@ type View = "overview" | "posters" | "universes" | "testimonials" | "shops" | Se
 
 const SECTIONS: { id: Section; title: string; hint: string; fields: Field[] }[] = [
   {
-    id: "hero", title: "Diapositive de marque", hint: "En haut de l'accueil tant qu'il n'y a aucune affiche.",
+    id: "hero", title: "Diapositive de marque", hint: "En haut de l'accueil tant qu'il n'y a aucune affiche. Un champ vide n'est pas affiché. Les deux icônes devant chaque champ : ordinateur, téléphone (les deux éteintes : masqué).",
     fields: [
       { key: "eyebrow", label: "Ligne manuscrite (or)", half: true },
       { key: "cta", label: "Texte du bouton", half: true },
@@ -105,6 +105,14 @@ const SECTIONS: { id: Section; title: string; hint: string; fields: Field[] }[] 
   },
 ]
 
+/** the texts a poster can carry over it (its button is the "Bouton" column) */
+const POSTER_TEXTS: { key: "eyebrow" | "title" | "subtitle" | "text"; label: string; long?: boolean }[] = [
+  { key: "eyebrow", label: "Ligne manuscrite (or)" },
+  { key: "title", label: "Titre" },
+  { key: "subtitle", label: "Sous-titre" },
+  { key: "text", label: "Texte (jamais sur tablette)", long: true },
+]
+
 const NAV: { label: string; items: { id: View; title: string; icon: string }[] }[] = [
   { label: "Général", items: [{ id: "overview", title: "Vue d'ensemble", icon: "◎" }] },
   { label: "Accueil", items: [
@@ -123,6 +131,36 @@ const NAV: { label: string; items: { id: View; title: string; icon: string }[] }
     { id: "legal", title: "Informations légales", icon: "§" },
   ] },
 ]
+
+/** a field of the brand slide → its screens setting (the button text is "cta") */
+const heroShowKey = (k: string): ShowKey | null =>
+  k === "cta" ? "button" : k === "eyebrow" || k === "title" || k === "subtitle" || k === "text" ? k : null
+
+const DesktopIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" />
+  </svg>
+)
+const PhoneIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="6" y="2" width="12" height="20" rx="2.5" /><path d="M11 18h2" />
+  </svg>
+)
+
+/** Two switches: the text / the button on a computer, on a phone (both off: not shown) */
+function Screens({ value, onChange, what }: { value: Show; onChange: (v: Show) => void; what: string }) {
+  const desktop = value === "all" || value === "desktop"
+  const mobile = value === "all" || value === "mobile"
+  const set = (d: boolean, m: boolean) => onChange(d && m ? "all" : d ? "desktop" : m ? "mobile" : "none")
+  return (
+    <span className={styles.screens}>
+      <button type="button" role="switch" aria-checked={desktop} className={`${styles.screen} ${desktop ? styles.screenOn : ""}`}
+        onClick={() => set(!desktop, mobile)} title={`${what} sur ordinateur`} aria-label={`${what} sur ordinateur`}><DesktopIcon /></button>
+      <button type="button" role="switch" aria-checked={mobile} className={`${styles.screen} ${mobile ? styles.screenOn : ""}`}
+        onClick={() => set(desktop, !mobile)} title={`${what} sur téléphone`} aria-label={`${what} sur téléphone`}><PhoneIcon /></button>
+    </span>
+  )
+}
 
 /** Reduces a photo to 1800 px max and re-encodes it in WebP (keeps the original if that is not smaller) */
 async function shrink(file: File): Promise<Blob> {
@@ -290,6 +328,7 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
   const posters = content.posters
   const setPosters = (next: Poster[]) => setContent((c) => ({ ...c, posters: next }))
   const setPoster = (i: number, key: keyof Poster, value: string | boolean) => setPosters(posters.map((p, k) => (k === i ? { ...p, [key]: value } : p)))
+  const setPosterShow = (i: number, key: ShowKey, value: Show) => setPosters(posters.map((p, k) => (k === i ? { ...p, show: { ...p.show, [key]: value } } : p)))
   const movePoster = (i: number, d: -1 | 1) => {
     const next = [...posters]
     ;[next[i], next[i + d]] = [next[i + d], next[i]]
@@ -342,6 +381,8 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
   const title = NAV.flatMap((g) => g.items).find((i) => i.id === view)?.title ?? ""
   const textOf = (s: Section, k: string) => (content[s] as Record<string, string>)[k] ?? ""
   const defaultOf = (s: Section, k: string) => (DEFAULT_CONTENT[s] as Record<string, string>)[k] ?? ""
+  // hero: an empty field is not shown on the site (no default under it)
+  const placeholderOf = (s: Section, k: string) => (s === "hero" ? "Vide : non affiché" : defaultOf(s, k))
   const universesWithImage = universes.filter((u) => content.universes[u.slug]?.image).length
   const customTexts = SECTIONS.reduce((n, s) => n + s.fields.filter((f) => !f.image && textOf(s.id, f.key) && textOf(s.id, f.key) !== defaultOf(s.id, f.key)).length, 0)
   const section = SECTIONS.find((s) => s.id === view)
@@ -481,7 +522,7 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
               <div className={styles.cardHead}>
                 <h2>Affiches <span className={styles.muted}>{posters.length} / {MAX_POSTERS}</span></h2>
                 {posters.length < MAX_POSTERS && (
-                  <button type="button" className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} onClick={() => setPosters([...posters, { image: "", mobile: "", link: "", label: "", brandText: true }])}>
+                  <button type="button" className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`} onClick={() => setPosters([...posters, { image: "", mobile: "", link: "", label: "", eyebrow: "", title: "", subtitle: "", text: "", brandText: true, show: POSTER_SHOW }])}>
                     + Ajouter une affiche
                   </button>
                 )}
@@ -492,21 +533,27 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
               ) : (
                 <div className={styles.tableWrap}>
                   <table className={styles.table}>
-                    <thead><tr><th>#</th><th>Ordinateur</th><th>Téléphone</th><th>Lien</th><th>Bouton</th><th>Textes de la marque</th><th className={styles.right}>Actions</th></tr></thead>
+                    <thead><tr><th>#</th><th>Ordinateur</th><th>Téléphone</th><th>Lien</th><th>Bouton</th><th>Textes</th><th className={styles.right}>Actions</th></tr></thead>
                     <tbody>
                       {posters.map((p, i) => (
-                        <tr key={i}>
+                        <Fragment key={i}>
+                        <tr>
                           <td className={styles.num}>{i + 1}</td>
                           <td><ImageField value={p.image} onChange={(v) => setPoster(i, "image", v)} ratio="32 / 15" width={150} /></td>
                           <td><ImageField value={p.mobile} onChange={(v) => setPoster(i, "mobile", v)} ratio="4 / 5" width={56} /></td>
                           <td><input className={styles.input} value={p.link} placeholder="/packs" onChange={(e) => setPoster(i, "link", e.target.value)} /></td>
-                          <td><input className={styles.input} value={p.label} placeholder="Découvrir" onChange={(e) => setPoster(i, "label", e.target.value)} /></td>
                           <td>
-                            {/* off for a poster that already carries its own text */}
+                            <div className={styles.inline}>
+                              <input className={styles.input} value={p.label} placeholder="Texte du bouton" maxLength={60} aria-label="Texte du bouton" onChange={(e) => setPoster(i, "label", e.target.value)} />
+                              <Screens what="Bouton" value={p.show.button} onChange={(v) => setPosterShow(i, "button", v)} />
+                            </div>
+                          </td>
+                          <td>
+                            {/* off for a poster whose image already carries its own text */}
                             <button type="button" role="switch" aria-checked={p.brandText} className={`${styles.switch} ${p.brandText ? styles.switchOn : ""}`}
-                              onClick={() => setPoster(i, "brandText", !p.brandText)} title="Les textes de la « Diapositive de marque » sur l'affiche">
+                              onClick={() => setPoster(i, "brandText", !p.brandText)} title="Les textes ci-dessous par-dessus l'affiche">
                               <span className={styles.switchKnob} />
-                              <span>{p.brandText ? "Par-dessus" : "En dessous"}</span>
+                              <span>{p.brandText ? "Affichés" : "Masqués"}</span>
                             </button>
                           </td>
                           <td className={styles.right}>
@@ -517,6 +564,30 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
                             </div>
                           </td>
                         </tr>
+                        {/* the poster's own texts over it; a field left empty is not shown */}
+                        {p.brandText && (
+                          <tr>
+                            <td />
+                            <td colSpan={6}>
+                              <div className={styles.form}>
+                                {POSTER_TEXTS.map((f) => (
+                                  <div key={f.key} className={`${styles.field} ${f.long ? styles.full : ""}`}>
+                                    <span className={styles.labelRow}>
+                                      <label className={styles.label} htmlFor={`poster-${i}-${f.key}`}>{f.label}</label>
+                                      <Screens what={f.label} value={p.show[f.key]} onChange={(v) => setPosterShow(i, f.key, v)} />
+                                    </span>
+                                    {f.long ? (
+                                      <textarea id={`poster-${i}-${f.key}`} className={styles.input} rows={2} value={p[f.key]} maxLength={400} placeholder="Vide : non affiché" onChange={(e) => setPoster(i, f.key, e.target.value)} />
+                                    ) : (
+                                      <input id={`poster-${i}-${f.key}`} className={styles.input} value={p[f.key]} maxLength={120} placeholder="Vide : non affiché" onChange={(e) => setPoster(i, f.key, e.target.value)} />
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                        </Fragment>
                       ))}
                     </tbody>
                   </table>
@@ -668,14 +739,21 @@ export function BackofficeEditor({ initial, version: initialVersion, universes }
                     <ImageField value={textOf(section.id, f.key)} onChange={(v) => set(section.id, f.key, v)} />
                   </div>
                 ) : (
-                  <label key={f.key} className={`${styles.field} ${f.half ? "" : styles.full}`}>
-                    <span className={styles.label}>{f.label}</span>
+                  <div key={f.key} className={`${styles.field} ${f.half ? "" : styles.full}`}>
+                    <span className={styles.labelRow}>
+                      <label className={styles.label} htmlFor={`${section.id}-${f.key}`}>{f.label}</label>
+                      {/* brand slide: this text / the button on a computer, on a phone */}
+                      {section.id === "hero" && heroShowKey(f.key) && (
+                        <Screens what={f.label} value={content.hero.show[heroShowKey(f.key)!]}
+                          onChange={(v) => setContent((c) => ({ ...c, hero: { ...c.hero, show: { ...c.hero.show, [heroShowKey(f.key)!]: v } } }))} />
+                      )}
+                    </span>
                     {f.long ? (
-                      <textarea className={styles.input} rows={4} value={textOf(section.id, f.key)} placeholder={defaultOf(section.id, f.key)} onChange={(e) => set(section.id, f.key, e.target.value)} />
+                      <textarea id={`${section.id}-${f.key}`} className={styles.input} rows={4} value={textOf(section.id, f.key)} placeholder={placeholderOf(section.id, f.key)} onChange={(e) => set(section.id, f.key, e.target.value)} />
                     ) : (
-                      <input className={styles.input} value={textOf(section.id, f.key)} placeholder={defaultOf(section.id, f.key)} onChange={(e) => set(section.id, f.key, e.target.value)} />
+                      <input id={`${section.id}-${f.key}`} className={styles.input} value={textOf(section.id, f.key)} placeholder={placeholderOf(section.id, f.key)} onChange={(e) => set(section.id, f.key, e.target.value)} />
                     )}
-                  </label>
+                  </div>
                 ))}
               </div>
             </div>

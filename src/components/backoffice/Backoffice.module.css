@@ -384,3 +384,16 @@ textarea.input { min-height: 84px; }
 .switch .switchKnob::after { content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); transition: transform 0.2s ease; }
 .switchOn .switchKnob { background: var(--bo-primary); }
 .switchOn .switchKnob::after { transform: translateX(13px); }
+
+/* on which screens a hero text / button is shown: two icon switches (computer, phone) */
+.labelRow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.inline { display: flex; align-items: center; gap: 8px; min-width: 200px; }
+.screens { display: inline-flex; gap: 4px; flex-shrink: 0; }
+.screen {
+  display: inline-grid; place-items: center; width: 28px; height: 24px; border-radius: 6px;
+  border: 1px solid var(--bo-border); background: transparent; color: var(--bo-muted); opacity: 0.6; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.screen:hover { border-color: var(--bo-primary); }
+.screenOn { background: var(--bo-primary); border-color: var(--bo-primary); color: #fff; opacity: 1; }
+.screen:focus-visible { outline: 2px solid var(--bo-primary); outline-offset: 2px; }

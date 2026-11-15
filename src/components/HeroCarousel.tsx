@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { ArrowIcon, ChevronIcon } from "./icons"
+import type { Show, ShowKey, Shows } from "@/lib/content"
 import styles from "./HeroCarousel.module.css"
 
 export type HeroSlide = {
@@ -14,6 +15,10 @@ export type HeroSlide = {
   image: string | null
   link: string
   cta: string
+  /** name of the slide (dots, image alt) when the title is left empty */
+  label?: string
+  /** on which screens each text and the button are shown (backoffice); missing: everywhere */
+  show?: Shows
   /** the eyebrow in handwriting and real gold (brand slide) */
   script?: boolean
   /** a poster made outside (backoffice): shown whole, its own text included */
@@ -34,6 +39,7 @@ export function HeroCarousel({ slides, next = "univers" }: { slides: HeroSlide[]
   const posters = slides.some((s) => s.poster)
   const [index, setIndex] = useState(0)
   const [prev, setPrev] = useState<number | null>(null)
+  const [paused, setPaused] = useState(false)
   const touch = useRef<{ x: number; y: number } | null>(null)
   const count = slides.length
 
@@ -61,7 +67,7 @@ export function HeroCarousel({ slides, next = "univers" }: { slides: HeroSlide[]
 
   return (
     <section
-      className={`${styles.hero} ${posters ? styles.posters : ""}`}
+      className={`${styles.hero} ${posters ? styles.posters : ""} ${paused ? styles.paused : ""}`}
       aria-roledescription="carrousel"
       aria-label="À la une"
       onTouchStart={(e) => (touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY })}
@@ -80,26 +86,33 @@ export function HeroCarousel({ slides, next = "univers" }: { slides: HeroSlide[]
             {s.poster ? (
               <>
                 <div className={styles.posterMedia}>
-                  <Image src={s.poster.image} alt={s.title} fill priority={i === 0} sizes="100vw" className={`${styles.posterImg} ${s.poster.mobile ? styles.desktopOnly : ""}`} />
+                  <Image src={s.poster.image} alt={nameOf(s)} fill priority={i === 0} sizes="100vw" className={`${styles.posterImg} ${s.poster.mobile ? styles.desktopOnly : ""}`} />
                   {s.poster.mobile && (
-                    <Image src={s.poster.mobile} alt={s.title} fill priority={i === 0} sizes="100vw" className={`${styles.posterImg} ${styles.mobileOnly}`} />
+                    <Image src={s.poster.mobile} alt={nameOf(s)} fill priority={i === 0} sizes="100vw" className={`${styles.posterImg} ${styles.mobileOnly}`} />
                   )}
                 </div>
-                {s.poster.brandText ? (
+                {s.poster.brandText && hasText(s) ? (
                   <>
-                    <div className={styles.posterShade} />
+                    {/* the ivory veil only behind texts (a button alone sits on the bare poster) */}
+                    {seenOn(s, ["eyebrow", "title", "subtitle", "text"]) && (
+                      <div className={`${styles.posterShade} ${on(seenOn(s, ["eyebrow", "title", "subtitle", "text"]))}`} />
+                    )}
                     <Text s={s} active={i === index} className={styles.posterText} />
+                    {/* where the button is not seen: the whole poster still leads to its link */}
+                    {s.poster.link && elsewhere(seenOn(s, ["button"])) && (
+                      <Link href={s.poster.link} className={`${styles.posterLink} ${on(elsewhere(seenOn(s, ["button"])))}`} tabIndex={i === index ? 0 : -1} aria-label={nameOf(s)} />
+                    )}
                   </>
                 ) : s.poster.link && (
-                  <Link href={s.poster.link} className={styles.posterLink} tabIndex={i === index ? 0 : -1} aria-label={s.poster.label || s.title}>
-                    {s.poster.label && <span className={styles.posterCta}>{s.poster.label} <ArrowIcon size={18} /></span>}
+                  <Link href={s.poster.link} className={styles.posterLink} tabIndex={i === index ? 0 : -1} aria-label={nameOf(s)}>
+                    {s.cta && <span className={`${styles.posterCta} ${on(showOf(s, "button"))}`}>{s.cta} <ArrowIcon size={18} /></span>}
                   </Link>
                 )}
               </>
             ) : (<>
             <div className={styles.media}>
               {s.image ? (
-                <Image src={s.image} alt={s.subtitle || s.title} fill priority={i === 0} sizes="(max-width: 768px) 100vw, 60vw" className={styles.img} />
+                <Image src={s.image} alt={s.subtitle || nameOf(s)} fill priority={i === 0} sizes="(max-width: 768px) 100vw, 60vw" className={styles.img} />
               ) : (
                 <Image src="/haristore-mark.png" alt="" width={520} height={330} priority={i === 0} className={styles.mark} />
               )}
@@ -125,6 +138,14 @@ export function HeroCarousel({ slides, next = "univers" }: { slides: HeroSlide[]
 
       {count > 1 && (
         <nav className={styles.nav} aria-label="Diapositives">
+          {/* pause: the progress stops where it is, to read the slide at ease */}
+          <button type="button" className={styles.pause} onClick={() => setPaused((p) => !p)} aria-pressed={paused} aria-label={paused ? "Reprendre le défilement" : "Mettre en pause"} title={paused ? "Reprendre" : "Pause"}>
+            {paused ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" /></svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4.5" width="4" height="15" rx="1" /><rect x="14" y="4.5" width="4" height="15" rx="1" /></svg>
+            )}
+          </button>
           <span className={styles.counter} aria-hidden="true">
             <strong key={index}>{String(index + 1).padStart(2, "0")}</strong>
             <small>{String(count).padStart(2, "0")}</small>
@@ -135,7 +156,7 @@ export function HeroCarousel({ slides, next = "univers" }: { slides: HeroSlide[]
                 <button
                   className={`${styles.dot} ${i === index ? styles.dotActive : ""}`}
                   onClick={() => go(i)}
-                  aria-label={`Diapositive ${i + 1} : ${s.title}`}
+                  aria-label={`Diapositive ${i + 1} : ${nameOf(s)}`}
                   aria-current={i === index}
                 >
                   {i === index && <span key={index} className={styles.fill} style={{ animationDuration: `${DURATION}ms` }} onAnimationEnd={() => go(index + 1)} />}
@@ -154,24 +175,46 @@ export function HeroCarousel({ slides, next = "univers" }: { slides: HeroSlide[]
   )
 }
 
-/** The texts of a slide: eyebrow, title rising line by line, text, buttons */
+/** a slide with at least one text to show (all left empty in the backoffice: the image alone) */
+const hasText = (s: HeroSlide) => Boolean(s.eyebrow || s.title || s.subtitle || s.text || s.cta)
+const nameOf = (s: HeroSlide) => s.title || s.label || s.subtitle || "Hari Store"
+
+/** the class that keeps an element to a computer or to a phone (backoffice) */
+const on = (show: Show | null | undefined) => (show === "desktop" ? styles.onlyDesktop : show === "mobile" ? styles.onlyMobile : "")
+const showOf = (s: HeroSlide, k: ShowKey): Show => s.show?.[k] ?? "all"
+/** where at least one of these elements (when filled) is seen: null when none is filled */
+function seenOn(s: HeroSlide, keys: ShowKey[]): Show | null {
+  const value = { eyebrow: s.eyebrow, title: s.title, subtitle: s.subtitle, text: s.text, button: s.cta }
+  const shows = keys.filter((k) => value[k]).map((k) => showOf(s, k))
+  if (!shows.length) return null
+  return shows.every((x) => x === shows[0]) ? shows[0] : "all"
+}
+/** the other screens than these (where a button is not seen, the whole poster is the link) */
+const elsewhere = (show: Show | null): Show | null => (show === null ? "all" : show === "desktop" ? "mobile" : show === "mobile" ? "desktop" : null)
+
+/** The texts of a slide: eyebrow, title rising line by line, text, buttons. A text left empty in the
+ *  backoffice is left out (no button text: no buttons). */
 function Text({ s, active, className = "" }: { s: HeroSlide; active: boolean; className?: string }) {
   return (
-    <div className={`${styles.content} ${className}`}>
-      {s.script ? (
-        <p className={`${styles.eyebrow} ${styles.eyebrowScript}`}><span className="script text-gold">{s.eyebrow}</span></p>
+    <div className={`${styles.content} ${className} ${on(seenOn(s, ["eyebrow", "title", "subtitle", "text", "button"]))}`}>
+      {s.eyebrow && (s.script ? (
+        <p className={`${styles.eyebrow} ${styles.eyebrowScript} ${on(showOf(s, "eyebrow"))}`}><span className="script text-gold">{s.eyebrow}</span></p>
       ) : (
-        <p className={styles.eyebrow}><span />{s.eyebrow}</p>
+        <p className={`${styles.eyebrow} ${on(showOf(s, "eyebrow"))}`}><span />{s.eyebrow}</p>
+      ))}
+      {(s.title || s.subtitle) && (
+        <h2 className={`${styles.title} ${on(seenOn(s, ["title", "subtitle"]))}`}>
+          {s.title && <span className={`${styles.line} ${on(showOf(s, "title"))}`}><span>{s.title}</span></span>}
+          {s.subtitle && <span className={`${styles.line} ${styles.muted} ${on(showOf(s, "subtitle"))}`}><span>{s.subtitle}</span></span>}
+        </h2>
       )}
-      <h2 className={styles.title}>
-        <span className={styles.line}><span>{s.title}</span></span>
-        {s.subtitle && <span className={`${styles.line} ${styles.muted}`}><span>{s.subtitle}</span></span>}
-      </h2>
-      {s.text && <p className={styles.text}>{s.text}</p>}
-      <div className={styles.actions}>
-        <Link href={s.link} className={styles.cta} tabIndex={active ? 0 : -1}>{s.cta} <ArrowIcon size={18} /></Link>
-        <Link href="/boutique" className={styles.ghost} tabIndex={active ? 0 : -1}>Toute la boutique</Link>
-      </div>
+      {s.text && <p className={`${styles.text} ${on(showOf(s, "text"))}`}>{s.text}</p>}
+      {s.cta && (
+        <div className={`${styles.actions} ${on(showOf(s, "button"))}`}>
+          <Link href={s.link} className={styles.cta} tabIndex={active ? 0 : -1}>{s.cta} <ArrowIcon size={18} /></Link>
+          <Link href="/boutique" className={styles.ghost} tabIndex={active ? 0 : -1}>Toute la boutique</Link>
+        </div>
+      )}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import Image from "next/image"
 import { getProducts, getUniverseCards, withPhotosFirst } from "@/lib/catalog"
 import { getSiteContent } from "@/lib/backoffice"
 import { getPacks } from "@/lib/packs"
-import { isSiteImage } from "@/lib/content"
+import { isSiteImage, type Show } from "@/lib/content"
 import { SITE, whatsappLink } from "@/lib/site"
 import { toCard, type SiteProduct } from "@/lib/types"
 import { ProductCard } from "@/components/ProductCard"
@@ -74,21 +74,26 @@ export default async function Home() {
   const spotlight = pick((p) => p.spotlight, 6).map((p) => ({ ...toCard(p), pitch: p.pitch || p.description }))
   const { hero, about, advice } = content
 
+  // a text / the button switched off on both screens (backoffice): left out, like an empty one
+  const shown = (value: string, show: Show) => (show === "none" ? "" : value)
+
   // the posters of the backoffice; none yet: the brand slide (backoffice texts)
   const slides: HeroSlide[] = content.posters.length
     ? content.posters.map((p, i) => p.brandText
-      // the texts of the brand slide over the poster; its button leads to the poster's link
-      ? { eyebrow: hero.eyebrow, title: hero.title, subtitle: hero.subtitle, text: hero.text, image: null,
-          link: p.link || "/boutique", cta: p.label || hero.cta, script: true, poster: p }
-      : { eyebrow: "", title: p.label || `Affiche ${i + 1}`, text: "", image: null, link: p.link, cta: p.label, poster: p })
+      // the poster's own texts over it (an empty one is left out); its button leads to the poster's link
+      ? { eyebrow: shown(p.eyebrow, p.show.eyebrow), title: shown(p.title, p.show.title), subtitle: shown(p.subtitle, p.show.subtitle), text: shown(p.text, p.show.text), image: null,
+          link: p.link || "/boutique", cta: shown(p.label, p.show.button), script: true, poster: p, show: p.show, label: p.title || p.label || `Affiche ${i + 1}` }
+      : { eyebrow: "", title: "", text: "", image: null, link: p.link, cta: shown(p.label, p.show.button), poster: p, show: p.show, label: p.label || `Affiche ${i + 1}` })
     : [{
-        eyebrow: hero.eyebrow,
-        title: hero.title,
-        subtitle: hero.subtitle,
-        text: hero.text,
+        eyebrow: shown(hero.eyebrow, hero.show.eyebrow),
+        title: shown(hero.title, hero.show.title),
+        subtitle: shown(hero.subtitle, hero.show.subtitle),
+        text: shown(hero.text, hero.show.text),
         image: isSiteImage(hero.image) ? hero.image : null,
+        label: hero.title || hero.subtitle,
         link: "/boutique",
-        cta: hero.cta,
+        cta: shown(hero.cta, hero.show.button),
+        show: hero.show,
         script: true,
       }]
 

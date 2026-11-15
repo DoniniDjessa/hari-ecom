@@ -384,8 +384,17 @@
 :global([data-theme="dark"]) .posterText .cta { background: #1d1d1f; color: #fff; }
 :global([data-theme="dark"]) .posterText .ghost { border-color: rgba(29, 29, 31, 0.3); color: #1d1d1f; }
 
-@media (max-width: 1100px) {
+/* tablet (computer poster, narrow): no room for the text; on a phone, the backoffice decides */
+@media (min-width: 769px) and (max-width: 1100px) {
   .posterText .text { display: none; }
+}
+
+/* each text / the button: shown on a computer only or on a phone only (backoffice) */
+@media (max-width: 768px) {
+  .onlyDesktop { display: none !important; }
+}
+@media (min-width: 769px) {
+  .onlyMobile { display: none !important; }
 }
 @media (max-width: 768px) {
   .posterShade { background: linear-gradient(0deg, rgba(244, 241, 236, 0.94) 0%, rgba(244, 241, 236, 0.7) 40%, rgba(244, 241, 236, 0) 64%); }
@@ -411,4 +420,26 @@
   .trail { animation: none; transform: scaleX(1); }
   .runner { animation: none; left: 100%; }
   .down { animation: none; }
+}
+
+/* ---------- pause (above the numbers): the progress bar and the thread stop where they are ---------- */
+.pause {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(29, 29, 31, 0.2);
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.pause:hover { background: rgba(29, 29, 31, 0.08); }
+.pause:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.posters .pause { color: #f5f5f7; border-color: rgba(245, 245, 247, 0.35); }
+.posters .pause:hover { background: rgba(245, 245, 247, 0.14); }
+.paused .fill, .paused .trail, .paused .runner { animation-play-state: paused; }
+@media (max-width: 768px) {
+  .pause { width: 26px; height: 26px; }
 }
