@@ -135,7 +135,7 @@ export default async function Home() {
               <PacksRing packs={packs.slice(0, 8)} />
             ) : (
               <div className={`${styles.packGrid} stagger`}>
-                {packs.map((p) => <PackCard key={p.id} pack={p} />)}
+                {packs.map((p) => <PackCard key={p.id} pack={p} list={false} />)}
               </div>
             )}
             {/* the way to every pack, big and gold, under the ring */}

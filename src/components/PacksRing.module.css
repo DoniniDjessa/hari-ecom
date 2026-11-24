@@ -120,31 +120,42 @@
   transform: scale(1.04);
 }
 
-/* the gold line filling until the next turn */
-.progress {
-  position: relative;
-  width: min(220px, 60%);
-  height: 2px;
-  overflow: hidden;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0.08);
-}
-.fill {
-  position: absolute;
-  inset: 0;
-  background: var(--gold-metal);
-  transform-origin: left center;
-  animation: fill linear both;
-}
-@keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-
 @media (max-width: 600px) { .frieze { --name: 150px; --slot: 156px; } }
-/* phones: the ring runs to the screen's edges, the front pack a little narrower, room above it for the
-   deck of packs behind (they lean from their top) */
+/* phones: the ring stands up — the front pack ~95% of the screen's width, the packs behind peeking out
+   above and below it (room above: --lift, two peeks) */
 @media (max-width: 639px) {
   .wrap { margin-inline: calc(-1 * var(--gutter)); }
-  .ring { --lift: 84px; }
-  .slide { width: 70vw; transform-origin: 50% 0%; }
+  .ring { --lift: 132px; }
+  .slide { width: 95vw; }
+  .front :global(article) { box-shadow: 0 24px 50px rgba(0, 0, 0, 0.18); }
+  /* the photos take the finger's swipes (up, down, sideways) instead of scrolling the page */
+  .slide :global([data-pack-photo]) { touch-action: none; }
 }
+/* phones: the small arrows at the two ends of the stack (above the packs behind, below them) */
+.edge {
+  position: absolute;
+  z-index: 120;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: var(--glass-strong);
+  color: var(--gold-ink);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: transform 0.3s var(--ease), border-color 0.3s ease;
+}
+.edge:active { border-color: #c79c43; }
+.edgeUp { top: 6px; transform: translateX(-50%) rotate(-90deg); }
+.edgeDown { bottom: 6px; transform: translateX(-50%) rotate(90deg); }
+.edgeUp:active { transform: translateX(-50%) translateY(-2px) rotate(-90deg); }
+.edgeDown:active { transform: translateX(-50%) translateY(2px) rotate(90deg); }
+
 @media (prefers-reduced-motion: reduce) { .track { transition: none; } }
 

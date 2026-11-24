@@ -1,0 +1,111 @@
+/* A pack's details, in a modal over the page */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(10, 8, 4, 0.55);
+  backdrop-filter: blur(6px);
+  animation: fade 0.3s ease both;
+}
+.modal {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+  width: min(920px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.3);
+  animation: rise 0.4s var(--ease) both;
+}
+.close {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: var(--glass-strong);
+  color: var(--text-main);
+  cursor: pointer;
+}
+.close:hover { border-color: #c79c43; color: var(--gold-ink); }
+
+.media {
+  position: relative;
+  min-height: 320px;
+  background: radial-gradient(ellipse at 50% 40%, var(--studio) 0%, var(--photo-bg) 70%);
+}
+.badge { position: absolute; z-index: 2; left: 14px; bottom: 14px; padding: 6px 13px; font-size: 0.72rem; }
+
+.body { display: flex; flex-direction: column; gap: 12px; padding: 28px 28px 24px; min-width: 0; }
+.kicker { font-size: 1.8rem; margin-bottom: -10px; }
+.body h2 { font-family: var(--font-small-title); font-size: 1.8rem; font-weight: 400; line-height: 1.1; padding-right: 40px; }
+.desc { color: var(--text-secondary); font-size: 0.92rem; line-height: 1.55; white-space: pre-line; }
+.listTitle { margin-top: 6px; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+
+.items { display: flex; flex-direction: column; gap: 8px; }
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  transition: border-color 0.3s ease, transform 0.3s var(--ease);
+}
+.item:hover { border-color: #c79c43; transform: translateX(3px); }
+.thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 50% 40%, var(--studio) 0%, var(--photo-bg) 70%);
+}
+.thumb img { object-fit: contain; padding: 4px; }
+.itemText { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.itemText small { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.itemText strong { font-size: 0.9rem; font-weight: 600; line-height: 1.3; }
+.itemText em { font-size: 0.74rem; font-style: normal; color: #b4442f; }
+.itemPrice { flex-shrink: 0; display: flex; align-items: baseline; gap: 6px; font-family: var(--font-price); font-weight: 700; font-size: 0.92rem; }
+.qty { color: var(--gold-real); font-family: var(--font-secondary); font-weight: 800; }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--card-border);
+}
+.price { display: flex; flex-direction: column; }
+.price strong { font-family: var(--font-price); font-size: 1.6rem; font-weight: 700; }
+.add { padding: 12px 20px; font-size: 0.92rem; }
+.more { align-self: flex-start; }
+
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+/* phones: the photo on top, the modal as a sheet from the bottom */
+@media (max-width: 760px) {
+  .backdrop { align-items: flex-end; padding: 0; }
+  .modal { grid-template-columns: 1fr; max-height: 92dvh; border-radius: 18px 18px 0 0; }
+  .media { min-height: 0; aspect-ratio: 4 / 3; }
+  .body { padding: 22px 18px 24px; }
+}
+@media (prefers-reduced-motion: reduce) { .backdrop, .modal { animation: none; } }
