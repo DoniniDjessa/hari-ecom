@@ -9,6 +9,7 @@ import { toCard, type SiteProduct } from "@/lib/types"
 import { ProductCard } from "@/components/ProductCard"
 import { ShowcaseCard } from "@/components/ShowcaseCard"
 import { PackCard } from "@/components/PackCard"
+import { PacksRing } from "@/components/PacksRing"
 import { Spotlight } from "@/components/Spotlight"
 import { Testimonials } from "@/components/Testimonials"
 import { ShopsMap } from "@/components/ShopsMap"
@@ -129,9 +130,14 @@ export default async function Home() {
               </div>
               <Link href="/packs" className="link-more">Tous les packs <ArrowIcon size={16} /></Link>
             </div>
-            <div className={`${styles.packGrid} stagger`}>
-              {packs.slice(0, 3).map((p) => <PackCard key={p.id} pack={p} />)}
-            </div>
+            {packs.length >= 3 ? (
+              // the packs on a turning 3D ring (8 at most)
+              <PacksRing packs={packs.slice(0, 8)} />
+            ) : (
+              <div className={`${styles.packGrid} stagger`}>
+                {packs.map((p) => <PackCard key={p.id} pack={p} />)}
+              </div>
+            )}
           </div>
         </section>
       )}

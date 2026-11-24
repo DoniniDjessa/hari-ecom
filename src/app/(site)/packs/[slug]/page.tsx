@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getPack } from "@/lib/packs"
 import { PackBuy } from "@/components/PackBuy"
 import { ProductVisual } from "@/components/ProductVisual"
+import { PackVisual } from "@/components/PackVisual"
+import { PackSaving } from "@/components/PackSaving"
 import { ChatIcon, ShieldIcon, TruckIcon } from "@/components/icons"
 import styles from "./pack.module.css"
 import { Euro } from "@/components/Euro"
@@ -28,7 +29,6 @@ export default async function PackPage({ params }: { params: Params }) {
   const p = await getPack((await params).slug)
   if (!p) notFound()
   const pct = p.value > 0 && p.saving > 0 ? Math.round((p.saving / p.value) * 100) : 0
-  const photos = p.items.filter((i) => i.image).slice(0, 4)
   const count = p.items.reduce((n, i) => n + i.quantity, 0)
 
   return (
@@ -40,17 +40,7 @@ export default async function PackPage({ params }: { params: Params }) {
       <div className={styles.layout}>
         <div className={styles.gallery}>
           <div className={styles.photo}>
-            {p.image ? (
-              <Image src={p.image} alt={p.name} fill priority sizes="(max-width: 900px) 100vw, 620px" className={styles.cover} />
-            ) : (
-              <span className={styles.mosaic} data-n={photos.length || 1}>
-                {(photos.length ? photos : p.items.slice(0, 1)).map((i) => (
-                  <span key={i.id} className={styles.tile}>
-                    <ProductVisual src={i.image} alt={i.name} brand={i.brand} sizes="300px" />
-                  </span>
-                ))}
-              </span>
-            )}
+            <PackVisual pack={p} priority sizes="(max-width: 900px) 100vw, 620px" />
             {pct > 0 && <span className={styles.saving}>-{pct} %</span>}
           </div>
         </div>
@@ -62,13 +52,9 @@ export default async function PackPage({ params }: { params: Params }) {
 
           <div className={styles.priceBox}>
             <strong><Price amount={p.price} /><Euro amount={p.price} /></strong>
-            {p.saving > 0 && (
-              <span>
-                au lieu de <s><Price amount={p.value} /></s>
-                <em className="text-gold">soit <Price amount={p.saving} /> d&apos;économie</em>
-              </span>
-            )}
           </div>
+          {/* separately vs the pack, the value bar, what the client saves */}
+          <PackSaving value={p.value} price={p.price} large />
 
           {p.description && <p className={styles.about}>{p.description}</p>}
 

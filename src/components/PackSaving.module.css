@@ -1,0 +1,92 @@
+/* The pack's saving: separately vs the pack, a value bar shrinking to the pack price, the amount saved */
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--gold-wash) 100%);
+}
+
+.rows { display: flex; flex-direction: column; gap: 3px; }
+.row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 0.82rem; color: var(--text-muted); }
+.row s { color: var(--text-muted); text-decoration-thickness: 1.5px; text-decoration-color: rgba(180, 40, 40, 0.7); }
+.pack { color: var(--text-main); font-weight: 700; }
+.pack strong { font-family: var(--font-price); font-size: 1.05rem; }
+
+/* the bar: full = the products' value. Shown: the paid part shrinks to the pack price, the rest turns gold */
+.bar {
+  position: relative;
+  display: flex;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+}
+.paid {
+  flex: 0 0 100%;
+  height: 100%;
+  border-radius: 999px 0 0 999px;
+  background: var(--text-main, #1a1a1a);
+  opacity: 0.85;
+  transition: flex-basis 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.25s;
+}
+.shown .paid { flex-basis: var(--share); }
+.kept {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0 6px, transparent 6px 12px),
+    var(--gold-metal);
+  background-size: auto, 220% auto;
+  animation: shine 3s linear infinite;
+}
+.kept em {
+  font-style: normal;
+  font-family: var(--font-primary);
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--on-gold);
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.4s ease 1.2s, transform 0.5s var(--ease) 1.2s;
+}
+.shown .kept em { opacity: 1; transform: none; }
+@keyframes shine { to { background-position: 0 0, 220% center; } }
+
+.saved {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--gold-ink);
+}
+.saved strong {
+  font-family: var(--font-price);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the pack page: bigger */
+.large { gap: 14px; margin: 22px 0 6px; padding: 18px 20px; }
+.large .row { font-size: 0.95rem; }
+.large .pack strong { font-size: 1.35rem; }
+.large .bar { height: 30px; }
+.large .kept em { font-size: 0.9rem; }
+.large .saved { font-size: 1.05rem; }
+.large .saved strong { font-size: 1.6rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .paid, .kept em { transition: none; }
+  .kept { animation: none; }
+}

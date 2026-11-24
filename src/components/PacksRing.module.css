@@ -1,0 +1,143 @@
+/* The packs' 3D ring: cards standing on a soft floor, the front one big and sharp */
+/* the side packs are cut at the edges: never a sideways scroll of the page */
+.wrap { position: relative; overflow-x: clip; padding: 10px 0 6px; }
+
+.ring {
+  position: relative;
+  /* own stacking context; the side packs may spill a little past the container */
+  isolation: isolate;
+  overflow: visible;
+}
+/* the floor under the front pack */
+.ring::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(560px, 90%);
+  height: 60px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+  z-index: -1;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(380px, 78vw);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity, filter;
+}
+.slide > * { height: 100%; }
+.side { cursor: pointer; }
+/* the side packs don't lift on hover: only the front one is a live card */
+.side :global(article) { pointer-events: none; }
+.front :global(article) { box-shadow: 0 34px 70px rgba(0, 0, 0, 0.14); }
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 30px;
+}
+.navRow { display: flex; align-items: center; gap: 18px; }
+.arrow {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--gold-ink);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.arrow:hover { transform: translateY(-2px); border-color: #c79c43; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1); }
+.counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 86px;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.counter strong { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.03em; }
+.counter span { color: #c79c43; }
+
+/* the frieze of names: a window on a track that slides, ends fading out */
+.frieze {
+  /* a name's width and the step from one name to the next */
+  --name: 200px;
+  --slot: 208px;
+  position: relative;
+  width: min(760px, 100%);
+  height: 38px;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+}
+.track {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.name {
+  position: absolute;
+  top: 0;
+  width: var(--name);
+  height: 38px;
+  padding: 0 14px;
+  line-height: 38px;
+  text-align: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity 0.5s ease, color 0.5s ease, background 0.5s ease, transform 0.5s var(--ease);
+}
+.name:hover { opacity: 0.85; color: var(--text-main); }
+.near { opacity: 0.7; }
+/* the front pack: its name in gold, on a soft gold pill */
+.on {
+  opacity: 1;
+  color: var(--gold-ink);
+  background: var(--gold-soft);
+  font-weight: 800;
+  transform: scale(1.04);
+}
+
+/* the gold line filling until the next turn */
+.progress {
+  position: relative;
+  width: min(220px, 60%);
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.08);
+}
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--gold-metal);
+  transform-origin: left center;
+  animation: fill linear both;
+}
+@keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (max-width: 600px) { .frieze { --name: 150px; --slot: 156px; } }
+@media (prefers-reduced-motion: reduce) { .track { transition: none; } }
+

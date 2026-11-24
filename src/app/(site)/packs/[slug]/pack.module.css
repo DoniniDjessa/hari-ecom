@@ -6,11 +6,6 @@
 .gallery { position: sticky; top: calc(var(--header-height) + 24px); animation: rise 1.1s var(--ease) both; }
 @keyframes rise { from { opacity: 0; transform: translateY(30px); } }
 .photo { position: relative; aspect-ratio: 1; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, var(--studio) 0%, var(--photo-bg) 70%); }
-.cover { object-fit: cover; }
-.mosaic { position: absolute; inset: 8%; display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
-.mosaic[data-n="1"] { grid-template-columns: 1fr; }
-.mosaic[data-n="3"] .tile:first-child { grid-row: span 2; }
-.tile { position: relative; overflow: hidden; background: var(--studio); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08); }
 .saving {
   position: absolute;
   top: 18px;

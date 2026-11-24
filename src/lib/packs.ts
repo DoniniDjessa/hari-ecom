@@ -5,7 +5,7 @@ import { db } from "./db"
 import { slugify } from "./catalog"
 import type { SitePack } from "./types"
 
-// Packs created in the web app (Paramètres › Packs): only the ones shown on the site (active). A pack is
+// Packs created in the web app (Produits › Packs): only the ones shown on the site (active). A pack is
 // in stock when every product of it is, in the quantity of the pack.
 
 type Row = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -18,11 +18,8 @@ const cachedPacks = unstable_cache(async (): Promise<SitePack[]> => {
     .select("*, items:hari-pack-items(quantity, product:hari-products(id, code, name, brand, price, ecom_image_key, active, stock:hari-stock(quantity)))" as string)
     .eq("active", true)
     .order("created_at", { ascending: false })
-  if (error) {
-    // hari-packs missing: haritest/database/add-ecom-packs-site.sql not run yet
-    console.error("Packs:", error.message)
-    return []
-  }
+  // thrown, not returned: a failure (network, table missing) must not be kept 5 min as "no packs"
+  if (error) throw new Error(error.message)
   return ((data ?? []) as Row[]).map((r) => {
     const items = ((r.items ?? []) as Row[])
       .filter((i) => i.product?.active)
@@ -58,7 +55,15 @@ const cachedPacks = unstable_cache(async (): Promise<SitePack[]> => {
   }).filter((p) => p.items.length > 0)
 }, ["site-packs"], { revalidate: 300, tags: ["packs"] })
 
-export const getPacks = cache(() => cachedPacks())
+export const getPacks = cache(async (): Promise<SitePack[]> => {
+  try {
+    return await cachedPacks()
+  } catch (error) {
+    // hari-packs missing (haritest/database/add-ecom-packs-site.sql not run yet) or database unreachable
+    console.error("Packs:", error instanceof Error ? error.message : error)
+    return []
+  }
+})
 
 /** /packs/rituel-eclat-1a2b3c4d : the end of the address is the start of the pack's id */
 export async function getPack(slug: string) {

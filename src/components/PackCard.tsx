@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import type { SitePack } from "@/lib/types"
 import { useCart } from "./CartProvider"
 import { CheckIcon, PlusIcon } from "./icons"
 import { SiteBadge } from "./SiteBadge"
+import { PackVisual } from "./PackVisual"
+import { ProductVisual } from "./ProductVisual"
+import { PackSaving } from "./PackSaving"
 import styles from "./PackCard.module.css"
 import { Euro } from "@/components/Euro"
 import { Price } from "@/components/Price"
 
-// A pack: its photo, or a mosaic of its products' photos, a real-gold saving badge, the products inside,
+// A pack: its photo (PackVisual), a real-gold saving badge, the products inside,
 // the price against what the products cost one by one, and "Ajouter le pack" (one line in the cart).
 export function PackCard({ pack: p }: { pack: SitePack }) {
   const { addPack } = useCart()
@@ -23,29 +25,30 @@ export function PackCard({ pack: p }: { pack: SitePack }) {
   }, [added])
 
   const pct = p.value > 0 && p.saving > 0 ? Math.round((p.saving / p.value) * 100) : 0
-  const photos = p.items.filter((i) => i.image).slice(0, 4)
   const count = p.items.reduce((n, i) => n + i.quantity, 0)
 
   return (
     <article className={`${styles.card} ${!p.inStock ? styles.out : ""}`}>
       <Link href={`/packs/${p.slug}`} className={styles.media} aria-label={p.name}>
-        {p.image ? (
-          <Image src={p.image} alt={p.name} fill sizes="(max-width: 700px) 100vw, 400px" className={styles.cover} />
-        ) : photos.length ? (
-          <span className={styles.mosaic} data-n={photos.length}>
-            {photos.map((i) => (
-              <span key={i.id} className={styles.tile}><Image src={i.image!} alt="" fill sizes="200px" /></span>
-            ))}
-          </span>
-        ) : (
-          <span className={styles.empty}><span className="script text-gold">Pack</span><strong>{count} soins</strong></span>
-        )}
+        <PackVisual pack={p} sizes="(max-width: 700px) 100vw, 400px" />
         {pct > 0 && <span className={styles.saving}>-{pct} %<small><Price amount={p.saving} /> d&apos;économie</small></span>}
         <span className={styles.count}>{count} articles</span>
         <SiteBadge label={p.badge} className={styles.badge} />
       </Link>
 
       <div className={styles.body}>
+        {/* the products of the pack in small frames, under the pack's photo */}
+        <ul className={styles.minis} aria-label="Produits du pack">
+          {p.items.slice(0, 5).map((i) => (
+            <li key={i.id}>
+              <Link href={`/produit/${i.slug}`} className={styles.mini} title={i.name} aria-label={i.name}>
+                <ProductVisual src={i.image} alt="" brand={i.brand} sizes="56px" />
+                {i.quantity > 1 && <span className={styles.miniQty}>×{i.quantity}</span>}
+              </Link>
+            </li>
+          ))}
+          {p.items.length > 5 && <li className={styles.miniMore}>+{p.items.length - 5}</li>}
+        </ul>
         <span className={`script text-gold ${styles.kicker}`}>Le pack</span>
         <h3><Link href={`/packs/${p.slug}`}>{p.name}</Link></h3>
         <ul className={styles.items}>
@@ -55,10 +58,12 @@ export function PackCard({ pack: p }: { pack: SitePack }) {
           {p.items.length > 4 && <li className={styles.moreItems}>+ {p.items.length - 4} autre{p.items.length - 4 > 1 ? "s" : ""}</li>}
         </ul>
 
+        {/* separately vs the pack, the value bar, what the client saves */}
+        <PackSaving value={p.value} price={p.price} />
+
         <div className={styles.footer}>
           <p className={styles.price}>
             <strong><Price amount={p.price} /></strong>
-            {p.saving > 0 && <s><Price amount={p.value} /></s>}
             <Euro amount={p.price} />
           </p>
           <button

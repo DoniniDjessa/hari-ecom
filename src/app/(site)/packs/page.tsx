@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getPacks } from "@/lib/packs"
 import { getSiteContent } from "@/lib/backoffice"
 import { PackCard } from "@/components/PackCard"
+import { PacksRing } from "@/components/PacksRing"
 import styles from "./packs.module.css"
 
 export const revalidate = 300
@@ -22,9 +23,14 @@ export default async function Packs() {
       </div>
       <div className="container">
         {packs.length ? (
-          <div className={styles.grid}>
-            {packs.map((p) => <PackCard key={p.id} pack={p} />)}
-          </div>
+          <>
+            {/* the packs on a turning 3D ring, then all of them to browse */}
+            {packs.length >= 3 && <PacksRing packs={packs} />}
+            {packs.length >= 3 && <h2 className={styles.allTitle}>Tous nos packs</h2>}
+            <div className={styles.grid}>
+              {packs.map((p) => <PackCard key={p.id} pack={p} />)}
+            </div>
+          </>
         ) : (
           <div className={styles.empty}>
             <span className="script text-gold">Bientôt</span>
