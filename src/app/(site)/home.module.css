@@ -15,6 +15,27 @@
 /* ============ PACKS ============ */
 .packs { padding: 120px 0; background: linear-gradient(180deg, var(--background) 0%, var(--gold-wash) 100%); }
 .packGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+/* "Voir nos packs": centred under the ring, large, with a slow gold glow calling the eye */
+.packsCta { display: flex; justify-content: center; margin-top: 34px; }
+.packsBtn {
+  gap: 10px;
+  padding: 17px 34px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-radius: 999px;
+  animation: ctaGlow 2.8s ease-in-out infinite;
+}
+.packsBtn svg { transition: transform 0.35s var(--ease); }
+.packsBtn:hover svg { transform: translateX(4px); }
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 8px 20px rgba(193, 154, 63, 0.28); }
+  50% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 10px 34px rgba(193, 154, 63, 0.6), 0 0 0 6px rgba(199, 156, 67, 0.12); }
+}
+@media (max-width: 680px) {
+  .packsCta { margin-top: 26px; }
+  .packsBtn { width: 100%; justify-content: center; padding: 18px 24px; font-size: 1.08rem; }
+}
+@media (prefers-reduced-motion: reduce) { .packsBtn { animation: none; } }
 
 /* ============ PRODUCT ROWS ============ */
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 44px 22px; }

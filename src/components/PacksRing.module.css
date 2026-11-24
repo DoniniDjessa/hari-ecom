@@ -24,7 +24,7 @@
 
 .slide {
   position: absolute;
-  top: 0;
+  top: var(--lift, 0px);
   left: 50%;
   width: min(380px, 78vw);
   transform-origin: 50% 50%;
@@ -139,5 +139,12 @@
 @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 @media (max-width: 600px) { .frieze { --name: 150px; --slot: 156px; } }
+/* phones: the ring runs to the screen's edges, the front pack a little narrower, room above it for the
+   deck of packs behind (they lean from their top) */
+@media (max-width: 639px) {
+  .wrap { margin-inline: calc(-1 * var(--gutter)); }
+  .ring { --lift: 84px; }
+  .slide { width: 70vw; transform-origin: 50% 0%; }
+}
 @media (prefers-reduced-motion: reduce) { .track { transition: none; } }
 

@@ -138,6 +138,12 @@ export default async function Home() {
                 {packs.map((p) => <PackCard key={p.id} pack={p} />)}
               </div>
             )}
+            {/* the way to every pack, big and gold, under the ring */}
+            <div className={styles.packsCta}>
+              <Link href="/packs" className={`btn btn-real-gold ${styles.packsBtn}`}>
+                Voir nos {packs.length} packs <ArrowIcon size={18} />
+              </Link>
+            </div>
           </div>
         </section>
       )}
