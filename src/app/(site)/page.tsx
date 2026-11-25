@@ -102,22 +102,6 @@ export default async function Home() {
     <>
       <HeroCarousel slides={slides} />
 
-      <Spotlight products={spotlight} />
-
-      {/* --- UNIVERSES --- */}
-      <section id="univers" className={styles.universes} data-station="Univers">
-        <div className={`${styles.universesHead} reveal`}>
-          <div>
-            <span className="script text-gold">À chacun son rituel</span>
-            <h2 className="section-title">Nos univers.</h2>
-          </div>
-          <p>Choisissez un univers pour découvrir ses soins.</p>
-        </div>
-        <UniverseTiles universes={universes} />
-      </section>
-
-      <Row script="Elles les adorent" title="Meilleures ventes." text="Ce que nos clientes rachètent, encore et encore." products={bestsellers} href="/boutique?tri=ventes" showcase />
-
       {/* --- PACKS --- */}
       {packs.length > 0 && (
         <section className={`${styles.packs} reveal`} data-station="Packs">
@@ -147,6 +131,22 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      <Spotlight products={spotlight} />
+
+      {/* --- UNIVERSES --- */}
+      <section id="univers" className={styles.universes} data-station="Univers">
+        <div className={`${styles.universesHead} reveal`}>
+          <div>
+            <span className="script text-gold">À chacun son rituel</span>
+            <h2 className="section-title">Nos univers.</h2>
+          </div>
+          <p>Choisissez un univers pour découvrir ses soins.</p>
+        </div>
+        <UniverseTiles universes={universes} />
+      </section>
+
+      <Row script="Elles les adorent" title="Meilleures ventes." text="Ce que nos clientes rachètent, encore et encore." products={bestsellers} href="/boutique?tri=ventes" showcase />
 
       {/* --- ABOUT: editorial split, sticky visual + statement revealed while scrolling --- */}
       <section className={`${styles.about} reveal`} data-station="Qui sommes-nous">

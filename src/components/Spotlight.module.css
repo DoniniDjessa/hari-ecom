@@ -24,7 +24,9 @@
 .head :global(.script) { font-size: clamp(2.2rem, 4vw, 3.2rem); }
 .head h2 { font-size: clamp(2rem, 4.4vw, 3.4rem); letter-spacing: -0.045em; color: #f4efe5; }
 
-.row { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+/* align-items: start — each card is as tall as its own content (a short one isn't stretched to the tallest);
+   the section's height follows */
+.row { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
 
 /* ---------- card ---------- */
 .card {
