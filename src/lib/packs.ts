@@ -53,7 +53,10 @@ const cachedPacks = unstable_cache(async (): Promise<SitePack[]> => {
       inStock: items.length > 0 && items.every((i) => i.inStock),
     }
   }).filter((p) => p.items.length > 0)
-}, ["site-packs"], { revalidate: 300, tags: ["packs"] })
+    // the packs with their own photo first (newest first among them), then the others: the home ring shows
+    // the first 8, so they open on a pack's photo rather than on a product's
+    .sort((a, b) => Number(!!b.image) - Number(!!a.image))
+},["site-packs"], { revalidate: 300, tags: ["packs"] })
 
 export const getPacks = cache(async (): Promise<SitePack[]> => {
   try {
